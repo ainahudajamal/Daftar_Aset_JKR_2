@@ -21,14 +21,44 @@ class ComponentController extends Controller
      */
     public function index()
     {
-        $user = Auth::user();
-        
-        // ✅ FIXED: Eager loading to prevent N+1 queries
-        $components = Component::where('user_id', $user->id)
-            ->with(['mainComponents.subComponents', 'sistem', 'subsistem'])
-            ->orderBy('created_at', 'desc')
-            ->get();
+        if (!auth()->check()) {
+            return redirect()->route('login');
+        }
 
+        $user = auth()->user();
+
+        // $user = Auth::user();
+        // ✅ FIXED: Eager loading to prevent N+1 queries
+        // $components = Component::where('user_id', $user->id)
+        //     ->with(['mainComponents.subComponents', 'sistem', 'subsistem'])
+        //     ->orderBy('created_at', 'desc')
+        //     ->get();
+
+        if (auth()->user()->isAdmin()) {
+            $components = Component::with([
+                    'mainComponents.subComponents',
+                    'sistem',
+                    'subsistem'
+                ])
+                ->orderBy('created_at', 'desc')
+                ->get();
+        } else {
+
+            $components = Component::query()
+                ->where(function ($query) use ($user) {
+                    $query->where('user_id', $user->id)
+                        ->orWhereHas('mainComponents', function ($q) use ($user) {
+                            $q->where('user_id', $user->id)
+                                ->orWhereHas('subComponents', function ($q) use ($user) {
+                                    $q->where('user_id', $user->id);
+                                });
+                        });
+                })
+                ->with(['mainComponents.subComponents', 'sistem', 'subsistem'])
+                ->orderBy('created_at', 'desc')
+                ->get();
+        }
+            
         // Get statistics for stats cards
         $stats = [
             'total_components' => $components->count(),
@@ -153,6 +183,30 @@ class ComponentController extends Controller
             'catatan_binaan' => 'nullable|string',
         ]);
 
+        $validated['ada_blok'] = $request->has('ada_blok');
+
+        if (!$validated['ada_blok']) {
+            $validated['kod_blok'] = null;
+            $validated['nama_blok'] = null;
+            $validated['nama_aras'] = null;
+            $validated['kod_aras'] = null;
+            $validated['kod_ruang'] = null;
+            $validated['nama_ruang'] = null;
+            $validated['catatan_blok'] = null;
+        }
+
+        $validated['ada_binaan_luar'] = $request->has('ada_binaan_luar');
+
+        if (!$validated['ada_binaan_luar']) {
+            $validated['kod_binaan_luar'] = null;
+            $validated['koordinat_x'] = null;
+            $validated['koordinat_y'] = null;
+            $validated['kod_aras_binaan'] = null;
+            $validated['nama_aras_binaan'] = null;
+            $validated['nama_ruang_binaan'] = null;
+            $validated['catatan_binaan'] = null;
+        }
+
         $validated['user_id'] = Auth::id();
 
         $component = Component::create($validated);
@@ -252,6 +306,35 @@ class ComponentController extends Controller
             'nama_ruang_binaan_dari_kod' => 'nullable|string|max:255',
             'catatan_binaan' => 'nullable|string',
         ]);
+
+        $validated['ada_blok'] = $request->has('ada_blok');
+
+        if (!$validated['ada_blok']) {
+            $validated['kod_blok'] = null;
+            $validated['nama_blok'] = null;
+            $validated['nama_aras'] = null;
+            $validated['kod_aras'] = null;
+            $validated['kod_ruang'] = null;
+            $validated['nama_ruang'] = null;
+            $validated['catatan_blok'] = null;
+        }
+
+        $validated['ada_binaan_luar'] = $request->has('ada_binaan_luar');
+
+        if (!$validated['ada_binaan_luar']) {
+            $validated['kod_binaan_luar'] = null;
+            $validated['koordinat_x'] = null;
+            $validated['koordinat_y'] = null;
+            $validated['kod_aras_binaan'] = null;
+            $validated['nama_aras_binaan'] = null;
+            $validated['nama_ruang_binaan'] = null;
+            $validated['catatan_binaan'] = null;
+        }
+
+        // dd([
+        //     'validated' => $validated,
+        //     'fillable' => $component->getFillable(),
+        // ]);
 
         $component->update($validated);
 

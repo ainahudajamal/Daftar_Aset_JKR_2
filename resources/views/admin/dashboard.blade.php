@@ -179,41 +179,6 @@
 
         <!-- Recent Users & Quick Actions -->
         <div class="col-md-4">
-            <!-- Recent Users -->
-            <div class="card border-0 shadow-sm mb-4">
-                <div class="card-header bg-white border-0 py-3">
-                    <h5 class="mb-0"><i class="bi bi-person-plus"></i> Pengguna Terkini</h5>
-                </div>
-                <div class="card-body p-0">
-                    <div class="list-group list-group-flush">
-                        @forelse($recentUsers as $user)
-                        <div class="list-group-item">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <div class="fw-semibold">{{ $user->name }}</div>
-                                    <small class="text-muted">{{ '@' . $user->username }}</small>
-                                </div>
-                                <div>
-                                    @if($user->role === 'admin')
-                                    <span class="badge bg-danger">Admin</span>
-                                    @else
-                                    <span class="badge bg-primary">User</span>
-                                    @endif
-                                </div>
-                            </div>
-                            <small class="text-muted">
-                                <i class="bi bi-clock"></i> {{ $user->created_at->diffForHumans() }}
-                            </small>
-                        </div>
-                        @empty
-                        <div class="list-group-item text-center text-muted">
-                            Tiada pengguna terkini
-                        </div>
-                        @endforelse
-                    </div>
-                </div>
-            </div>
-
             <!-- Quick Actions -->
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white border-0 py-3">

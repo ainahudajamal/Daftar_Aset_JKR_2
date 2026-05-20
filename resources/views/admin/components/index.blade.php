@@ -148,6 +148,9 @@
             </nav>
         </div>
         <div class="d-flex gap-2">
+            <a href="{{ route('components.index') }}" class="btn btn-outline-success">
+                <i class="bi bi-plus-circle"></i> Tambah Komponen
+            </a>
             <a href="{{ route('admin.components.statistics') }}" class="btn btn-outline-info">
                 <i class="bi bi-graph-up"></i> Statistik
             </a>

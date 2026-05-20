@@ -246,6 +246,12 @@
                                 </thead>
                                 <tbody>
                                     <tr>
+                                        <td width="30%">Nama Binaan Luar</td>
+                                        <td><input type="text" class="form-control" name="nama_binaan_luar" 
+                                                   value="{{ old('nama_binaan_luar') }}" 
+                                                   placeholder="Contoh: Kolam Renang A"></td>
+                                    </tr>
+                                    <tr>
                                         <td width="30%">Kod Binaan Luar</td>
                                         <td>
                                             <div class="input-group">

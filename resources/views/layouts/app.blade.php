@@ -603,39 +603,39 @@ body {
 
             {{-- ✅ MENU PENGURUSAN - HANYA UNTUK ADMIN --}}
             @if(auth()->user()->isAdmin())
-            <div class="nav-divider"></div>
+                <div class="nav-item">
+                    <a href="{{ route('admin.sistem.index') }}" 
+                    class="nav-link {{ request()->routeIs('admin.sistem.*') ? 'active' : '' }}"
+                    data-title="Sistem">
+                        <i class="bi bi-gear"></i>
+                        <span class="nav-link-text">Pengurusan Sistem</span>
+                    </a>
+                </div>
 
-            <div class="nav-item">
-                <a href="{{ route('admin.users.index') }}" 
-                   class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
-                   data-title="Pengguna">
-                    <i class="bi bi-people"></i>
-                    <span class="nav-link-text">Pengguna</span>
-                </a>
-            </div>
+                <div class="nav-item">
+                    <a href="{{ route('admin.components.index') }}"
+                    class="nav-link {{ request()->routeIs('admin.components.*') ? 'active' : '' }}" 
+                    data-title="Komponen">
+                        <i class="bi bi-building"></i>
+                        <span class="nav-link-text">Pengurusan Komponen</span>
+                        @if(\App\Models\Component::onlyTrashed()->count() > 0)
+                            <span class="badge bg-danger ms-auto">
+                                {{ \App\Models\Component::onlyTrashed()->count() }}
+                            </span>
+                        @endif
+                    </a>
+                </div>
 
-            <div class="nav-item">
-                <a href="{{ route('admin.sistem.index') }}" 
-                   class="nav-link {{ request()->routeIs('admin.sistem.*') ? 'active' : '' }}"
-                   data-title="Sistem">
-                    <i class="bi bi-gear"></i>
-                    <span class="nav-link-text">Sistem</span>
-                </a>
-            </div>
+                <div class="nav-divider"></div>
 
-            <div class="nav-item">
-                <a href="{{ route('admin.components.index') }}"
-                class="nav-link {{ request()->routeIs('admin.components.*') ? 'active' : '' }}" 
-                data-title="Komponen">
-                    <i class="bi bi-building"></i>
-                    <span class="nav-link-text">Komponen</span>
-                    @if(\App\Models\Component::onlyTrashed()->count() > 0)
-                        <span class="badge bg-danger ms-auto">
-                            {{ \App\Models\Component::onlyTrashed()->count() }}
-                        </span>
-                    @endif
-                </a>
-            </div>
+                <div class="nav-item">
+                    <a href="{{ route('admin.users.index') }}" 
+                    class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
+                    data-title="Pengguna">
+                        <i class="bi bi-people"></i>
+                        <span class="nav-link-text">Pengurusan Pengguna</span>
+                    </a>
+                </div>
             @endif
         </nav>
 

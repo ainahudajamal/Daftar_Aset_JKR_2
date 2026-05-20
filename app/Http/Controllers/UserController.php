@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -53,34 +54,49 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'username' => 'required|string|max:255|unique:users',
-            'email' => 'required|email|unique:users',
-            'phone' => 'nullable|string|max:20',
-            'department' => 'nullable|string|max:255',
-            'password' => 'required|min:6|confirmed',
-            'role' => 'required|in:admin,user',
-            'is_active' => 'nullable|boolean',
-        ], [
-            'name.required' => 'Nama penuh diperlukan',
-            'username.required' => 'Username diperlukan',
-            'username.unique' => 'Username sudah digunakan',
-            'email.required' => 'Email diperlukan',
-            'email.unique' => 'Email sudah digunakan',
-            'password.required' => 'Kata laluan diperlukan',
-            'password.min' => 'Kata laluan sekurang-kurangnya 6 aksara',
-            'password.confirmed' => 'Kata laluan tidak sepadan',
-            'role.required' => 'Role diperlukan',
-        ]);
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'username' => 'required|string|max:255|unique:users',
+                'email' => 'required|email|unique:users',
+                'phone' => 'nullable|string|max:20',
+                'department' => 'nullable|string|max:255',
+                'password' => 'required|min:6|confirmed',
+                'role' => 'required|in:admin,user',
+                'is_active' => 'nullable|boolean',
+            ], [
+                'name.required' => 'Nama penuh diperlukan',
+                'username.required' => 'Username diperlukan',
+                'username.unique' => 'Username sudah digunakan',
+                'email.required' => 'Email diperlukan',
+                'email.unique' => 'Email sudah digunakan',
+                'password.required' => 'Kata laluan diperlukan',
+                'password.min' => 'Kata laluan sekurang-kurangnya 6 aksara',
+                'password.confirmed' => 'Kata laluan tidak sepadan',
+                'role.required' => 'Role diperlukan',
+            ]);
 
-        $validated['password'] = Hash::make($validated['password']);
-        $validated['is_active'] = $request->has('is_active') ? true : false;
+            $validated['password'] = Hash::make($validated['password']);
+            $validated['is_active'] = $request->has('is_active') ? true : false;
 
-        User::create($validated);
+            User::create($validated);
 
-        return redirect()->route('admin.users.index')
-            ->with('success', 'Pengguna berjaya ditambah!');
+            return redirect()->route('admin.users.index')
+                ->with('success', 'Pengguna berjaya ditambah!');
+
+        } catch (\Exception $e) {
+
+            Log::error('Tambah pengguna: ' . $e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
+            
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Terdapat ralat semasa menambah pengguna.');
+
+        }
+        
     }
 
     /**
@@ -96,29 +112,43 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'username' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
-            'phone' => 'nullable|string|max:20',
-            'department' => 'nullable|string|max:255',
-            'role' => 'required|in:admin,user',
-            'is_active' => 'nullable|boolean',
-        ], [
-            'name.required' => 'Nama penuh diperlukan',
-            'username.required' => 'Username diperlukan',
-            'username.unique' => 'Username sudah digunakan',
-            'email.required' => 'Email diperlukan',
-            'email.unique' => 'Email sudah digunakan',
-            'role.required' => 'Role diperlukan',
-        ]);
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'username' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($user->id)],
+                'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
+                'phone' => 'nullable|string|max:20',
+                'department' => 'nullable|string|max:255',
+                'role' => 'required|in:admin,user',
+                'is_active' => 'nullable|boolean',
+            ], [
+                'name.required' => 'Nama penuh diperlukan',
+                'username.required' => 'Username diperlukan',
+                'username.unique' => 'Username sudah digunakan',
+                'email.required' => 'Email diperlukan',
+                'email.unique' => 'Email sudah digunakan',
+                'role.required' => 'Role diperlukan',
+            ]);
 
-        $validated['is_active'] = $request->has('is_active') ? true : false;
+            $validated['is_active'] = $request->has('is_active') ? true : false;
 
-        $user->update($validated);
+            $user->update($validated);
 
-        return redirect()->route('admin.users.index')
-            ->with('success', 'Pengguna berjaya dikemaskini!');
+            return redirect()->route('admin.users.index')
+                ->with('success', 'Pengguna berjaya dikemaskini!');
+
+        }catch (\Exception $e) {
+
+            Log::error('Error tambah pengguna: ' . $e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
+
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Terdapat ralat semasa Kemaskini pengguna.');
+        }
+        
     }
 
     /**

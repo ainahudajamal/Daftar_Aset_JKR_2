@@ -16,7 +16,7 @@ class MainComponent extends Model
      */
     protected $fillable = [
         'user_id',  // ✅ TAMBAH INI
-        'component_id', 'nama_komponen_utama', 'kod_lokasi', 'sistem', 'subsistem',
+        'component_id', 'nama_komponen_utama', 'kod_komponen_utama', 'kod_lokasi', 'sistem', 'subsistem',
         'kuantiti', 'komponen_sama_jenis', 'gambar_komponen', 'awam_arkitek',
         'elektrikal', 'elv_ict', 'mekanikal', 'bio_perubatan', 'lain_lain',
         'catatan', 'tarikh_perolehan', 'kos_perolehan', 'no_pesanan_rasmi_kontrak',
@@ -31,7 +31,7 @@ class MainComponent extends Model
         // TAMBAH fields yang tertinggal
         'kod_ptj', 'no_perolehan_1gfmas'
     ];
-
+ 
     /**
      * Casts — untuk tarikh dan boolean sahaja
      */

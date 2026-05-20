@@ -139,13 +139,6 @@
             </div>
             
             <div class="detail-row">
-                <div class="detail-label">Kod Lokasi:</div>
-                <div class="detail-value">
-                    <span class="badge bg-info">{{ $component->kod_lokasi }}</span>
-                </div>
-            </div>
-            
-            <div class="detail-row">
                 <div class="detail-label">Status:</div>
                 <div class="detail-value">
                     <span class="badge {{ $component->status === 'aktif' ? 'bg-success' : 'bg-secondary' }}">
