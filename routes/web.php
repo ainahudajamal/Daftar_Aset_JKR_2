@@ -14,6 +14,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\SistemController;
 use App\Http\Controllers\SubsistemController;
 use App\Http\Controllers\Admin\AdminComponentController as AdminComponentController;
+use App\Http\Controllers\Admin\BlokController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,10 +34,10 @@ Route::middleware('guest')->group(function () {
 */
 
 Route::middleware('auth')->group(function () {
-    
+
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-    
+
     // Change Password
     Route::get('/change-password', [AuthController::class, 'showChangePasswordForm'])->name('password.change.form');
     Route::post('/change-password', [AuthController::class, 'changePassword'])->name('password.change');
@@ -46,7 +47,7 @@ Route::middleware('auth')->group(function () {
     | Dashboard (Default - Redirect based on role)
     |--------------------------------------------------------------------------
     */
-    Route::get('/', function() {
+    Route::get('/', function () {
         if (auth()->user()->role === 'admin') {
             return redirect()->route('admin.dashboard');
         }
@@ -63,13 +64,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
         Route::get('/user-activity', [AdminDashboardController::class, 'userActivity'])->name('user-activity');
         Route::get('/system-stats', [AdminDashboardController::class, 'systemStats'])->name('system-stats');
-        
+
         // User Management
         Route::resource('users', UserController::class);
         Route::post('users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
         Route::get('users/{user}/reset-password', [UserController::class, 'showResetPasswordForm'])->name('users.reset-password');
         Route::post('users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset-password.post');
-        
+
         // Sistem Management
         Route::get('sistem', [SistemController::class, 'index'])->name('sistem.index');
         Route::get('sistem/create', [SistemController::class, 'create'])->name('sistem.create');
@@ -78,14 +79,22 @@ Route::middleware('auth')->group(function () {
         Route::put('sistem/{sistem}', [SistemController::class, 'update'])->name('sistem.update');
         Route::delete('sistem/{sistem}', [SistemController::class, 'destroy'])->name('sistem.destroy');
         Route::get('sistem/{sistem}/subsistems', [SistemController::class, 'subsistems'])->name('sistem.subsistems');
-        
+
         // Subsistem Management
         Route::get('sistem/{sistem}/subsistems/create', [SubsistemController::class, 'create'])->name('sistem.subsistems.create');
         Route::post('sistem/{sistem}/subsistems', [SubsistemController::class, 'store'])->name('sistem.subsistems.store');
         Route::get('sistem/{sistem}/subsistems/{subsistem}/edit', [SubsistemController::class, 'edit'])->name('sistem.subsistems.edit');
         Route::put('sistem/{sistem}/subsistems/{subsistem}', [SubsistemController::class, 'update'])->name('sistem.subsistems.update');
         Route::delete('sistem/{sistem}/subsistems/{subsistem}', [SubsistemController::class, 'destroy'])->name('sistem.subsistems.destroy');
-        
+
+        // Blok Management
+        Route::get('blok', [BlokController::class, 'index'])->name('blok.index');
+        Route::get('blok/create', [BlokController::class, 'create'])->name('blok.create');
+        Route::post('blok', [BlokController::class, 'store'])->name('blok.store');
+        Route::get('blok/{blok}/edit', [BlokController::class, 'edit'])->name('blok.edit');
+        Route::put('blok/{blok}', [BlokController::class, 'update'])->name('blok.update');
+        Route::delete('blok/{blok}', [BlokController::class, 'destroy'])->name('blok.destroy');
+
         // Component Management (Admin)
         Route::prefix('components')->name('components.')->group(function () {
             Route::get('/', [AdminComponentController::class, 'index'])->name('index');
@@ -202,5 +211,4 @@ Route::middleware('auth')->group(function () {
         Route::get('/all-components/pdf', [ExportController::class, 'exportAllComponentsPDF'])->name('all-components.pdf');
         Route::get('/all-components/excel', [ExportController::class, 'exportAllComponentsExcel'])->name('all-components.excel');
     });
-
 }); // End of auth middleware
