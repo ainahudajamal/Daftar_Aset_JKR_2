@@ -162,8 +162,8 @@
                 <div class="login-icon">
                     <i class="bi bi-building"></i>
                 </div>
-                <h1>Sistem Daftar Aset Khusus</h1>
-                <p>Kementerian Kesihatan Malaysia</p>
+                <h1>Sistem Daftar Aset JKR</h1>
+                {{-- <p>Kementerian Kesihatan Malaysia</p> --}}
             </div>
 
             <!-- Body -->
@@ -276,7 +276,7 @@
         <!-- Copyright -->
         <div class="text-center mt-4">
             <p class="text-white mb-0" style="font-size: 0.9rem;">
-                &copy; {{ date('Y') }} Kementerian Kesihatan Malaysia
+                &copy; {{ date('Y') }} Kementerian Kerja Raya Malaysia
             </p>
         </div>
     </div>
