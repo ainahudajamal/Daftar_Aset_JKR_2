@@ -608,7 +608,7 @@ body {
                     class="nav-link {{ request()->routeIs('admin.sistem.*') ? 'active' : '' }}"
                     data-title="Sistem">
                         <i class="bi bi-gear"></i>
-                        <span class="nav-link-text">Pengurusan Sistem</span>
+                        <span class="nav-link-text">Konfigurasi Sistem</span>
                     </a>
                 </div>
 
@@ -617,7 +617,7 @@ body {
                     class="nav-link {{ request()->routeIs('admin.components.*') ? 'active' : '' }}" 
                     data-title="Komponen">
                         <i class="bi bi-building"></i>
-                        <span class="nav-link-text">Pengurusan Komponen</span>
+                        <span class="nav-link-text">Konfigurasi Komponen</span>
                         @if(\App\Models\Component::onlyTrashed()->count() > 0)
                             <span class="badge bg-danger ms-auto">
                                 {{ \App\Models\Component::onlyTrashed()->count() }}
