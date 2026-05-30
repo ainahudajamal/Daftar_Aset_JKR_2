@@ -627,6 +627,14 @@
                     </div>
 
                     <div class="nav-item">
+                        <a href="{{ route('admin.aras.index') }}"
+                            class="nav-link {{ request()->routeIs('admin.aras.*') ? 'active' : '' }}" data-title="Aras">
+                            <i class="bi bi-layers"></i>
+                            <span class="nav-link-text">Konfigurasi Aras</span>
+                        </a>
+                    </div>
+
+                    <div class="nav-item">
                         <a href="{{ route('admin.components.index') }}"
                             class="nav-link {{ request()->routeIs('admin.components.*') ? 'active' : '' }}"
                             data-title="Komponen">

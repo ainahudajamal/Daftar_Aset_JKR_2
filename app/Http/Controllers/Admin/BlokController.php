@@ -3,18 +3,18 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Blok;
+use App\Models\KodBlok;
 use Illuminate\Http\Request;
 
 class BlokController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Blok::query();
+        $query = KodBlok::query();
 
         if ($request->search) {
             $query->where('kod', 'like', '%' . $request->search . '%')
-                ->orWhere('nama', 'like', '%' . $request->search . '%');
+                  ->orWhere('nama', 'like', '%' . $request->search . '%');
         }
 
         if ($request->status === 'active') {
@@ -36,7 +36,7 @@ class BlokController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'kod'  => 'required|string|max:50|unique:bloks,kod',
+            'kod'  => 'required|string|max:50|unique:kod_bloks,kod',
             'nama' => 'required|string|max:255',
         ], [
             'kod.required'  => 'Kod blok wajib diisi.',
@@ -44,25 +44,25 @@ class BlokController extends Controller
             'nama.required' => 'Nama blok wajib diisi.',
         ]);
 
-        Blok::create([
+        KodBlok::create([
             'kod'       => strtoupper($request->kod),
             'nama'      => $request->nama,
             'is_active' => $request->has('is_active'),
         ]);
 
         return redirect()->route('admin.blok.index')
-            ->with('success', 'Blok berjaya ditambah.');
+                         ->with('success', 'Blok berjaya ditambah.');
     }
 
-    public function edit(Blok $blok)
+    public function edit(KodBlok $blok)
     {
         return view('admin.blok.edit', compact('blok'));
     }
 
-    public function update(Request $request, Blok $blok)
+    public function update(Request $request, KodBlok $blok)
     {
         $request->validate([
-            'kod'  => 'required|string|max:50|unique:bloks,kod,' . $blok->id,
+            'kod'  => 'required|string|max:50|unique:kod_bloks,kod,' . $blok->id,
             'nama' => 'required|string|max:255',
         ], [
             'kod.required'  => 'Kod blok wajib diisi.',
@@ -77,14 +77,14 @@ class BlokController extends Controller
         ]);
 
         return redirect()->route('admin.blok.index')
-            ->with('success', 'Blok berjaya dikemaskini.');
+                         ->with('success', 'Blok berjaya dikemaskini.');
     }
 
-    public function destroy(Blok $blok)
+    public function destroy(KodBlok $blok)
     {
         $blok->delete();
 
         return redirect()->route('admin.blok.index')
-            ->with('success', 'Blok berjaya dipadam.');
+                         ->with('success', 'Blok berjaya dipadam.');
     }
 }

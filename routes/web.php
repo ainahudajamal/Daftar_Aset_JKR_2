@@ -15,6 +15,7 @@ use App\Http\Controllers\SistemController;
 use App\Http\Controllers\SubsistemController;
 use App\Http\Controllers\Admin\AdminComponentController as AdminComponentController;
 use App\Http\Controllers\Admin\BlokController;
+use App\Http\Controllers\Admin\ArasController;
 
 /*
 |--------------------------------------------------------------------------
@@ -94,6 +95,14 @@ Route::middleware('auth')->group(function () {
         Route::get('blok/{blok}/edit', [BlokController::class, 'edit'])->name('blok.edit');
         Route::put('blok/{blok}', [BlokController::class, 'update'])->name('blok.update');
         Route::delete('blok/{blok}', [BlokController::class, 'destroy'])->name('blok.destroy');
+
+        // Aras Management
+        Route::get('aras', [ArasController::class, 'index'])->name('aras.index');
+        Route::get('aras/create', [ArasController::class, 'create'])->name('aras.create');
+        Route::post('aras', [ArasController::class, 'store'])->name('aras.store');
+        Route::get('aras/{aras}/edit', [ArasController::class, 'edit'])->name('aras.edit');
+        Route::put('aras/{aras}', [ArasController::class, 'update'])->name('aras.update');
+        Route::delete('aras/{aras}', [ArasController::class, 'destroy'])->name('aras.destroy');
 
         // Component Management (Admin)
         Route::prefix('components')->name('components.')->group(function () {

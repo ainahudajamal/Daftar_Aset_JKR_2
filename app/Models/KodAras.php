@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Schema;
+use App\Models\KodBlok;
 
 class KodAras extends Model
 {
@@ -29,6 +30,7 @@ class KodAras extends Model
         'tingkat',
         'is_active',
         'status',
+        'blok_id',
     ];
 
     /**
@@ -81,9 +83,9 @@ class KodAras extends Model
      */
     public function scopeSearch($query, $search)
     {
-        return $query->where(function($q) use ($search) {
+        return $query->where(function ($q) use ($search) {
             $q->where('kod', 'like', "%{$search}%")
-              ->orWhere('nama', 'like', "%{$search}%");
+                ->orWhere('nama', 'like', "%{$search}%");
         });
     }
 
@@ -188,11 +190,11 @@ class KodAras extends Model
     public static function kodExists($kod, $excludeId = null)
     {
         $query = self::where('kod', $kod);
-        
+
         if ($excludeId) {
             $query->where('id', '!=', $excludeId);
         }
-        
+
         return $query->exists();
     }
 
@@ -220,5 +222,10 @@ class KodAras extends Model
             return $this->status === 'aktif' ? 'Aktif' : 'Tidak Aktif';
         }
         return $this->is_active ? 'Aktif' : 'Tidak Aktif';
+    }
+    // Relationship dengan Blok
+    public function blok()
+    {
+        return $this->belongsTo(KodBlok::class, 'blok_id');
     }
 }
