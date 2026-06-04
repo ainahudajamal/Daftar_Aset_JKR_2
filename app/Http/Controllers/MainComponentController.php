@@ -9,6 +9,7 @@ use App\Models\Subsistem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use App\Models\AuditLog;
 
 class MainComponentController extends Controller
 {
@@ -24,7 +25,7 @@ class MainComponentController extends Controller
             $duplicateKodLokasi = MainComponent::where('kod_lokasi', $request->kod_lokasi)
                 ->where('component_id', $request->component_id)
                 ->exists();
-            
+
             if ($duplicateKodLokasi) {
                 throw ValidationException::withMessages([
                     'kod_lokasi' => 'Kod Lokasi "' . $request->kod_lokasi . '" sudah digunakan untuk premis ini. Sila gunakan kod yang berlainan.'
@@ -36,7 +37,7 @@ class MainComponentController extends Controller
             // ============================================
             if (!empty($validated['sistem'])) {
                 $existingSistem = Sistem::where('kod', $validated['sistem'])->first();
-                
+
                 if (!$existingSistem) {
                     // Kod BARU - MESTI ada nama_sistem
                     if (empty($request->nama_sistem)) {
@@ -44,14 +45,14 @@ class MainComponentController extends Controller
                             'nama_sistem' => 'Kod sistem "' . $validated['sistem'] . '" adalah baru. Sila masukkan nama sistem.'
                         ]);
                     }
-                    
+
                     // Create new Sistem dengan nama dari form
                     Sistem::create([
                         'kod' => $validated['sistem'],
                         'nama' => $request->nama_sistem,
                         'is_active' => true
                     ]);
-                    
+
                     \Log::info('New Sistem created: ' . $validated['sistem'] . ' - ' . $request->nama_sistem);
                 } else {
                     // Kod sudah wujud - ignore nama_sistem if provided
@@ -66,7 +67,7 @@ class MainComponentController extends Controller
             // ============================================
             if (!empty($validated['subsistem'])) {
                 $existingSubSistem = Subsistem::where('kod', $validated['subsistem'])->first();
-                
+
                 if (!$existingSubSistem) {
                     // Kod BARU - MESTI ada nama_subsistem
                     if (empty($request->nama_subsistem)) {
@@ -74,11 +75,11 @@ class MainComponentController extends Controller
                             'nama_subsistem' => 'Kod subsistem "' . $validated['subsistem'] . '" adalah baru. Sila masukkan nama subsistem.'
                         ]);
                     }
-                    
+
                     // Get sistem_id
                     $sistem = Sistem::where('kod', $validated['sistem'])->first();
                     $sistemId = $sistem ? $sistem->id : null;
-                    
+
                     // Create new SubSistem dengan nama dari form
                     Subsistem::create([
                         'kod' => $validated['subsistem'],
@@ -86,7 +87,7 @@ class MainComponentController extends Controller
                         'sistem_id' => $sistemId,
                         'is_active' => true
                     ]);
-                    
+
                     \Log::info('New SubSistem created: ' . $validated['subsistem'] . ' - ' . $request->nama_subsistem);
                 } else {
                     // Kod sudah wujud - ignore nama_subsistem if provided
@@ -117,12 +118,12 @@ class MainComponentController extends Controller
             $validated['catatan_komponen_berhubung'] = $request->input('catatan_komponen_berhubung');
             $validated['catatan_dokumen'] = $request->input('catatan_dokumen');
             $validated['nota'] = $request->input('nota');
-            
+
             // IMPORTANT: Explicitly set
             $validated['kod_ptj'] = $request->input('kod_ptj');
             $validated['no_perolehan_1gfmas'] = $request->input('no_perolehan_1gfmas');
             $validated['status'] = $request->input('status', 'aktif');
-            
+
             // Create main component
             $mainComponent = MainComponent::create($validated);
 
@@ -135,18 +136,25 @@ class MainComponentController extends Controller
 
             DB::commit();
 
+            // TAMBAH LOG
+            AuditLog::create([
+                'user_id'      => auth()->id(),
+                'component_id' => $mainComponent->component_id,
+                'title'        => 'Tambah Komponen Utama',
+                'description'  => 'Komponen Utama baru ditambah',
+            ]);
+
             return redirect()->route('components.index')
                 ->with('success', 'Komponen Utama berjaya ditambah!');
-
         } catch (ValidationException $e) {
             DB::rollBack();
             throw $e; // Re-throw validation exception
-            
+
         } catch (\Exception $e) {
             DB::rollBack();
             \Log::error('Error creating main component: ' . $e->getMessage());
             \Log::error('Stack trace: ' . $e->getTraceAsString());
-            
+
             return redirect()->back()
                 ->with('error', 'Gagal menyimpan: ' . $e->getMessage())
                 ->withInput();
@@ -166,7 +174,7 @@ class MainComponentController extends Controller
                 ->where('component_id', $request->component_id)
                 ->where('id', '!=', $mainComponent->id)
                 ->exists();
-            
+
             if ($duplicateKodLokasi) {
                 throw ValidationException::withMessages([
                     'kod_lokasi' => 'Kod Lokasi "' . $request->kod_lokasi . '" sudah digunakan untuk premis ini. Sila gunakan kod yang berlainan.'
@@ -178,7 +186,7 @@ class MainComponentController extends Controller
             // ============================================
             if (!empty($validated['sistem'])) {
                 $existingSistem = Sistem::where('kod', $validated['sistem'])->first();
-                
+
                 if (!$existingSistem) {
                     // Kod BARU - MESTI ada nama_sistem
                     if (empty($request->nama_sistem)) {
@@ -186,14 +194,14 @@ class MainComponentController extends Controller
                             'nama_sistem' => 'Kod sistem "' . $validated['sistem'] . '" adalah baru. Sila masukkan nama sistem.'
                         ]);
                     }
-                    
+
                     // Create new Sistem
                     Sistem::create([
                         'kod' => $validated['sistem'],
                         'nama' => $request->nama_sistem,
                         'is_active' => true
                     ]);
-                    
+
                     \Log::info('New Sistem created during update: ' . $validated['sistem'] . ' - ' . $request->nama_sistem);
                 }
             }
@@ -203,7 +211,7 @@ class MainComponentController extends Controller
             // ============================================
             if (!empty($validated['subsistem'])) {
                 $existingSubSistem = Subsistem::where('kod', $validated['subsistem'])->first();
-                
+
                 if (!$existingSubSistem) {
                     // Kod BARU - MESTI ada nama_subsistem
                     if (empty($request->nama_subsistem)) {
@@ -211,11 +219,11 @@ class MainComponentController extends Controller
                             'nama_subsistem' => 'Kod subsistem "' . $validated['subsistem'] . '" adalah baru. Sila masukkan nama subsistem.'
                         ]);
                     }
-                    
+
                     // Get sistem_id
                     $sistem = Sistem::where('kod', $validated['sistem'])->first();
                     $sistemId = $sistem ? $sistem->id : null;
-                    
+
                     // Create new SubSistem
                     Subsistem::create([
                         'kod' => $validated['subsistem'],
@@ -223,7 +231,7 @@ class MainComponentController extends Controller
                         'sistem_id' => $sistemId,
                         'is_active' => true
                     ]);
-                    
+
                     \Log::info('New SubSistem created during update: ' . $validated['subsistem'] . ' - ' . $request->nama_subsistem);
                 }
             }
@@ -249,7 +257,7 @@ class MainComponentController extends Controller
             $validated['catatan_komponen_berhubung'] = $request->input('catatan_komponen_berhubung');
             $validated['catatan_dokumen'] = $request->input('catatan_dokumen');
             $validated['nota'] = $request->input('nota');
-            
+
             // IMPORTANT: Explicitly set
             $validated['kod_ptj'] = $request->input('kod_ptj');
             $validated['no_perolehan_1gfmas'] = $request->input('no_perolehan_1gfmas');
@@ -270,18 +278,25 @@ class MainComponentController extends Controller
 
             DB::commit();
 
+            // TAMBAH LOG
+            AuditLog::create([
+                'user_id'      => auth()->id(),
+                'component_id' => $mainComponent->component_id,
+                'title'        => 'Kemaskini Komponen Utama',
+                'description'  => 'Komponen Utama dikemaskini',
+            ]);
+
             return redirect()->route('components.index')
                 ->with('success', 'Komponen Utama berjaya dikemaskini!');
-
         } catch (ValidationException $e) {
             DB::rollBack();
             throw $e; // Re-throw validation exception
-            
+
         } catch (\Exception $e) {
             DB::rollBack();
             \Log::error('Error updating main component: ' . $e->getMessage());
             \Log::error('Stack trace: ' . $e->getTraceAsString());
-            
+
             return redirect()->back()
                 ->with('error', 'Gagal mengemaskini: ' . $e->getMessage())
                 ->withInput();
@@ -305,7 +320,10 @@ class MainComponentController extends Controller
         ]);
 
         return view('user.components.edit-main-component', compact(
-            'mainComponent', 'components', 'sistems', 'subsistems'
+            'mainComponent',
+            'components',
+            'sistems',
+            'subsistems'
         ));
     }
 
@@ -319,7 +337,7 @@ class MainComponentController extends Controller
         // Process Saiz
         $saizValues = $request->input('saiz', []);
         $saizUnits = $request->input('saiz_unit', []);
-        
+
         if (is_array($saizValues)) {
             foreach ($saizValues as $index => $value) {
                 if (!empty(trim($value ?? ''))) {
@@ -336,7 +354,7 @@ class MainComponentController extends Controller
         // Process Kadaran
         $kadaranValues = $request->input('kadaran', []);
         $kadaranUnits = $request->input('kadaran_unit', []);
-        
+
         if (is_array($kadaranValues)) {
             foreach ($kadaranValues as $index => $value) {
                 if (!empty(trim($value ?? ''))) {
@@ -353,7 +371,7 @@ class MainComponentController extends Controller
         // Process Kapasiti
         $kapasitiValues = $request->input('kapasiti', []);
         $kapasitiUnits = $request->input('kapasiti_unit', []);
-        
+
         if (is_array($kapasitiValues)) {
             foreach ($kapasitiValues as $index => $value) {
                 if (!empty(trim($value ?? ''))) {
@@ -419,23 +437,23 @@ class MainComponentController extends Controller
             'kaedah_pemasangan' => 'nullable|string|max:255',
             'kod_ptj' => 'nullable|string|max:100',
             'no_perolehan_1gfmas' => 'nullable|string|max:255',
-            
+
             // Array validation untuk measurements
             'saiz' => 'nullable|array',
             'saiz.*' => 'nullable|string|max:255',
             'saiz_unit' => 'nullable|array',
             'saiz_unit.*' => 'nullable|string|max:50',
-            
+
             'kadaran' => 'nullable|array',
             'kadaran.*' => 'nullable|string|max:255',
             'kadaran_unit' => 'nullable|array',
             'kadaran_unit.*' => 'nullable|string|max:50',
-            
+
             'kapasiti' => 'nullable|array',
             'kapasiti.*' => 'nullable|string|max:255',
             'kapasiti_unit' => 'nullable|array',
             'kapasiti_unit.*' => 'nullable|string|max:50',
-            
+
             'catatan_atribut' => 'nullable|string',
             'catatan_komponen_berhubung' => 'nullable|string',
             'catatan_dokumen' => 'nullable|string',
@@ -449,12 +467,12 @@ class MainComponentController extends Controller
      * HELPER METHODS (DEPRECATED - now handled in store/update)
      * ========================================
      */
-    
+
     private function saveSistem(string $kod): void
     {
         // DEPRECATED: Now handled directly in store() and update()
         $exists = Sistem::where('kod', $kod)->exists();
-        
+
         if (!$exists) {
             Sistem::create([
                 'kod' => $kod,
@@ -467,14 +485,14 @@ class MainComponentController extends Controller
     {
         // DEPRECATED: Now handled directly in store() and update()
         $exists = Subsistem::where('kod', $kod)->exists();
-        
+
         if (!$exists) {
             $sistemId = null;
             if ($sistemKod) {
                 $sistem = Sistem::where('kod', $sistemKod)->first();
                 $sistemId = $sistem?->id;
             }
-            
+
             Subsistem::create([
                 'kod' => $kod,
                 'nama' => $kod,
@@ -495,7 +513,7 @@ class MainComponentController extends Controller
                 if (empty(trim($nama ?? ''))) {
                     continue;
                 }
-                
+
                 \App\Models\RelatedComponent::create([
                     'main_component_id' => $mainComponent->id,
                     'bil' => $bils[$index] ?? ($index + 1),
@@ -519,7 +537,7 @@ class MainComponentController extends Controller
                 if (empty(trim($nama ?? ''))) {
                     continue;
                 }
-                
+
                 \App\Models\RelatedDocument::create([
                     'main_component_id' => $mainComponent->id,
                     'bil' => $bils[$index] ?? ($index + 1),
@@ -536,19 +554,19 @@ class MainComponentController extends Controller
      * CRUD METHODS
      * ========================================
      */
-    
+
     public function generateKodLokasi(Request $request)
     {
         $componentId = $request->get('component_id');
         $component = Component::find($componentId);
-        
+
         if (!$component) {
             return response()->json(['kod_lokasi' => ''], 400);
         }
-        
+
         $count = MainComponent::where('component_id', $componentId)->count() + 1;
         $kodLokasi = 'KU-' . $componentId . '-' . str_pad($count, 3, '0', STR_PAD_LEFT);
-        
+
         return response()->json(['kod_lokasi' => $kodLokasi]);
     }
 
@@ -557,32 +575,49 @@ class MainComponentController extends Controller
         $components = Component::where('status', 'aktif')->get();
         $sistems = Sistem::orderBy('kod')->get();
         $subsistems = Subsistem::orderBy('kod')->get();
-        
+
         return view('user.components.create-main-component', compact(
-            'components', 'sistems', 'subsistems'
+            'components',
+            'sistems',
+            'subsistems'
         ));
     }
 
     public function show(MainComponent $mainComponent)
     {
+        //  TAMBAH LOG
+        AuditLog::create([
+            'user_id'      => auth()->id(),
+            'component_id' => $mainComponent->component_id,
+            'title'        => 'Lihat Komponen Utama',
+            'description'  => 'Komponen Utama dilihat',
+        ]);
+
         $mainComponent->load([
-            'component', 
-            'subComponents', 
-            'relatedComponents', 
+            'component',
+            'subComponents',
+            'relatedComponents',
             'relatedDocuments',
             'measurements',
             'saizMeasurements',
             'kadaranMeasurements',
             'kapasitiMeasurements'
         ]);
-        
+
         return view('user.components.view-main-component', compact('mainComponent'));
     }
 
     public function destroy(MainComponent $mainComponent)
     {
+        // TAMBAH LOG
+        AuditLog::create([
+            'user_id'      => auth()->id(),
+            'component_id' => $mainComponent->component_id,
+            'title'        => 'Padam Komponen Utama',
+            'description'  => 'Komponen Utama dipadam ',
+        ]);
         $mainComponent->delete();
-        
+
         return redirect()->route('components.index')
             ->with('success', 'Komponen Utama berjaya dipadam');
     }
@@ -593,7 +628,7 @@ class MainComponentController extends Controller
             ->with(['component', 'subComponents'])
             ->orderBy('deleted_at', 'desc')
             ->paginate(10);
-        
+
         return view('main-components.trashed', compact('mainComponents'));
     }
 
@@ -601,7 +636,7 @@ class MainComponentController extends Controller
     {
         $mainComponent = MainComponent::onlyTrashed()->findOrFail($id);
         $mainComponent->restore();
-        
+
         return redirect()->route('main-components.trashed')
             ->with('success', 'Komponen Utama berjaya dipulihkan');
     }
@@ -610,7 +645,7 @@ class MainComponentController extends Controller
     {
         $mainComponent = MainComponent::onlyTrashed()->findOrFail($id);
         $mainComponent->forceDelete();
-        
+
         return redirect()->route('main-components.trashed')
             ->with('success', 'Komponen Utama berjaya dipadam secara kekal');
     }

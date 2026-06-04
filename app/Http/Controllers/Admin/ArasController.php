@@ -6,11 +6,20 @@ use App\Http\Controllers\Controller;
 use App\Models\KodAras;
 use App\Models\KodBlok;
 use Illuminate\Http\Request;
+use App\Models\AuditLog;
 
 class ArasController extends Controller
 {
     public function index(Request $request)
     {
+        // TAMBAH LOG
+        AuditLog::create([
+            'user_id'      => auth()->id(),
+            'component_id' => null,
+            'title'        => 'Lihat Senarai Aras',
+            'description'  => 'Admin melihat senarai aras',
+        ]);
+
         $query = KodAras::with('blok');
 
         if ($request->search) {
@@ -54,11 +63,18 @@ class ArasController extends Controller
             'nama.required'    => 'Nama aras wajib diisi.',
         ]);
 
-        KodAras::create([
+        $aras = KodAras::create([
             'blok_id'   => $request->blok_id,
             'kod'       => strtoupper($request->kod),
             'nama'      => $request->nama,
             'is_active' => $request->has('is_active'),
+        ]);
+
+        AuditLog::create([
+            'user_id'      => auth()->id(),
+            'component_id' => null,
+            'title'        => 'Tambah Aras',
+            'description'  => 'Aras baru ditambah - Kod: ' . $aras->kod . ', Nama: ' . $aras->nama,
         ]);
 
         return redirect()->route('admin.aras.index')
@@ -92,12 +108,27 @@ class ArasController extends Controller
             'is_active' => $request->has('is_active'),
         ]);
 
+        AuditLog::create([
+            'user_id'      => auth()->id(),
+            'component_id' => null,
+            'title'        => 'Kemaskini Aras',
+            'description'  => 'Aras dikemaskini - Kod: ' . $aras->kod . ', Nama: ' . $aras->nama,
+        ]);
+
         return redirect()->route('admin.aras.index')
             ->with('success', 'Aras berjaya dikemaskini.');
     }
 
     public function destroy(KodAras $aras)
     {
+        AuditLog::create([
+            'user_id'      => auth()->id(),
+            'component_id' => null,
+            'title'        => 'Padam Aras',
+            'description'  => 'Aras dipadam - Kod: ' . $aras->kod . ', Nama: ' . $aras->nama,
+        ]);
+
+
         $aras->delete();
 
         return redirect()->route('admin.aras.index')

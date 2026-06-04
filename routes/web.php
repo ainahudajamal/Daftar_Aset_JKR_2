@@ -16,6 +16,8 @@ use App\Http\Controllers\SubsistemController;
 use App\Http\Controllers\Admin\AdminComponentController as AdminComponentController;
 use App\Http\Controllers\Admin\BlokController;
 use App\Http\Controllers\Admin\ArasController;
+use App\Http\Controllers\Admin\RuangController;
+use App\Http\Controllers\Admin\AuditLogController;
 
 /*
 |--------------------------------------------------------------------------
@@ -103,6 +105,21 @@ Route::middleware('auth')->group(function () {
         Route::get('aras/{aras}/edit', [ArasController::class, 'edit'])->name('aras.edit');
         Route::put('aras/{aras}', [ArasController::class, 'update'])->name('aras.update');
         Route::delete('aras/{aras}', [ArasController::class, 'destroy'])->name('aras.destroy');
+
+        // Ruang Management
+        Route::get('ruang', [RuangController::class, 'index'])->name('ruang.index');
+        Route::get('ruang/create', [RuangController::class, 'create'])->name('ruang.create');
+        Route::post('ruang', [RuangController::class, 'store'])->name('ruang.store');
+        Route::get('ruang/{ruang}/edit', [RuangController::class, 'edit'])->name('ruang.edit');
+        Route::put('ruang/{ruang}', [RuangController::class, 'update'])->name('ruang.update');
+        Route::delete('ruang/{ruang}', [RuangController::class, 'destroy'])->name('ruang.destroy');
+
+        // Audit Log Management
+        Route::get('audit-log', [AuditLogController::class, 'index'])->name('audit_log.index');
+        Route::get('audit-log/create', [AuditLogController::class, 'create'])->name('audit_log.create');
+        Route::post('audit-log', [AuditLogController::class, 'store'])->name('audit_log.store');
+        Route::get('audit-log/{auditLog}', [AuditLogController::class, 'show'])->name('audit_log.show');
+        Route::delete('audit-log/{auditLog}', [AuditLogController::class, 'destroy'])->name('audit_log.destroy');
 
         // Component Management (Admin)
         Route::prefix('components')->name('components.')->group(function () {

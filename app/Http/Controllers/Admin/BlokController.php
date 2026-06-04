@@ -5,16 +5,25 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\KodBlok;
 use Illuminate\Http\Request;
+use App\Models\AuditLog;
 
 class BlokController extends Controller
 {
     public function index(Request $request)
     {
+         //  TAMBAH LOG
+    AuditLog::create([
+        'user_id'      => auth()->id(),
+        'component_id' => null,
+        'title'        => 'Lihat Konfigurasi Blok',
+        'description'  => 'Admin melihat konfigurasi blok',
+        ]);
+
         $query = KodBlok::query();
 
         if ($request->search) {
             $query->where('kod', 'like', '%' . $request->search . '%')
-                  ->orWhere('nama', 'like', '%' . $request->search . '%');
+                ->orWhere('nama', 'like', '%' . $request->search . '%');
         }
 
         if ($request->status === 'active') {
@@ -44,14 +53,21 @@ class BlokController extends Controller
             'nama.required' => 'Nama blok wajib diisi.',
         ]);
 
-        KodBlok::create([
+        $blok = KodBlok::create([
             'kod'       => strtoupper($request->kod),
             'nama'      => $request->nama,
             'is_active' => $request->has('is_active'),
         ]);
 
+        AuditLog::create([
+            'user_id'      => auth()->id(),
+            'component_id' => null,
+            'title'        => 'Tambah Blok',
+            'description'  => 'Blok baru ditambah - Kod: ' . $blok->kod . ', Nama: ' . $blok->nama,
+        ]);
+
         return redirect()->route('admin.blok.index')
-                         ->with('success', 'Blok berjaya ditambah.');
+            ->with('success', 'Blok berjaya ditambah.');
     }
 
     public function edit(KodBlok $blok)
@@ -76,15 +92,28 @@ class BlokController extends Controller
             'is_active' => $request->has('is_active'),
         ]);
 
-        return redirect()->route('admin.blok.index')
-                         ->with('success', 'Blok berjaya dikemaskini.');
+        AuditLog::create([
+            'user_id'      => auth()->id(),
+            'component_id' => null,
+            'title'        => 'Kemaskini Blok',
+            'description'  => 'Blok dikemaskini - Kod: ' . $blok->kod . ', Nama: ' . $blok->nama,
+        ]);
+
+            return redirect()->route('admin.blok.index')
+                ->with('success', 'Blok berjaya dikemaskini.');   
     }
 
     public function destroy(KodBlok $blok)
     {
+        AuditLog::create([
+            'user_id'      => auth()->id(),
+            'component_id' => null,
+            'title'        => 'Padam Blok',
+            'description'  => 'Blok dipadam - Kod: ' . $blok->kod . ', Nama: ' . $blok->nama,
+        ]);
         $blok->delete();
 
         return redirect()->route('admin.blok.index')
-                         ->with('success', 'Blok berjaya dipadam.');
+            ->with('success', 'Blok berjaya dipadam.');
     }
 }

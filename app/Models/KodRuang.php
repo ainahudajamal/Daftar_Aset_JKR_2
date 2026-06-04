@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
+use App\Models\KodAras;
 
 class KodRuang extends Model
 {
@@ -28,6 +29,7 @@ class KodRuang extends Model
         'kategori',
         'is_active',
         'status',
+        'aras_id',
     ];
 
     /**
@@ -65,9 +67,9 @@ class KodRuang extends Model
      */
     public function scopeSearch($query, $search)
     {
-        return $query->where(function($q) use ($search) {
+        return $query->where(function ($q) use ($search) {
             $q->where('kod', 'like', "%{$search}%")
-              ->orWhere('nama', 'like', "%{$search}%");
+                ->orWhere('nama', 'like', "%{$search}%");
         });
     }
 
@@ -112,10 +114,16 @@ class KodRuang extends Model
     public static function getCategories()
     {
         return self::where('is_active', true)
-                   ->distinct()
-                   ->pluck('kategori')
-                   ->filter()
-                   ->sort()
-                   ->values();
+            ->distinct()
+            ->pluck('kategori')
+            ->filter()
+            ->sort()
+            ->values();
+    }
+
+    // Relationship dengan KodAras
+    public function aras()
+    {
+        return $this->belongsTo(KodAras::class, 'aras_id');
     }
 }

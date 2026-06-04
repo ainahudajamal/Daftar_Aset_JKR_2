@@ -7,7 +7,7 @@
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="mb-1"><i class="bi bi-layers"></i> Pengurusan Aras</h2>
+            <h2 class="mb-1"><i class="bi bi-layers"></i> Konfigurasi Aras</h2>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
@@ -51,11 +51,16 @@
                     <button type="submit" class="btn btn-primary w-100">
                         <i class="bi bi-search"></i> Cari
                     </button>
+                    <a href="{{ route('admin.aras.index') }}" class="btn btn-secondary w-100">
+                            <i class="bi bi-arrow-counterclockwise"></i> Reset
+                        </a>
                 </div>
             </form>
         </div>
     </div>
 
+
+     
     <!-- Aras Table -->
     <div class="row g-4">
         @forelse($aras as $item)

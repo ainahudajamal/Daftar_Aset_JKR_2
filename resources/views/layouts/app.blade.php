@@ -635,6 +635,16 @@
                     </div>
 
                     <div class="nav-item">
+                        <a href="{{ route('admin.ruang.index') }}"
+                            class="nav-link {{ request()->routeIs('admin.ruang.*') ? 'active' : '' }}" data-title="Ruang">
+                            <i class="bi bi-door-open"></i>
+                            <span class="nav-link-text">Konfigurasi Ruang</span>
+                        </a>
+                    </div>
+
+
+
+                    <div class="nav-item">
                         <a href="{{ route('admin.components.index') }}"
                             class="nav-link {{ request()->routeIs('admin.components.*') ? 'active' : '' }}"
                             data-title="Komponen">
@@ -658,8 +668,24 @@
                             <span class="nav-link-text">Pengurusan Pengguna</span>
                         </a>
                     </div>
+                    <div class="nav-item">
+                        <a href="{{ route('admin.audit_log.index') }}"
+                            class="nav-link {{ request()->routeIs('admin.audit_log.*') ? 'active' : '' }}"
+                            data-title="Audit Log">
+                            <i class="bi bi-journal-text"></i>
+                            <span class="nav-link-text">Audit Log</span>
+                        </a>
+                    </div>
+
                 @endif
             </nav>
+
+            class="nav-link {{ request()->routeIs('admin.audit_log.*') ? 'active' : '' }}"
+            data-title="Audit Log">
+            <i class="bi bi-journal-text"></i>
+            <span class="nav-link-text">Audit Log</span>
+            </a>
+            </div>
 
             <!-- ✅ LOGOUT BUTTON -->
             <div class="sidebar-footer">

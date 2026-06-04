@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Component;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\AuditLog;
 
 class AdminComponentController extends Controller
 {
@@ -20,13 +21,13 @@ class AdminComponentController extends Controller
         // Search
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('nama_premis', 'like', "%{$search}%")
-                  ->orWhere('nombor_dpa', 'like', "%{$search}%")
-                  ->orWhere('kod_blok', 'like', "%{$search}%")
-                  ->orWhere('nama_blok', 'like', "%{$search}%")
-                  ->orWhere('kod_binaan_luar', 'like', "%{$search}%")
-                  ->orWhere('nama_binaan_luar', 'like', "%{$search}%");
+                    ->orWhere('nombor_dpa', 'like', "%{$search}%")
+                    ->orWhere('kod_blok', 'like', "%{$search}%")
+                    ->orWhere('nama_blok', 'like', "%{$search}%")
+                    ->orWhere('kod_binaan_luar', 'like', "%{$search}%")
+                    ->orWhere('nama_binaan_luar', 'like', "%{$search}%");
             });
         }
 
@@ -74,6 +75,14 @@ class AdminComponentController extends Controller
      */
     public function show(Component $component)
     {
+        // TAMBAH LOG
+        AuditLog::create([
+            'user_id'      => auth()->id(),
+            'component_id' => $component->id,
+            'title'        => 'Lihat Komponen',
+            'description'  => 'Admin melihat komponen',
+        ]);
+
         $component->load(['user', 'mainComponents.subComponents', 'mainComponents.user']);
         return view('admin.components.show', compact('component'));
     }
@@ -84,6 +93,14 @@ class AdminComponentController extends Controller
     public function destroy(Component $component)
     {
         try {
+
+            // TAMBAH LOG
+            AuditLog::create([
+                'user_id'      => auth()->id(),
+                'component_id' => $component->id,
+                'title'        => 'Padam Komponen',
+                'description'  => 'Admin memadam komponen - Nama Premis: ' . $component->nama_premis,
+            ]);
             $component->delete();
             return redirect()->route('admin.components.index')
                 ->with('success', 'Komponen berjaya dipadam dan dipindahkan ke arkib.');
@@ -99,9 +116,17 @@ class AdminComponentController extends Controller
     public function toggleStatus(Component $component)
     {
         $newStatus = $component->status === 'aktif' ? 'tidak_aktif' : 'aktif';
-        
+
         $component->update([
             'status' => $newStatus
+        ]);
+
+        //  TAMBAH LOG
+        AuditLog::create([
+            'user_id'      => auth()->id(),
+            'component_id' => $component->id,
+            'title'        => 'Tukar Status Komponen',
+            'description'  => 'Status komponen ditukar kepada ' . $newStatus . ' - Nama Premis: ' . $component->nama_premis,
         ]);
 
         return redirect()->back()
@@ -117,9 +142,9 @@ class AdminComponentController extends Controller
 
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('nama_premis', 'like', "%{$search}%")
-                  ->orWhere('nombor_dpa', 'like', "%{$search}%");
+                    ->orWhere('nombor_dpa', 'like', "%{$search}%");
             });
         }
 
@@ -221,7 +246,6 @@ class AdminComponentController extends Controller
             }
 
             return redirect()->back()->with('success', $message);
-
         } catch (\Exception $e) {
             return redirect()->back()
                 ->with('error', 'Ralat melakukan tindakan: ' . $e->getMessage());

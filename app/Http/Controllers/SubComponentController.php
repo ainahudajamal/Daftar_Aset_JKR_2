@@ -7,6 +7,7 @@ use App\Models\SubComponent;
 use App\Models\MainComponent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\AuditLog;
 
 class SubComponentController extends Controller
 {
@@ -38,10 +39,10 @@ class SubComponentController extends Controller
             $validated['dokumen_berkaitan'] = $this->processDokumenBerkaitan($request);
 
             $validated['status'] = $request->input('status', 'aktif');
-            
-            // ✅ TAMBAH user_id
+
+            // TAMBAH user_id
             $validated['user_id'] = auth()->id();
-            
+
             // Create sub component
             $subComponent = SubComponent::create($validated);
 
@@ -50,13 +51,20 @@ class SubComponentController extends Controller
 
             DB::commit();
 
+            //  TAMBAH LOG
+            AuditLog::create([
+                'user_id'      => auth()->id(),
+                'component_id' => $subComponent->mainComponent->component_id ?? null,
+                'title'        => 'Tambah Sub Komponen',
+                'description'  => 'Sub Komponen baru ditambah - Nama: ' . $subComponent->nama_sub_komponen,
+            ]);
+
             return redirect()->route('components.index')
                 ->with('success', 'Sub Komponen berjaya ditambah');
-
         } catch (\Exception $e) {
             DB::rollBack();
             \Log::error('Error creating sub component: ' . $e->getMessage());
-            
+
             return redirect()->back()
                 ->with('error', 'Gagal menyimpan Sub Komponen: ' . $e->getMessage())
                 ->withInput();
@@ -68,16 +76,23 @@ class SubComponentController extends Controller
      */
     public function show(SubComponent $subComponent)
     {
-        // Load relationships including measurements
+        // TAMBAH LOG
+        AuditLog::create([
+            'user_id'      => auth()->id(),
+            'component_id' => $subComponent->mainComponent->component_id ?? null,
+            'title'        => 'Lihat Sub Komponen',
+            'description'  => 'Sub Komponen dilihat - Nama: ' . $subComponent->nama_sub_komponen,
+        ]);
+
         $subComponent->load([
-            'user',  // ✅ TAMBAH
+            'user',
             'mainComponent.component',
             'measurements',
             'saizMeasurements',
             'kadaranMeasurements',
             'kapasitiMeasurements'
         ]);
-        
+
         return view('user.components.view-sub-component', compact('subComponent'));
     }
 
@@ -87,7 +102,7 @@ class SubComponentController extends Controller
     public function edit(SubComponent $subComponent)
     {
         $mainComponents = MainComponent::with('component')->get();
-        
+
         // Load measurements dengan relationships untuk edit form
         $subComponent->load([
             'user',  // ✅ TAMBAH
@@ -96,7 +111,7 @@ class SubComponentController extends Controller
             'kadaranMeasurements',
             'kapasitiMeasurements'
         ]);
-        
+
         return view('user.components.edit-sub-component', compact('subComponent', 'mainComponents'));
     }
 
@@ -132,13 +147,20 @@ class SubComponentController extends Controller
 
             DB::commit();
 
+            //  TAMBAH LOG
+            AuditLog::create([
+                'user_id'      => auth()->id(),
+                'component_id' => $subComponent->mainComponent->component_id ?? null,
+                'title'        => 'Kemaskini Sub Komponen',
+                'description'  => 'Sub Komponen dikemaskini - Nama: ' . $subComponent->nama_sub_komponen,
+            ]);
+
             return redirect()->route('components.index')
                 ->with('success', 'Sub Komponen berjaya dikemaskini');
-
         } catch (\Exception $e) {
             DB::rollBack();
             \Log::error('Error updating sub component: ' . $e->getMessage());
-            
+
             return redirect()->back()
                 ->with('error', 'Gagal mengemaskini Sub Komponen: ' . $e->getMessage())
                 ->withInput();
@@ -150,8 +172,15 @@ class SubComponentController extends Controller
      */
     public function destroy(SubComponent $subComponent)
     {
+        //  TAMBAH LOG
+        AuditLog::create([
+            'user_id'      => auth()->id(),
+            'component_id' => $subComponent->mainComponent->component_id ?? null,
+            'title'        => 'Padam Sub Komponen',
+            'description'  => 'Sub Komponen dipadam - Nama: ' . $subComponent->nama_sub_komponen,
+        ]);
         $subComponent->delete();
-        
+
         return redirect()->route('components.index')
             ->with('success', 'Sub Komponen berjaya dipadam');
     }
@@ -165,7 +194,7 @@ class SubComponentController extends Controller
             ->with(['mainComponent.component', 'user'])  // ✅ TAMBAH user
             ->orderBy('deleted_at', 'desc')
             ->paginate(10);
-        
+
         return view('sub-components.trashed', compact('subComponents'));
     }
 
@@ -176,7 +205,7 @@ class SubComponentController extends Controller
     {
         $subComponent = SubComponent::onlyTrashed()->findOrFail($id);
         $subComponent->restore();
-        
+
         return redirect()->route('sub-components.trashed')
             ->with('success', 'Sub Komponen berjaya dipulihkan');
     }
@@ -188,7 +217,7 @@ class SubComponentController extends Controller
     {
         $subComponent = SubComponent::onlyTrashed()->findOrFail($id);
         $subComponent->forceDelete();
-        
+
         return redirect()->route('sub-components.trashed')
             ->with('success', 'Sub Komponen berjaya dipadam secara kekal');
     }
@@ -203,7 +232,7 @@ class SubComponentController extends Controller
         // Process Saiz
         $saizValues = $request->input('saiz', []);
         $saizUnits = $request->input('saiz_unit', []);
-        
+
         if (is_array($saizValues)) {
             foreach ($saizValues as $index => $value) {
                 if (!empty(trim($value ?? ''))) {
@@ -220,7 +249,7 @@ class SubComponentController extends Controller
         // Process Kadaran
         $kadaranValues = $request->input('kadaran', []);
         $kadaranUnits = $request->input('kadaran_unit', []);
-        
+
         if (is_array($kadaranValues)) {
             foreach ($kadaranValues as $index => $value) {
                 if (!empty(trim($value ?? ''))) {
@@ -237,7 +266,7 @@ class SubComponentController extends Controller
         // Process Kapasiti
         $kapasitiValues = $request->input('kapasiti', []);
         $kapasitiUnits = $request->input('kapasiti_unit', []);
-        
+
         if (is_array($kapasitiValues)) {
             foreach ($kapasitiValues as $index => $value) {
                 if (!empty(trim($value ?? ''))) {
@@ -278,14 +307,14 @@ class SubComponentController extends Controller
                     foreach ($namas[$category] as $index => $nama) {
                         // Ensure $nama is string before trim
                         $namaStr = is_string($nama) ? trim($nama) : '';
-                        
+
                         if (!empty($namaStr)) {
                             $documents[] = [
                                 'kategori' => is_string($category) ? $category : 'umum',
                                 'bil' => $bils[$category][$index] ?? ($index + 1),
                                 'nama' => $namaStr,
-                                'rujukan' => isset($rujukans[$category][$index]) && is_string($rujukans[$category][$index]) 
-                                    ? $rujukans[$category][$index] 
+                                'rujukan' => isset($rujukans[$category][$index]) && is_string($rujukans[$category][$index])
+                                    ? $rujukans[$category][$index]
                                     : null,
                                 'catatan' => isset($catatans[$category][$index]) && is_string($catatans[$category][$index])
                                     ? $catatans[$category][$index]
@@ -295,7 +324,7 @@ class SubComponentController extends Controller
                     }
                 }
             }
-        } 
+        }
         // Fallback: simple array without categories (when doc_nama is directly an array)
         else if (is_array($namas)) {
             // Check if this is a direct array of names (not nested)
@@ -359,29 +388,29 @@ class SubComponentController extends Controller
             'model' => 'nullable|string|max:255',
             'kuantiti' => 'nullable|integer|min:1',
             'catatan' => 'nullable|string',
-            
+
             // Atribut Spesifikasi
             'jenis' => 'nullable|string|max:255',
             'bahan' => 'nullable|string|max:255',
-            
+
             // Array validation untuk measurements
             'saiz' => 'nullable|array',
             'saiz.*' => 'nullable|string|max:255',
             'saiz_unit' => 'nullable|array',
             'saiz_unit.*' => 'nullable|string|max:50',
-            
+
             'kadaran' => 'nullable|array',
             'kadaran.*' => 'nullable|string|max:255',
             'kadaran_unit' => 'nullable|array',
             'kadaran_unit.*' => 'nullable|string|max:50',
-            
+
             'kapasiti' => 'nullable|array',
             'kapasiti.*' => 'nullable|string|max:255',
             'kapasiti_unit' => 'nullable|array',
             'kapasiti_unit.*' => 'nullable|string|max:50',
-            
+
             'catatan_atribut' => 'nullable|string',
-            
+
             // Maklumat Pembelian
             'tarikh_pembelian' => 'nullable|date',
             'kos_perolehan' => 'nullable|numeric',
@@ -390,7 +419,7 @@ class SubComponentController extends Controller
             'tarikh_dipasang' => 'nullable|date',
             'tarikh_waranti_tamat' => 'nullable|date',
             'jangka_hayat' => 'nullable|integer',
-            
+
             // Pengilang, Pembekal, Kontraktor
             'nama_pengilang' => 'nullable|string|max:255',
             'nama_pembekal' => 'nullable|string|max:255',
@@ -400,7 +429,7 @@ class SubComponentController extends Controller
             'alamat_kontraktor' => 'nullable|string',
             'no_telefon_kontraktor' => 'nullable|string|max:50',
             'catatan_pembelian' => 'nullable|string',
-            
+
             // Dokumen - array inputs (with optional categories)
             'doc_category' => 'nullable|array',
             'doc_bil' => 'nullable|array',
@@ -408,7 +437,7 @@ class SubComponentController extends Controller
             'doc_rujukan' => 'nullable|array',
             'doc_catatan' => 'nullable|array',
             'catatan_dokumen' => 'nullable|string',
-            
+
             // Status & Nota
             'nota' => 'nullable|string',
             'status' => 'required|string|in:aktif,tidak_aktif',
