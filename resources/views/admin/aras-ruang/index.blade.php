@@ -18,14 +18,46 @@
                 </ol>
             </nav>
         </div>
-        {{-- Dynamic Add button changes based on active tab --}}
-        <div id="headerButtons">
+        {{-- Dynamic Add button + Export PDF button --}}
+        <div id="headerButtons" class="d-flex gap-2 align-items-center">
             <button class="btn btn-primary" id="btnTambahAras" data-bs-toggle="modal" data-bs-target="#modalTambahAras">
                 <i class="bi bi-plus-circle me-1"></i> Tambah Aras
             </button>
             <button class="btn btn-success d-none" id="btnTambahRuang" data-bs-toggle="modal" data-bs-target="#modalTambahRuang">
                 <i class="bi bi-plus-circle me-1"></i> Tambah Ruang
             </button>
+
+            {{-- Export PDF Dropdown --}}
+            <div class="dropdown">
+                <button class="btn btn-outline-danger dropdown-toggle" type="button"
+                    id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-file-earmark-pdf-fill me-1"></i> Export PDF
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="exportDropdown">
+                    <li>
+                        <h6 class="dropdown-header text-muted small">
+                            <i class="bi bi-funnel me-1"></i>Eksport mengikut penapis semasa
+                        </h6>
+                    </li>
+                    <li>
+                        {{-- Export All (no filters) --}}
+                        <a class="dropdown-item" href="{{ route('admin.aras-ruang.export-pdf') }}" target="_blank">
+                            <i class="bi bi-file-earmark-pdf me-2 text-danger"></i>
+                            Semua Aras &amp; Ruang
+                        </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        {{-- Export with current filters applied --}}
+                        <a class="dropdown-item" id="exportWithFilters"
+                            href="{{ route('admin.aras-ruang.export-pdf', request()->only(['aras_search','aras_blok_id','aras_status','ruang_search','ruang_aras_id','ruang_status'])) }}"
+                            target="_blank">
+                            <i class="bi bi-filter me-2 text-primary"></i>
+                            Ikut Penapis Semasa
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 

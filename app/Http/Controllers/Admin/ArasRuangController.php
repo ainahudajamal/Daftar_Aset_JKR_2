@@ -8,6 +8,7 @@ use App\Models\KodBlok;
 use App\Models\KodRuang;
 use Illuminate\Http\Request;
 use App\Models\AuditLog;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ArasRuangController extends Controller
 {
@@ -77,5 +78,106 @@ class ArasRuangController extends Controller
             'arasAll',
             'activeTab'
         ));
+    }
+
+    /**
+     * Export PDF — Konfigurasi Aras dan Ruang
+     * Supports the same filter params as index() so users export exactly what they see.
+     */
+    public function exportPdf(Request $request)
+    {
+        AuditLog::create([
+            'user_id'      => auth()->id(),
+            'component_id' => null,
+            'title'        => 'Export PDF Konfigurasi Aras dan Ruang',
+            'description'  => 'Admin mengeksport PDF senarai aras dan ruang',
+        ]);
+
+        // ===== ARAS QUERY (all records, no pagination) =====
+        $arasQuery = KodAras::with('blok');
+
+        if ($request->aras_search) {
+            $arasQuery->where(function ($q) use ($request) {
+                $q->where('kod', 'like', '%' . $request->aras_search . '%')
+                  ->orWhere('nama', 'like', '%' . $request->aras_search . '%');
+            });
+        }
+        if ($request->aras_blok_id) {
+            $arasQuery->where('blok_id', $request->aras_blok_id);
+        }
+        if ($request->aras_status === 'active') {
+            $arasQuery->where('is_active', true);
+        } elseif ($request->aras_status === 'inactive') {
+            $arasQuery->where('is_active', false);
+        }
+
+        $arasAll = $arasQuery->orderBy('blok_id')->orderBy('kod')->get();
+
+        // ===== RUANG QUERY (all records, no pagination) =====
+        $ruangQuery = KodRuang::with(['aras.blok']);
+
+        if ($request->ruang_search) {
+            $ruangQuery->where(function ($q) use ($request) {
+                $q->where('kod', 'like', '%' . $request->ruang_search . '%')
+                  ->orWhere('nama', 'like', '%' . $request->ruang_search . '%');
+            });
+        }
+        if ($request->ruang_aras_id) {
+            $ruangQuery->where('aras_id', $request->ruang_aras_id);
+        }
+        if ($request->ruang_status === 'active') {
+            $ruangQuery->where('is_active', true);
+        } elseif ($request->ruang_status === 'inactive') {
+            $ruangQuery->where('is_active', false);
+        }
+
+        $ruangsAll = $ruangQuery->orderBy('aras_id')->orderBy('kod')->get();
+
+        // ===== Build human-readable filter description =====
+        $filterParts = [];
+        if ($request->aras_search)   $filterParts[] = 'Carian Aras: "' . $request->aras_search . '"';
+        if ($request->ruang_search)  $filterParts[] = 'Carian Ruang: "' . $request->ruang_search . '"';
+        if ($request->aras_blok_id) {
+            $blok = KodBlok::find($request->aras_blok_id);
+            if ($blok) $filterParts[] = 'Blok: ' . $blok->kod . ' - ' . $blok->nama;
+        }
+        if ($request->ruang_aras_id) {
+            $aras = KodAras::find($request->ruang_aras_id);
+            if ($aras) $filterParts[] = 'Aras: ' . $aras->kod . ' - ' . $aras->nama;
+        }
+        if ($request->aras_status)   $filterParts[] = 'Status Aras: ' . ucfirst($request->aras_status);
+        if ($request->ruang_status)  $filterParts[] = 'Status Ruang: ' . ucfirst($request->ruang_status);
+
+        $filterInfo      = implode('  |  ', $filterParts) ?: null;
+        $filterArasBlok  = $request->aras_blok_id ? (KodBlok::find($request->aras_blok_id)?->kod . ' - ' . KodBlok::find($request->aras_blok_id)?->nama) : null;
+        $filterArasStatus  = $request->aras_status  ? ucfirst($request->aras_status)  : null;
+        $filterRuangAras   = $request->ruang_aras_id ? (KodAras::find($request->ruang_aras_id)?->kod . ' - ' . KodAras::find($request->ruang_aras_id)?->nama) : null;
+        $filterRuangStatus = $request->ruang_status  ? ucfirst($request->ruang_status) : null;
+
+        // ===== Generate PDF =====
+        $pdf = Pdf::loadView('admin.aras-ruang.pdf', compact(
+            'arasAll',
+            'ruangsAll',
+            'filterInfo',
+            'filterArasBlok',
+            'filterArasStatus',
+            'filterRuangAras',
+            'filterRuangStatus'
+        ));
+
+        $pdf->setPaper('a4', 'landscape');
+        $pdf->setOption([
+            'isHtml5ParserEnabled'  => true,
+            'isRemoteEnabled'       => false,
+            'defaultFont'           => 'Arial',
+            'dpi'                   => 150,
+            'isFontSubsettingEnabled' => true,
+            'defaultPaperSize'      => 'a4',
+            'defaultPaperOrientation' => 'landscape',
+        ]);
+
+        $filename = 'DA5-Konfigurasi-Aras-Ruang-' . date('Ymd-His') . '.pdf';
+
+        return $pdf->download($filename);
     }
 }

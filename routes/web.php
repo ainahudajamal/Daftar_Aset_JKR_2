@@ -141,6 +141,7 @@ Route::middleware('auth')->group(function () {
 
         // Aras & Ruang - Combined Management Page
         Route::get('aras-ruang', [ArasRuangController::class, 'index'])->name('aras-ruang.index');
+        Route::get('aras-ruang/export-pdf', [ArasRuangController::class, 'exportPdf'])->name('aras-ruang.export-pdf');
 
         // Aras Management (individual CRUD - kept for backward compatibility)
         Route::get('aras', [ArasController::class, 'index'])->name('aras.index');
