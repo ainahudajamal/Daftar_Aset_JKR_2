@@ -76,7 +76,7 @@ class RuangController extends Controller
             'description'  => 'Ruang baru ditambah - Kod: ' . $ruang->kod . ', Nama: ' . $ruang->nama,
         ]);
 
-        return redirect()->route('admin.ruang.index')
+        return redirect()->route('admin.aras-ruang.index', ['tab' => 'ruang'])
             ->with('success', 'Ruang berjaya ditambahkan.');
     }
 
@@ -113,7 +113,7 @@ class RuangController extends Controller
             'description'  => 'Ruang dikemaskini - Kod: ' . $ruang->kod . ', Nama: ' . $ruang->nama,
         ]);
 
-        return redirect()->route('admin.ruang.index')
+        return redirect()->route('admin.aras-ruang.index', ['tab' => 'ruang'])
             ->with('success', 'Ruang berjaya dikemaskini.');
     }
 
@@ -126,7 +126,7 @@ class RuangController extends Controller
             'description'  => 'Ruang dipadam - Kod: ' . $ruang->kod . ', Nama: ' . $ruang->nama,
         ]);
         $ruang->delete();
-        return redirect()->route('admin.ruang.index')
+        return redirect()->route('admin.aras-ruang.index', ['tab' => 'ruang'])
             ->with('success', 'Ruang berjaya dipadam.');
     }
 }

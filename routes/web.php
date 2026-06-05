@@ -32,6 +32,7 @@ use App\Http\Controllers\Admin\AdminComponentController as AdminComponentControl
 use App\Http\Controllers\Admin\BlokController;
 use App\Http\Controllers\Admin\ArasController;
 use App\Http\Controllers\Admin\RuangController;
+use App\Http\Controllers\Admin\ArasRuangController;
 use App\Http\Controllers\Admin\AuditLogController;
 
 $landingPage = function () {
@@ -138,7 +139,10 @@ Route::middleware('auth')->group(function () {
         Route::put('blok/{blok}', [BlokController::class, 'update'])->name('blok.update');
         Route::delete('blok/{blok}', [BlokController::class, 'destroy'])->name('blok.destroy');
 
-        // Aras Management
+        // Aras & Ruang - Combined Management Page
+        Route::get('aras-ruang', [ArasRuangController::class, 'index'])->name('aras-ruang.index');
+
+        // Aras Management (individual CRUD - kept for backward compatibility)
         Route::get('aras', [ArasController::class, 'index'])->name('aras.index');
         Route::get('aras/create', [ArasController::class, 'create'])->name('aras.create');
         Route::post('aras', [ArasController::class, 'store'])->name('aras.store');
@@ -146,7 +150,7 @@ Route::middleware('auth')->group(function () {
         Route::put('aras/{aras}', [ArasController::class, 'update'])->name('aras.update');
         Route::delete('aras/{aras}', [ArasController::class, 'destroy'])->name('aras.destroy');
 
-        // Ruang Management
+        // Ruang Management (individual CRUD - kept for backward compatibility)
         Route::get('ruang', [RuangController::class, 'index'])->name('ruang.index');
         Route::get('ruang/create', [RuangController::class, 'create'])->name('ruang.create');
         Route::post('ruang', [RuangController::class, 'store'])->name('ruang.store');

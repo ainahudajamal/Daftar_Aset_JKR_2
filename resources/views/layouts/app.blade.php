@@ -627,18 +627,11 @@
                     </div>
 
                     <div class="nav-item">
-                        <a href="{{ route('admin.aras.index') }}"
-                            class="nav-link {{ request()->routeIs('admin.aras.*') ? 'active' : '' }}" data-title="Aras">
-                            <i class="bi bi-layers"></i>
-                            <span class="nav-link-text">Konfigurasi Aras</span>
-                        </a>
-                    </div>
-
-                    <div class="nav-item">
-                        <a href="{{ route('admin.ruang.index') }}"
-                            class="nav-link {{ request()->routeIs('admin.ruang.*') ? 'active' : '' }}" data-title="Ruang">
-                            <i class="bi bi-door-open"></i>
-                            <span class="nav-link-text">Konfigurasi Ruang</span>
+                        <a href="{{ route('admin.aras-ruang.index') }}"
+                            class="nav-link {{ request()->routeIs('admin.aras-ruang.*') || request()->routeIs('admin.aras.*') || request()->routeIs('admin.ruang.*') ? 'active' : '' }}"
+                            data-title="Aras dan Ruang">
+                            <i class="bi bi-layers-half"></i>
+                            <span class="nav-link-text">Konfigurasi Aras dan Ruang</span>
                         </a>
                     </div>
 
