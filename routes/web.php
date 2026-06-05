@@ -1,11 +1,26 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use App\Models\AuditLog;
+use App\Models\Blok;
+use App\Models\Component;
+use App\Models\KodAras;
+use App\Models\KodBinaanLuar;
+use App\Models\KodRuang;
+use App\Models\MainComponent;
+use App\Models\RelatedComponent;
+use App\Models\RelatedDocument;
+use App\Models\Sistem;
+use App\Models\SubComponent;
+use App\Models\SubComponentDocument;
+use App\Models\SubComponentMeasurement;
+use App\Models\Subsistem;
+use App\Models\User;
 use App\Http\Controllers\ComponentController;
 use App\Http\Controllers\MainComponentController;
 use App\Http\Controllers\SubComponentController;
 use App\Http\Controllers\ExportController;
-use App\Http\Controllers\KodBinaanLuarController;
 use App\Http\Controllers\MasterDataController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminDashboardController;
@@ -18,6 +33,31 @@ use App\Http\Controllers\Admin\BlokController;
 use App\Http\Controllers\Admin\ArasController;
 use App\Http\Controllers\Admin\RuangController;
 use App\Http\Controllers\Admin\AuditLogController;
+
+$landingPage = function () {
+    $stats = [
+        ['label' => 'Users', 'value' => User::count(), 'hint' => 'Account records stored in the database.'],
+        ['label' => 'Components', 'value' => Component::count(), 'hint' => 'Primary asset records available to the system.'],
+        ['label' => 'Main components', 'value' => MainComponent::count(), 'hint' => 'Linked main component entries.'],
+        ['label' => 'Sub components', 'value' => SubComponent::count(), 'hint' => 'Detailed sub component records.'],
+        ['label' => 'Systems', 'value' => Sistem::count(), 'hint' => 'Master system categories.'],
+        ['label' => 'Subsystems', 'value' => Subsistem::count(), 'hint' => 'Master subsystem categories.'],
+        ['label' => 'Blok', 'value' => Blok::count(), 'hint' => 'Block reference data.'],
+        ['label' => 'Aras', 'value' => KodAras::count(), 'hint' => 'Floor and level reference data.'],
+        ['label' => 'Ruang', 'value' => KodRuang::count(), 'hint' => 'Room reference data.'],
+        ['label' => 'Binaan luar', 'value' => KodBinaanLuar::count(), 'hint' => 'External construction reference data.'],
+        ['label' => 'Audit logs', 'value' => AuditLog::count(), 'hint' => 'Activity tracking records.'],
+        ['label' => 'Related components', 'value' => RelatedComponent::count(), 'hint' => 'Component relationships stored in the database.'],
+        ['label' => 'Related documents', 'value' => RelatedDocument::count(), 'hint' => 'Document relationships stored in the database.'],
+        ['label' => 'Sub component docs', 'value' => SubComponentDocument::count(), 'hint' => 'Attached sub component documents.'],
+        ['label' => 'Sub component measurements', 'value' => SubComponentMeasurement::count(), 'hint' => 'Measurement records for sub components.'],
+    ];
+
+    return view('welcome', compact('stats'));
+};
+
+Route::get('/', $landingPage)->name('home');
+Route::get('/index.html', $landingPage)->name('index.html');
 
 /*
 |--------------------------------------------------------------------------
@@ -50,8 +90,8 @@ Route::middleware('auth')->group(function () {
     | Dashboard (Default - Redirect based on role)
     |--------------------------------------------------------------------------
     */
-    Route::get('/', function () {
-        if (auth()->user()->role === 'admin') {
+    Route::get('/dashboard', function () {
+        if (Auth::user()->role === 'admin') {
             return redirect()->route('admin.dashboard');
         }
         return redirect()->route('components.index');
@@ -201,23 +241,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/{subComponent}/edit', [SubComponentController::class, 'edit'])->name('edit');
         Route::put('/{subComponent}', [SubComponentController::class, 'update'])->name('update');
         Route::delete('/{subComponent}', [SubComponentController::class, 'destroy'])->name('delete');
-    });
-
-    /*
-    |--------------------------------------------------------------------------
-    | Kod Binaan Luar Routes (Master Data)
-    |--------------------------------------------------------------------------
-    */
-    Route::prefix('kod-binaan-luar')->name('kod-binaan-luar.')->group(function () {
-        Route::get('/api/aktif', [KodBinaanLuarController::class, 'getAktif'])->name('api.aktif');
-        Route::get('/api/search', [KodBinaanLuarController::class, 'search'])->name('api.search');
-        Route::get('/', [KodBinaanLuarController::class, 'index'])->name('index');
-        Route::get('/create', [KodBinaanLuarController::class, 'create'])->name('create');
-        Route::post('/', [KodBinaanLuarController::class, 'store'])->name('store');
-        Route::get('/{kodBinaanLuar}', [KodBinaanLuarController::class, 'show'])->name('show');
-        Route::get('/{kodBinaanLuar}/edit', [KodBinaanLuarController::class, 'edit'])->name('edit');
-        Route::put('/{kodBinaanLuar}', [KodBinaanLuarController::class, 'update'])->name('update');
-        Route::delete('/{kodBinaanLuar}', [KodBinaanLuarController::class, 'destroy'])->name('destroy');
     });
 
     /*
