@@ -34,6 +34,7 @@ use App\Http\Controllers\Admin\ArasController;
 use App\Http\Controllers\Admin\RuangController;
 use App\Http\Controllers\Admin\ArasRuangController;
 use App\Http\Controllers\Admin\AuditLogController;
+use App\Http\Controllers\Admin\AdminPremisController;
 
 $landingPage = function () {
     $stats = [
@@ -158,6 +159,13 @@ Route::middleware('auth')->group(function () {
         Route::get('ruang/{ruang}/edit', [RuangController::class, 'edit'])->name('ruang.edit');
         Route::put('ruang/{ruang}', [RuangController::class, 'update'])->name('ruang.update');
         Route::delete('ruang/{ruang}', [RuangController::class, 'destroy'])->name('ruang.destroy');
+
+        // Premis Management
+        Route::get('premis', [AdminPremisController::class, 'index'])->name('premis.index');
+        Route::get('premis/create', [AdminPremisController::class, 'create'])->name('premis.create');
+        Route::get('premis/export-pdf', [AdminPremisController::class, 'exportPdf'])->name('premis.export-pdf');
+        Route::get('premis/{premis}', [AdminPremisController::class, 'show'])->name('premis.show');
+        Route::get('premis/{premis}/edit', [AdminPremisController::class, 'edit'])->name('premis.edit');
 
         // Audit Log Management
         Route::get('audit-log', [AuditLogController::class, 'index'])->name('audit_log.index');
