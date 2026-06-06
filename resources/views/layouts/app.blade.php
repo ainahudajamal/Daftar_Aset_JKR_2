@@ -635,8 +635,6 @@
                         </a>
                     </div>
 
-
-
                     <div class="nav-item">
                         <a href="{{ route('admin.components.index') }}"
                             class="nav-link {{ request()->routeIs('admin.components.*') ? 'active' : '' }}"
@@ -650,6 +648,17 @@
                             @endif
                         </a>
                     </div>
+
+                    <div class="nav-item">
+                        <a href="{{ route('admin.premis.index') }}"
+                            class="nav-link {{ request()->routeIs('admin.premis.*') ? 'active' : '' }}"
+                            data-title="Premis">
+                            <i class="bi bi-building-fill"></i>
+                            <span class="nav-link-text">Pengurusan Premis</span>
+                        </a>
+                    </div>
+
+                    <div class="nav-divider"></div>
 
                     <div class="nav-divider"></div>
 
