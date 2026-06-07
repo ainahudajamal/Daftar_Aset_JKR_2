@@ -18,9 +18,14 @@
                             </ol>
                         </nav>
                     </div>
-                    <a href="{{ route('admin.blok.create') }}" class="btn btn-primary">
-                        <i class="bi bi-plus-lg"></i> Tambah Baru
-                    </a>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalPDF">
+                            <i class="bi bi-file-pdf"></i> Preview PDF
+                        </button>
+                        <a href="{{ route('admin.blok.create') }}" class="btn btn-primary">
+                            <i class="bi bi-plus-lg"></i> Tambah Baru
+                        </a>
+                    </div>
                 </div>
 
                 {{-- Alert success --}}
@@ -243,6 +248,37 @@
         @csrf
         @method('DELETE')
     </form>
+
+    {{-- Modal Preview PDF --}}
+    <div class="modal fade" id="modalPDF" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-file-pdf text-danger"></i> Pratonton D.A.4 - Senarai Blok & Binaan Luar
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <iframe
+                        src="{{ route('admin.blok.export-pdf') }}"
+                        width="100%"
+                        height="650px"
+                        style="border: none;">
+                    </iframe>
+                </div>
+                <div class="modal-footer">
+                    <a href="{{ route('admin.blok.export-pdf') }}" class="btn btn-success">
+                        <i class="bi bi-download"></i> Muat Turun PDF
+                    </a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Tutup
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
 @push('scripts')
