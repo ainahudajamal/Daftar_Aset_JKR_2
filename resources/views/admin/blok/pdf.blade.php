@@ -7,7 +7,6 @@
 
     <style>
         body {
-
             font-family: 'fredoka';
             font-size: 11px;
             color: #000;
@@ -81,10 +80,6 @@
             width: 100%;
         }
 
-
-
-
-
         .dpa-box:last-child {
             border-right: none;
         }
@@ -144,68 +139,35 @@
         </div>
 
         <table style="margin-bottom:20px;">
-
             <tr>
-
-                <td width="20%">
-                    Nama Premis
-                </td>
-
-                <td width="5%">
-                    :
-                </td>
-
-                <td>
-                    <div class="input-line"></div>
-                </td>
-
-            </tr>
-
-
-            <tr>
-
-                <td width="20%">
-                    No. DPA
-                </td>
-
-                <td width="5%">
-                    :
-                </td>
-
-                <td>
-
-                    <table cellpadding="0" cellspacing="0" style="border-collapse: collapse;">
-
+                <td width="20%" style="padding-bottom:10px;">Nama Premis</td>
+                <td width="5%" style="padding-bottom:10px;">:</td>
+                <td style="padding-bottom:10px;">
+                    <table width="100%" cellpadding="0" cellspacing="0">
                         <tr>
-
-
-                            @for ($i = 0; $i < 24; $i++)
-                                <td
-                                    style="
-                        border:1px solid #000;
-                        width:22px;
-                        height:28px;
-                    ">
-                                </td>
-                            @endfor
-
+                            <td style="border-bottom:1px solid #000; height:20px;">&nbsp;</td>
                         </tr>
-
                     </table>
-
                 </td>
-
             </tr>
-
-
+            <tr>
+                <td width="20%">No. DPA</td>
+                <td width="5%">:</td>
+                <td>
+                    <table cellpadding="0" cellspacing="0" style="border-collapse: collapse;">
+                        <tr>
+                            @for ($i = 0; $i < 24; $i++)
+                                <td style="border:1px solid #000; width:22px; height:28px;"></td>
+                            @endfor
+                        </tr>
+                    </table>
+                </td>
+            </tr>
         </table>
 
-        <div class="center-title">
-            Senarai Blok
-        </div>
+        <div class="center-title">Senarai Blok</div>
 
         <table class="table-bordered">
-
             <tr>
                 <th width="8%">BIL</th>
                 <th width="28%">NAMA BLOK</th>
@@ -213,7 +175,6 @@
                 <th width="18%">LUAS TAPAK (m²)</th>
                 <th width="18%">KOD BLOK mySPATA</th>
             </tr>
-
             @for ($i = 1; $i <= 17; $i++)
                 <tr>
                     <td height="35"></td>
@@ -223,7 +184,6 @@
                     <td></td>
                 </tr>
             @endfor
-
         </table>
 
     </div>
@@ -235,98 +195,51 @@
     <div class="page">
 
         <div style="margin-top:20px; margin-bottom:20px;">
-
             <strong>Perihal/Catatan :</strong>
-
             <div class="note-line"></div>
-
             <div class="note-line"></div>
-
         </div>
 
         <div style="text-align:right; margin-bottom:10px;">
             Muka surat _____ dari______
         </div>
 
-        <div class="page-number">
-            helaian 2
-        </div>
-
+        <div class="page-number">helaian 2</div>
         <div style="clear: both;"></div>
 
-        <div class="section-title">
-            B. Senarai Binaan Luar Dalam Premis
-        </div>
-
-        <div class="center-title">
-            Maklumat Premis
-        </div>
+        <div class="section-title">B. Senarai Binaan Luar Dalam Premis</div>
+        <div class="center-title">Maklumat Premis</div>
 
         <table style="margin-bottom:20px;">
-
             <tr>
-
-                <td width="20%">
-                    Nama Premis
-                </td>
-
-                <td width="5%">
-                    :
-                </td>
-
-                <td>
-                    <div class="input-line"></div>
-                </td>
-
-            </tr>
-
-            <tr>
-
-
-            <tr>
-
-                <td width="20%">
-                    No. DPA
-                </td>
-
-                <td width="5%">
-                    :
-                </td>
-
-                <td>
-
-                    <table cellpadding="0" cellspacing="0" style="border-collapse: collapse;">
-
+                <td width="20%" style="padding-bottom:10px;">Nama Premis</td>
+                <td width="5%" style="padding-bottom:10px;">:</td>
+                <td style="padding-bottom:10px;">
+                    <table width="100%" cellpadding="0" cellspacing="0">
                         <tr>
-
-                            @for ($i = 0; $i < 24; $i++)
-                                <td
-                                    style="
-                        border:1px solid #000;
-                        width:22px;
-                        height:28px;
-                    ">
-                                </td>
-                            @endfor
-
+                            <td style="border-bottom:1px solid #000; height:20px;">&nbsp;</td>
                         </tr>
-
                     </table>
-
                 </td>
-
             </tr>
-
-
-
+            <tr>
+                <td width="20%">No. DPA</td>
+                <td width="5%">:</td>
+                <td>
+                    <table cellpadding="0" cellspacing="0" style="border-collapse: collapse;">
+                        <tr>
+                            @for ($i = 0; $i < 24; $i++)
+                                <td style="border:1px solid #000; width:22px; height:28px;"></td>
+                            @endfor
+                        </tr>
+                    </table>
+                </td>
+            </tr>
         </table>
 
-        <div class="center-title">
-            Senarai Binaan Luar
-        </div>
+        <div class="center-title">Senarai Binaan Luar</div>
 
         <table class="table-bordered">
-
             <tr>
                 <th width="8%">BIL</th>
                 <th width="28%">NAMA BINAAN LUAR</th>
@@ -334,7 +247,6 @@
                 <th width="18%">LUAS TAPAK (m²)</th>
                 <th width="18%">KOD BINAAN LUAR mySPATA</th>
             </tr>
-
             @for ($i = 1; $i <= 17; $i++)
                 <tr>
                     <td height="35"></td>
@@ -344,7 +256,6 @@
                     <td></td>
                 </tr>
             @endfor
-
         </table>
 
     </div>
@@ -356,250 +267,174 @@
     <div class="page">
 
         <div style="margin-top:20px; margin-bottom:20px;">
-
             <strong>Perihal/Catatan :</strong>
-
             <div class="note-line"></div>
-
             <div class="note-line"></div>
-
         </div>
 
         <div style="text-align:right; margin-bottom:10px;">
             Muka surat _____ dari______
         </div>
 
-        <div class="page-number">
-            helaian 3
-        </div>
-
+        <div class="page-number">helaian 3</div>
         <div style="clear: both;"></div>
 
         <div class="big-box" style="margin-top:20px;">
-
             <div style="padding:30px; color:#999; font-style:italic; line-height:2;">
-
                 Sila lampirkan Pelan Tapak Siap bina dengan label mengikut aturan dalam helaian 1 dan helaian 2:
-
                 <br><br>
-
                 <strong>atau</strong>
-
                 <br><br>
-
-                Lakar (Lukis / Google / Cerapan & dan lain-lain kaedah bagi menerangkan susunatur blok / binaan luar)
-                jika perlu
-
+                Lakar (Lukis / Google / Cerapan & dan lain-lain kaedah bagi menerangkan susunatur blok / binaan luar) jika perlu
             </div>
-
         </div>
 
         <div style="margin-top:40px; margin-bottom:20px;">
-
             <strong>Perihal/Catatan :</strong>
-
             <div class="note-line"></div>
-
             <div class="note-line"></div>
-
         </div>
 
-        
-<table width="100%" style="margin-top:60px;">
+    </div>
 
-    <tr>
+    <div class="page-break"></div>
 
-        <!-- PENGUMPUL DATA -->
+    <!-- PAGE 4 -->
 
-        <td width="45%" valign="top">
+    <div class="page">
 
-            <table width="100%">
+        <div class="page-number">helaian 4</div>
+        <div style="clear: both;"></div>
 
-                <tr>
-                    <td colspan="3" style="font-weight:bold; padding-bottom:20px;">
-                        PENGUMPUL DATA
-                    </td>
-                </tr>
+        <table width="100%" style="margin-top:60px;">
+            <tr>
 
-                <tr>
+                <!-- PENGUMPUL DATA -->
+                <td width="45%" valign="top">
+                    <table width="100%">
 
-                    <td width="30%">
-                        Tandatangan
-                    </td>
+                        <tr>
+                            <td colspan="3" style="font-weight:bold; padding-bottom:20px;">
+                                PENGUMPUL DATA
+                            </td>
+                        </tr>
 
-                    <td width="5%">
-                        :
-                    </td>
+                        <tr>
+                            <td width="38%" valign="top" style="padding-bottom:12px;">Tandatangan</td>
+                            <td width="8%" valign="top" style="padding-bottom:12px;">:</td>
+                            <td>
+                                <table width="100%" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td style="border:1px solid #000; height:60px;">&nbsp;</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
 
-                    <td>
-                        <div style="
-                            border:1px solid #000;
-                            height:50px;
-                        "></div>
-                    </td>
+                        <tr>
+                            <td>Nama</td>
+                            <td>:</td>
+                            <td>
+                                <table width="100%" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td style="border-bottom:1px solid #000; height:20px;">&nbsp;</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
 
-                </tr>
+                        <tr>
+                            <td>Jawatan</td>
+                            <td>:</td>
+                            <td>
+                                <table width="100%" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td style="border-bottom:1px solid #000; height:20px;">&nbsp;</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
 
-                <tr>
+                        <tr>
+                            <td>Tarikh</td>
+                            <td>:</td>
+                            <td>
+                                <table width="100%" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td style="border-bottom:1px solid #000; height:20px;">&nbsp;</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
 
-                    <td>
-                        Nama
-                    </td>
+                    </table>
+                </td>
 
-                    <td>
-                        :
-                    </td>
+                <td width="10%"></td>
 
-                    <td>
-                        <div style="
-                            border-bottom:1px solid #000;
-                            height:25px;
-                        "></div>
-                    </td>
+                <!-- PENGESAH DATA -->
+                <td width="45%" valign="top">
+                    <table width="100%">
 
-                </tr>
+                        <tr>
+                            <td colspan="3" style="font-weight:bold; padding-bottom:20px;">
+                                PENGESAH DATA
+                            </td>
+                        </tr>
 
-                <tr>
+                        <tr>
+                            <td width="38%" valign="top" style="padding-bottom:12px;">Tandatangan</td>
+                            <td width="8%" valign="top" style="padding-bottom:12px;">:</td>
+                            <td>
+                                <table width="100%" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td style="border:1px solid #000; height:60px;">&nbsp;</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
 
-                    <td>
-                        Jawatan
-                    </td>
+                        <tr>
+                            <td>Nama</td>
+                            <td>:</td>
+                            <td>
+                                <table width="100%" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td style="border-bottom:1px solid #000; height:20px;">&nbsp;</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
 
-                    <td>
-                        :
-                    </td>
+                        <tr>
+                            <td>Jawatan</td>
+                            <td>:</td>
+                            <td>
+                                <table width="100%" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td style="border-bottom:1px solid #000; height:20px;">&nbsp;</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
 
-                    <td>
-                        <div style="
-                            border-bottom:1px solid #000;
-                            height:25px;
-                        "></div>
-                    </td>
+                        <tr>
+                            <td>Tarikh</td>
+                            <td>:</td>
+                            <td>
+                                <table width="100%" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td style="border-bottom:1px solid #000; height:20px;">&nbsp;</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
 
-                </tr>
+                    </table>
+                </td>
 
-                <tr>
-
-                    <td>
-                        Tarikh
-                    </td>
-
-                    <td>
-                        :
-                    </td>
-
-                    <td>
-                        <div style="
-                            border-bottom:1px solid #000;
-                            height:25px;
-                        "></div>
-                    </td>
-
-                </tr>
-
-            </table>
-
-        </td>
-
-        <td width="10%"></td>
-
-        <!-- PENGESAH DATA -->
-
-        <td width="45%" valign="top">
-
-            <table width="100%">
-
-                <tr>
-                    <td colspan="3" style="font-weight:bold; padding-bottom:20px;">
-                        PENGESAH DATA
-                    </td>
-                </tr>
-
-                <tr>
-
-                    <td width="30%">
-                        Tandatangan
-                    </td>
-
-                    <td width="5%">
-                        :
-                    </td>
-
-                    <td>
-                        <div style="
-                            border:1px solid #000;
-                            height:50px;
-                        "></div>
-                    </td>
-
-                </tr>
-
-                <tr>
-
-                    <td>
-                        Nama
-                    </td>
-
-                    <td>
-                        :
-                    </td>
-
-                    <td>
-                        <div style="
-                            border-bottom:1px solid #000;
-                            height:25px;
-                        "></div>
-                    </td>
-
-                </tr>
-
-                <tr>
-
-                    <td>
-                        Jawatan
-                    </td>
-
-                    <td>
-                        :
-                    </td>
-
-                    <td>
-                        <div style="
-                            border-bottom:1px solid #000;
-                            height:25px;
-                        "></div>
-                    </td>
-
-                </tr>
-
-                <tr>
-
-                    <td>
-                        Tarikh
-                    </td>
-
-                    <td>
-                        :
-                    </td>
-
-                    <td>
-                        <div style="
-                            border-bottom:1px solid #000;
-                            height:25px;
-                        "></div>
-                    </td>
-
-                </tr>
-
-            </table>
-
-        </td>
-
-    </tr>
-
-</table>
-
-
+            </tr>
+        </table>
 
     </div>
 
