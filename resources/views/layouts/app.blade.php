@@ -618,6 +618,15 @@
                         </a>
                     </div>
 
+                     <div class="nav-item">
+                        <a href="{{ route('admin.premis.index') }}"
+                            class="nav-link {{ request()->routeIs('admin.premis.*') ? 'active' : '' }}"
+                            data-title="Premis">
+                            <i class="bi bi-building-fill"></i>
+                            <span class="nav-link-text">Konfigurasi Premis</span>
+                        </a>
+                    </div>
+
                     <div class="nav-item">
                         <a href="{{ route('admin.blok.index') }}"
                             class="nav-link {{ request()->routeIs('admin.blok.*') ? 'active' : '' }}" data-title="Blok">
@@ -647,20 +656,24 @@
                                 </span>
                             @endif
                         </a>
+                        
                     </div>
+                    
 
+                    
+
+                    <div class="nav-divider"></div>
+                    
+
+                    <div class="nav-divider"></div>
                     <div class="nav-item">
-                        <a href="{{ route('admin.premis.index') }}"
-                            class="nav-link {{ request()->routeIs('admin.premis.*') ? 'active' : '' }}"
-                            data-title="Premis">
-                            <i class="bi bi-building-fill"></i>
-                            <span class="nav-link-text">Pengurusan Premis</span>
+                        <a href="{{ route('admin.audit_log.index') }}"
+                            class="nav-link {{ request()->routeIs('admin.audit_log.*') ? 'active' : '' }}"
+                            data-title="Audit Log">
+                            <i class="bi bi-journal-text"></i>
+                            <span class="nav-link-text">Audit Log</span>
                         </a>
                     </div>
-
-                    <div class="nav-divider"></div>
-
-                    <div class="nav-divider"></div>
 
                     <div class="nav-item">
                         <a href="{{ route('admin.users.index') }}"
@@ -670,14 +683,7 @@
                             <span class="nav-link-text">Pengurusan Pengguna</span>
                         </a>
                     </div>
-                    <div class="nav-item">
-                        <a href="{{ route('admin.audit_log.index') }}"
-                            class="nav-link {{ request()->routeIs('admin.audit_log.*') ? 'active' : '' }}"
-                            data-title="Audit Log">
-                            <i class="bi bi-journal-text"></i>
-                            <span class="nav-link-text">Audit Log</span>
-                        </a>
-                    </div>
+                  
 
                 @endif
             </nav>
