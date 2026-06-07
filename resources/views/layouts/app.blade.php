@@ -622,7 +622,7 @@
                         <a href="{{ route('admin.premis.index') }}"
                             class="nav-link {{ request()->routeIs('admin.premis.*') ? 'active' : '' }}"
                             data-title="Premis">
-                            <i class="bi bi-building-fill"></i>
+                            <i class="bi bi-bank"></i>
                             <span class="nav-link-text">Konfigurasi Premis</span>
                         </a>
                     </div>
@@ -630,7 +630,7 @@
                     <div class="nav-item">
                         <a href="{{ route('admin.blok.index') }}"
                             class="nav-link {{ request()->routeIs('admin.blok.*') ? 'active' : '' }}" data-title="Blok">
-                            <i class="bi bi-building"></i>
+                            <i class="bi bi-grid-3x3-gap-fill"></i>
                             <span class="nav-link-text">Konfigurasi Blok</span>
                         </a>
                     </div>
