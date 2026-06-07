@@ -135,6 +135,7 @@ Route::middleware('auth')->group(function () {
         // Blok Management
         Route::get('blok', [BlokController::class, 'index'])->name('blok.index');
         Route::get('blok/create', [BlokController::class, 'create'])->name('blok.create');
+        Route::get('blok/export-pdf', [BlokController::class, 'exportPdf'])->name('blok.export-pdf');
         Route::post('blok', [BlokController::class, 'store'])->name('blok.store');
         Route::get('blok/{blok}/edit', [BlokController::class, 'edit'])->name('blok.edit');
         Route::put('blok/{blok}', [BlokController::class, 'update'])->name('blok.update');
