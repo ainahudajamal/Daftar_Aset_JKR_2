@@ -4,152 +4,165 @@
 <meta charset="UTF-8">
 <title>D.A.5 — Borang Pengumpulan Data Daftar Aset Khusus (DAK)</title>
 <style>
-/* ── Reset ── */
+/* ===== Reset ===== */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height: 1.3; }
-table { border-collapse: collapse; }
 
-/* ── Helpers ── */
+/* ===== Helpers ===== */
 .bold      { font-weight: bold; }
 .underline { text-decoration: underline; }
 .italic    { font-style: italic; }
 .center    { text-align: center; }
 .right     { text-align: right; }
 .strike    { text-decoration: line-through; }
-.nowrap    { white-space: nowrap; }
 
-/* ── helaian badge (top right) ── */
+/* ===== Helaian badge ===== */
 .h-wrap  { text-align: right; margin-bottom: 2px; }
 .h-badge { border: 1px solid #000; padding: 2px 10px; font-style: italic; font-size: 10px; display: inline-block; }
 
-/* ── Field types ── */
-/* Full-bordered box */
-.fb { border: 1px solid #000; height: 20px; width: 100%; display: block; }
+/* ===== Input field types ===== */
+/* Full-border box */
+.fb { border: 1px solid #000; height: 22px; width: 100%; box-sizing: border-box; display: block; }
 /* Bottom-border only (underline field) */
-.fl-field { border-bottom: 1px solid #000; height: 18px; width: 100%; display: block; }
-/* Individual DPA character box */
-.dpa { display: inline-block; border: 1px solid #000; width: 17px; height: 18px; margin-right: -1px; vertical-align: middle; }
-/* Small checkbox */
-.chk { display: inline-block; border: 1px solid #000; width: 14px; height: 14px; vertical-align: middle; }
+.fline { border-bottom: 1px solid #000; height: 20px; width: 100%; display: block; }
+/* Small checkbox box */
+.small-box { border: 1px solid #000; width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-right: 4px; }
 
-/* ── Form layout table ── */
+/* ===== Form layout table ===== */
 .ft    { width: 100%; border-collapse: collapse; }
-.ft td { border: none; vertical-align: middle; padding: 2px 1px; font-size: 11px; }
+.ft td { vertical-align: middle; padding: 4px 2px; border: none; font-size: 11px; }
 .lbl   { white-space: nowrap; }
 .cln   { width: 12px; text-align: center; padding: 0 2px !important; white-space: nowrap; }
 
-/* ── Data grid table ── */
-.dt { width: 100%; border-collapse: collapse; table-layout: fixed; }
+/* ===== Data grid table ===== */
+.dt    { width: 100%; border-collapse: collapse; table-layout: fixed; }
 .dt th {
     border: 1px solid #000;
-    background-color: #cccccc;
+    background-color: #d9d9d9;
     font-weight: bold;
     font-size: 11px;
     text-align: center;
     vertical-align: middle;
     padding: 4px 2px;
-    line-height: 1.2;
+    line-height: 1.25;
 }
 .dt td {
     border: 1px solid #000;
     font-size: 11px;
     vertical-align: middle;
     padding: 0 3px;
-    height: 26px;
+    height: 28px;
 }
 .dt td.c { text-align: center; }
 
-/* ── Section heading ── */
+/* ===== Section heading ===== */
 .sec { font-weight: bold; text-decoration: underline; font-size: 12px; text-transform: uppercase; margin-bottom: 4px; }
 
-/* ── Signature row ── */
+/* ===== Signature ===== */
 .sig-box  { border: 1px solid #000; height: 28px; display: block; }
 .sig-line { border-bottom: 1px solid #000; height: 18px; display: block; }
-.sig-head { font-weight: bold; text-align: center; font-size: 11px; text-transform: uppercase; margin-bottom: 3px; }
+.sig-head { font-weight: bold; text-align: center; text-transform: uppercase; margin-bottom: 3px; }
 
-/* ── Muka surat footer ── */
-.ms-blank { border-bottom: 1px solid #000; display: inline-block; width: 28px; height: 14px; vertical-align: bottom; }
+/* ===== Hint text inside boxes ===== */
+.hint { font-style: italic; font-size: 9px; color: #555; white-space: nowrap; vertical-align: middle; }
 </style>
 </head>
 <body>
 
 {{-- ================================================================
-     HELAIAN 1  (Portrait A4)
+     HELAIAN 1  —  Portrait A4
+     MAKLUMAT PREMIS + MAKLUMAT BLOK/BINAAN LUAR + DATA FIELDS
 ================================================================ --}}
-<div class="h-wrap"><span class="h-badge">helaian 1</span></div>
-<div class="right bold" style="font-size:13px; margin-bottom:3px;">D.A. 5 (JKR.PATA.F6/12 rev 1)</div>
-<div class="center bold underline" style="font-size:15px; margin-bottom:12px;">BORANG PENGUMPULAN DATA DAFTAR ASET KHUSUS (DAK)</div>
 
-{{-- MAKLUMAT PREMIS --}}
+<div class="h-wrap"><span class="h-badge">helaian 1</span></div>
+<div style="text-align:right; font-weight:bold; font-size:13px; margin-bottom:3px;">D.A. 5 (JKR.PATA.F6/12 rev 1)</div>
+<div style="text-align:center; font-weight:bold; text-decoration:underline; font-size:15px; margin-bottom:12px;">BORANG PENGUMPULAN DATA DAFTAR ASET KHUSUS (DAK)</div>
+
+{{-- ── MAKLUMAT PREMIS ── --}}
 <div class="sec">MAKLUMAT PREMIS</div>
 
+{{-- Nama Premis : underline field --}}
 <table class="ft" style="margin-bottom:3px;">
   <tr>
-    <td class="lbl" style="width:95px;">Nama Premis</td>
+    <td class="lbl" style="width:82px;">Nama Premis</td>
     <td class="cln">:</td>
-    <td><div class="fl-field"></div></td>
+    <td><div class="fline"></div></td>
   </tr>
 </table>
 
+{{-- No. DPA : 24 individual bordered cells (nested table) --}}
 <table class="ft" style="margin-bottom:10px;">
   <tr>
-    <td class="lbl" style="width:95px;">No. DPA</td>
+    <td class="lbl" style="width:82px;">No. DPA</td>
     <td class="cln">:</td>
-    <td style="white-space:nowrap;">
-      @for ($i = 0; $i < 24; $i++)
-        <span class="dpa"></span>
-      @endfor
+    <td>
+      <table style="border-collapse:collapse; margin:0; padding:0; font-size:0;">
+        <tr>
+          @for ($i = 0; $i < 24; $i++)
+          <td style="border:1px solid #000; width:18px; height:22px; padding:0; font-size:0;"></td>
+          @endfor
+        </tr>
+      </table>
     </td>
   </tr>
 </table>
 
-{{-- Sub heading --}}
-<div class="center bold" style="font-size:12px; margin-bottom:6px;">Maklumat Blok / Binaan Luar</div>
+{{-- ── Maklumat Blok / Binaan Luar heading ── --}}
+<div style="text-align:center; font-weight:bold; font-size:12px; margin-bottom:6px;">Maklumat Blok / Binaan Luar</div>
 
+{{-- Kod Blok/ Binaan Luar : bordered box (fixed width ~160px) --}}
 <table class="ft" style="margin-bottom:3px;">
   <tr>
-    <td class="lbl" style="width:135px;">Kod Blok/ Binaan Luar</td>
+    <td class="lbl" style="width:132px;">Kod Blok/ Binaan Luar</td>
     <td class="cln">:</td>
-    <td style="width:165px;"><div class="fb"></div></td>
+    <td style="width:162px;"><div class="fb"></div></td>
     <td></td>
   </tr>
 </table>
 
+{{-- Nama Blok/ Binaan Luar : label wraps 2 lines, underline field --}}
 <table class="ft" style="margin-bottom:3px;">
   <tr>
-    <td class="lbl" style="width:135px; vertical-align:top; padding-top:2px;">Nama Blok/ Binaan<br>Luar</td>
+    <td class="lbl" style="width:132px; vertical-align:top; padding-top:2px;">Nama Blok/ Binaan<br>Luar</td>
     <td class="cln" style="vertical-align:top; padding-top:2px;">:</td>
-    <td><div class="fl-field"></div></td>
+    <td><div class="fline"></div></td>
   </tr>
 </table>
 
+{{-- Fungsi Binaan (Blok) | Jenis Binaan Luar — 2 bordered boxes side-by-side --}}
 <table class="ft" style="margin-bottom:3px;">
   <tr>
-    <td class="lbl" style="width:135px;">Fungsi Binaan (Blok)</td>
+    <td class="lbl" style="width:132px;">Fungsi Binaan (Blok)</td>
     <td class="cln">:</td>
-    <td style="width:150px;"><div class="fb"></div></td>
-    <td style="width:14px;"></td>
-    <td class="lbl" style="width:102px;">Jenis Binaan Luar</td>
+    <td style="width:152px;"><div class="fb"></div></td>
+    <td style="width:12px;"></td>
+    <td class="lbl" style="width:100px;">Jenis Binaan Luar</td>
     <td class="cln">:</td>
     <td><div class="fb"></div></td>
   </tr>
 </table>
 
+{{-- Koordinat GPS : X underline ; Y underline  (nested table, td border-bottom) --}}
 <table class="ft" style="margin-bottom:5px;">
   <tr>
-    <td class="lbl" style="width:135px;">Koordinat GPS</td>
+    <td class="lbl" style="width:132px;">Koordinat GPS</td>
     <td class="cln">:</td>
-    <td class="nowrap">
-      <span class="bold">X:</span>
-      <span style="border-bottom:1px solid #000; display:inline-block; width:100px; height:15px; vertical-align:bottom; margin:0 5px 0 4px;"></span>
-      <span class="bold">;</span>
-      <span class="bold" style="margin:0 4px;">Y:</span>
-      <span style="border-bottom:1px solid #000; display:inline-block; width:100px; height:15px; vertical-align:bottom;"></span>
+    <td>
+      <table style="border-collapse:collapse; font-size:11px;">
+        <tr>
+          <td style="border:none; font-weight:bold; padding:0 4px 0 0; white-space:nowrap;">X:</td>
+          <td style="border:none; border-bottom:1px solid #000; width:150px; height:22px;"></td>
+          <td style="border:none; font-weight:bold; padding:0 5px; white-space:nowrap;">;</td>
+          <td style="border:none; font-weight:bold; padding:0 4px 0 0; white-space:nowrap;">Y:</td>
+          <td style="border:none; border-bottom:1px solid #000; width:150px; height:22px;"></td>
+        </tr>
+      </table>
     </td>
   </tr>
 </table>
 
-{{-- Kontraktor section (2 columns) --}}
+{{-- ── Kontraktor section (2 columns) ── --}}
+{{-- Row A: Kontraktor Utama | Bidang Kerja --}}
 <table class="ft" style="margin-bottom:2px;">
   <tr>
     <td style="width:50%; vertical-align:top;">
@@ -174,6 +187,7 @@ table { border-collapse: collapse; }
   </tr>
 </table>
 
+{{-- Row B: *Kontraktor 2-row box | *Bidang Kerja 2-row box --}}
 <table class="ft" style="margin-bottom:4px;">
   <tr>
     <td style="width:50%; vertical-align:top;">
@@ -183,8 +197,8 @@ table { border-collapse: collapse; }
           <td class="cln">:</td>
           <td>
             <table style="width:100%; border-collapse:collapse; border:1px solid #000;">
-              <tr><td style="height:20px; padding:0 4px; border-bottom:1px solid #000; font-size:11px;">1.</td></tr>
-              <tr><td style="height:20px; padding:0 4px; font-size:11px;">2.</td></tr>
+              <tr><td style="height:22px; padding:0 4px; border-bottom:1px solid #000; font-size:11px;">1.</td></tr>
+              <tr><td style="height:22px; padding:0 4px; font-size:11px;">2.</td></tr>
             </table>
           </td>
         </tr>
@@ -198,8 +212,8 @@ table { border-collapse: collapse; }
           <td class="cln">:</td>
           <td>
             <table style="width:100%; border-collapse:collapse; border:1px solid #000;">
-              <tr><td style="height:20px; padding:0 4px; border-bottom:1px solid #000; font-size:11px;">1.</td></tr>
-              <tr><td style="height:20px; padding:0 4px; font-size:11px;">2.</td></tr>
+              <tr><td style="height:22px; padding:0 4px; border-bottom:1px solid #000; font-size:11px;">1.</td></tr>
+              <tr><td style="height:22px; padding:0 4px; font-size:11px;">2.</td></tr>
             </table>
           </td>
         </tr>
@@ -208,7 +222,8 @@ table { border-collapse: collapse; }
   </tr>
 </table>
 
-{{-- Juru Perunding section (2 columns) --}}
+{{-- ── Juru Perunding section (2 columns) ── --}}
+{{-- Row A: Juru Perunding Utama | Bidang Kerja --}}
 <table class="ft" style="margin-bottom:2px;">
   <tr>
     <td style="width:50%; vertical-align:top;">
@@ -233,6 +248,7 @@ table { border-collapse: collapse; }
   </tr>
 </table>
 
+{{-- Row B: *Juru Perunding 2-row box | *Bidang Kerja 2-row box --}}
 <table class="ft" style="margin-bottom:5px;">
   <tr>
     <td style="width:50%; vertical-align:top;">
@@ -242,8 +258,8 @@ table { border-collapse: collapse; }
           <td class="cln">:</td>
           <td>
             <table style="width:100%; border-collapse:collapse; border:1px solid #000;">
-              <tr><td style="height:20px; padding:0 4px; border-bottom:1px solid #000; font-size:11px;">1.</td></tr>
-              <tr><td style="height:20px; padding:0 4px; font-size:11px;">2.</td></tr>
+              <tr><td style="height:22px; padding:0 4px; border-bottom:1px solid #000; font-size:11px;">1.</td></tr>
+              <tr><td style="height:22px; padding:0 4px; font-size:11px;">2.</td></tr>
             </table>
           </td>
         </tr>
@@ -257,8 +273,8 @@ table { border-collapse: collapse; }
           <td class="cln">:</td>
           <td>
             <table style="width:100%; border-collapse:collapse; border:1px solid #000;">
-              <tr><td style="height:20px; padding:0 4px; border-bottom:1px solid #000; font-size:11px;">1.</td></tr>
-              <tr><td style="height:20px; padding:0 4px; font-size:11px;">2.</td></tr>
+              <tr><td style="height:22px; padding:0 4px; border-bottom:1px solid #000; font-size:11px;">1.</td></tr>
+              <tr><td style="height:22px; padding:0 4px; font-size:11px;">2.</td></tr>
             </table>
           </td>
         </tr>
@@ -269,7 +285,7 @@ table { border-collapse: collapse; }
 
 <div style="font-style:italic; font-size:9.5px; margin-bottom:8px;">Nota: *Sila sediakan lampiran jika ada tambahan</div>
 
-{{-- Bottom two-column data grid --}}
+{{-- ── Bottom two-column data fields (8 rows × 2 columns) ── --}}
 <table class="ft">
   <tr>
     {{-- Left column --}}
@@ -286,8 +302,8 @@ table { border-collapse: collapse; }
           <td>
             <table style="width:100%; border-collapse:collapse; border:1px solid #000;">
               <tr>
-                <td style="height:20px; padding:0 3px;">&nbsp;</td>
-                <td style="text-align:right; padding-right:3px; font-style:italic; font-size:9px; white-space:nowrap;">( hh / bb / tttt )</td>
+                <td style="height:22px; padding:0 3px; width:50%;"></td>
+                <td class="hint" style="padding-right:3px;">( hh / bb / tttt )</td>
               </tr>
             </table>
           </td>
@@ -339,8 +355,8 @@ table { border-collapse: collapse; }
           <td>
             <table style="width:100%; border-collapse:collapse; border:1px solid #000;">
               <tr>
-                <td style="height:20px; padding:0 3px;">&nbsp;</td>
-                <td style="text-align:right; padding-right:3px; font-style:italic; font-size:9px; white-space:nowrap;">( hh / bb / tttt )</td>
+                <td style="height:22px; padding:0 3px; width:40%;"></td>
+                <td class="hint" style="padding-right:3px;">( hh / bb / tttt )</td>
               </tr>
             </table>
           </td>
@@ -361,8 +377,8 @@ table { border-collapse: collapse; }
           <td>
             <table style="width:100%; border-collapse:collapse; border:1px solid #000;">
               <tr>
-                <td style="height:20px; padding:0 3px;">&nbsp;</td>
-                <td style="text-align:right; padding-right:3px; font-style:italic; font-size:9px; white-space:nowrap;">(kiloWatt/jam)/tahun</td>
+                <td style="height:22px; padding:0 3px; width:30%;"></td>
+                <td class="hint" style="padding-right:3px;">(kiloWatt/jam/tahun)</td>
               </tr>
             </table>
           </td>
@@ -373,8 +389,8 @@ table { border-collapse: collapse; }
           <td>
             <table style="width:100%; border-collapse:collapse; border:1px solid #000;">
               <tr>
-                <td style="height:20px; padding:0 3px;">&nbsp;</td>
-                <td style="text-align:right; padding-right:3px; font-style:italic; font-size:9px; white-space:nowrap;">m&#179;/tahun</td>
+                <td style="height:22px; padding:0 3px;"></td>
+                <td class="hint" style="padding-right:3px;">m&#179;/tahun</td>
               </tr>
             </table>
           </td>
@@ -382,7 +398,7 @@ table { border-collapse: collapse; }
         <tr>
           <td class="lbl" style="width:125px; vertical-align:top; padding-top:2px;">Jenis Milikan</td>
           <td class="cln" style="vertical-align:top; padding-top:2px;">:</td>
-          <td style="font-size:11px; padding:2px 1px; line-height:1.4;">Pajakan/ Pegangan<br>Bebas</td>
+          <td style="padding:2px 1px; line-height:1.4;">Pajakan/ Pegangan<br>Bebas</td>
         </tr>
       </table>
     </td>
@@ -391,25 +407,26 @@ table { border-collapse: collapse; }
 
 
 {{-- ================================================================
-     HELAIAN 2  (Portrait A4)
+     HELAIAN 2  —  Portrait A4
+     ASET WARISAN / STATUS / BIL. ARAS / GAMBAR BLOK / SENARAI LUKISAN
 ================================================================ --}}
 <pagebreak orientation="portrait" sheet-size="A4" />
 
 <div class="h-wrap"><span class="h-badge">helaian 2</span></div>
 
-<div style="margin-bottom:10px;"></div>
+<div style="height:10px;"></div>
 
-{{-- Row: Aset Warisan | Status Blok --}}
+{{-- Row 1: Aset Warisan (checkbox) | Status Blok / Binaan Luar --}}
 <table class="ft" style="margin-bottom:8px;">
   <tr>
-    <td style="width:50%; vertical-align:top;">
+    <td style="width:50%; vertical-align:middle;">
       <table class="ft">
         <tr>
           <td class="lbl" style="width:85px;">Aset Warisan</td>
           <td class="cln">:</td>
-          <td class="nowrap">
-            <span class="chk"></span>
-            <span style="font-style:italic; font-size:9.5px; margin-left:5px;">(tandakan jika Ya)</span>
+          <td style="vertical-align:middle;">
+            <span class="small-box"></span>
+            <span style="font-style:italic; font-size:9.5px; vertical-align:middle;">(tandakan jika Ya)</span>
           </td>
         </tr>
       </table>
@@ -418,7 +435,7 @@ table { border-collapse: collapse; }
     <td style="width:48%; vertical-align:top;">
       <table class="ft">
         <tr>
-          <td class="lbl" style="width:130px; vertical-align:top;">Status Blok /<br>Binaan Luar</td>
+          <td class="lbl" style="width:128px; vertical-align:top;">Status Blok /<br>Binaan Luar</td>
           <td class="cln" style="vertical-align:top; padding-top:2px;">:</td>
           <td style="padding:2px 1px;">Aktif / Tidak Aktif</td>
         </tr>
@@ -427,15 +444,15 @@ table { border-collapse: collapse; }
   </tr>
 </table>
 
-{{-- Row: Bil. Aras Atas Tanah | Jumlah Luas Lantai Blok --}}
+{{-- Row 2: Bil. Aras Atas Tanah | Jumlah Luas Lantai Blok --}}
 <table class="ft" style="margin-bottom:4px;">
   <tr>
-    <td style="width:50%; vertical-align:top;">
+    <td style="width:50%; vertical-align:middle;">
       <table class="ft">
         <tr>
           <td class="lbl" style="width:152px;">** Bil. Aras Atas Tanah</td>
           <td class="cln">:</td>
-          <td style="width:110px;"><div class="fb"></div></td>
+          <td style="width:115px;"><div class="fb"></div></td>
           <td></td>
         </tr>
       </table>
@@ -444,13 +461,13 @@ table { border-collapse: collapse; }
     <td style="width:48%; vertical-align:top;">
       <table class="ft">
         <tr>
-          <td class="lbl" style="width:130px; vertical-align:top;">** Jumlah Luas<br>&nbsp;&nbsp;&nbsp;Lantai Blok</td>
+          <td class="lbl" style="width:128px; vertical-align:top;">** Jumlah Luas<br>&nbsp;&nbsp;&nbsp;Lantai Blok</td>
           <td class="cln" style="vertical-align:top; padding-top:2px;">:</td>
           <td>
             <table style="width:100%; border-collapse:collapse; border:1px solid #000;">
               <tr>
-                <td style="height:20px; padding:0 3px;">&nbsp;</td>
-                <td style="text-align:right; padding-right:3px; font-size:11px; white-space:nowrap;">m&#178;</td>
+                <td style="height:22px; padding:0 3px;"></td>
+                <td style="text-align:right; padding-right:4px; font-size:11px; white-space:nowrap;">m&#178;</td>
               </tr>
             </table>
           </td>
@@ -460,15 +477,15 @@ table { border-collapse: collapse; }
   </tr>
 </table>
 
-{{-- Row: Bil. Aras Bawah Tanah | Luas Tapak Blok --}}
-<table class="ft" style="margin-bottom:4px;">
+{{-- Row 3: Bil. Aras Bawah Tanah (label wraps) | Luas Tapak Blok (label wraps) --}}
+<table class="ft" style="margin-bottom:5px;">
   <tr>
     <td style="width:50%; vertical-align:top;">
       <table class="ft">
         <tr>
           <td class="lbl" style="width:152px; vertical-align:top;">** Bil. Aras Bawah<br>&nbsp;&nbsp;&nbsp;&nbsp;Tanah</td>
           <td class="cln" style="vertical-align:top; padding-top:2px;">:</td>
-          <td style="width:110px;"><div class="fb"></div></td>
+          <td style="width:115px;"><div class="fb"></div></td>
           <td></td>
         </tr>
       </table>
@@ -477,13 +494,13 @@ table { border-collapse: collapse; }
     <td style="width:48%; vertical-align:top;">
       <table class="ft">
         <tr>
-          <td class="lbl" style="width:130px; vertical-align:top;">Luas Tapak Blok /<br>&nbsp;&nbsp;Binaan Luar</td>
+          <td class="lbl" style="width:128px; vertical-align:top;">Luas Tapak Blok /<br>&nbsp;&nbsp;Binaan Luar</td>
           <td class="cln" style="vertical-align:top; padding-top:2px;">:</td>
           <td>
             <table style="width:100%; border-collapse:collapse; border:1px solid #000;">
               <tr>
-                <td style="height:20px; padding:0 3px;">&nbsp;</td>
-                <td style="text-align:right; padding-right:3px; font-size:11px; white-space:nowrap;">m&#178;</td>
+                <td style="height:22px; padding:0 3px;"></td>
+                <td style="text-align:right; padding-right:4px; font-size:11px; white-space:nowrap;">m&#178;</td>
               </tr>
             </table>
           </td>
@@ -493,15 +510,16 @@ table { border-collapse: collapse; }
   </tr>
 </table>
 
-<div style="font-style:italic; font-size:9.5px; margin-bottom:12px;">
+{{-- Note --}}
+<div style="font-style:italic; font-size:9.5px; margin-bottom:12px; line-height:1.5;">
   **Diisi sekiranya binaan&nbsp; luar merupakan blok<br>
   &nbsp;&nbsp;&nbsp;(mempunyai aras dan ruang).
 </div>
 
-{{-- Gambar Blok / Binaan Luar --}}
+{{-- Gambar Blok / Binaan Luar (bold label, wraps 2 lines) --}}
 <table class="ft" style="margin-bottom:14px;">
   <tr>
-    <td class="lbl bold" style="width:130px; vertical-align:top; padding-top:1px;">Gambar Blok / Binaan<br>Luar</td>
+    <td class="lbl bold" style="width:128px; vertical-align:top; padding-top:1px;">Gambar Blok / Binaan<br>Luar</td>
     <td class="cln" style="vertical-align:top; padding-top:1px;">:</td>
     <td style="font-size:11px; line-height:1.5;">
       Pastikan dua (2) gambar blok diambil (pandangan sudut hadapan dan
@@ -511,10 +529,10 @@ table { border-collapse: collapse; }
   </tr>
 </table>
 
-{{-- Senarai Lukisan Siap Bina --}}
-<div class="center" style="font-size:11px; margin-bottom:5px;">Senarai Lukisan Siap Bina</div>
+{{-- Senarai Lukisan Siap Bina (plain centered, bold) --}}
+<div style="text-align:center; font-weight:bold; font-size:11px; margin-bottom:5px;">Senarai Lukisan Siap Bina</div>
 
-<table class="dt" style="margin-bottom:30px;">
+<table class="dt" style="margin-bottom:50px;">
   <colgroup>
     <col style="width:7%;">
     <col style="width:17%;">
@@ -534,23 +552,33 @@ table { border-collapse: collapse; }
   <tbody>
     @for ($i = 0; $i < 9; $i++)
     <tr>
-      <td style="height:32px;">&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
+      <td style="height:32px;"></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
     @endfor
   </tbody>
 </table>
 
-<div class="right" style="font-size:10px; margin-top:10px;">
-  Muka surat <span class="ms-blank">&nbsp;</span> dari <span class="ms-blank">&nbsp;</span>
-</div>
+{{-- Muka surat footer --}}
+<table class="ft" style="margin-top:8px;">
+  <tr>
+    <td></td>
+    <td style="text-align:right; font-size:10px; white-space:nowrap; width:auto;">
+      Muka surat
+      <span style="display:inline-block; border-bottom:1px solid #000; width:28px; height:14px; vertical-align:bottom;">&nbsp;</span>
+      dari
+      <span style="display:inline-block; border-bottom:1px solid #000; width:28px; height:14px; vertical-align:bottom;">&nbsp;</span>
+    </td>
+  </tr>
+</table>
 
 
 {{-- ================================================================
-     HELAIAN 3  (Landscape A4)
+     HELAIAN 3  —  Landscape A4
+     MAKLUMAT ARAS — 12-row table + signatures
 ================================================================ --}}
 <pagebreak orientation="landscape" sheet-size="A4-L" />
 
@@ -558,30 +586,32 @@ table { border-collapse: collapse; }
 
 <div class="sec">MAKLUMAT ARAS</div>
 
+{{-- Blok / Aras / Nama Aras header row --}}
 <table class="ft" style="margin-bottom:5px;">
   <tr>
     <td class="lbl bold" style="width:28px;">Blok</td>
     <td class="cln">:</td>
     <td style="width:62px;"><div class="fb"></div></td>
-    <td style="width:16px;"></td>
+    <td style="width:14px;"></td>
     <td class="lbl bold" style="width:28px;">Aras</td>
     <td class="cln">:</td>
-    <td style="width:125px;"><div class="fb"></div></td>
-    <td style="width:20px;"></td>
+    <td style="width:126px;"><div class="fb"></div></td>
+    <td style="width:18px;"></td>
     <td class="lbl bold" style="width:62px;">Nama Aras</td>
     <td class="cln">:</td>
     <td><div class="fb"></div></td>
   </tr>
 </table>
 
+{{-- Main data table — 2-row header --}}
 <table class="dt">
   <colgroup>
     <col style="width:9%;">
     <col style="width:9%;">
-    <col style="width:28%;">
+    <col style="width:27%;">
     <col style="width:9%;">
     <col style="width:8%;">
-    <col style="width:24%;">
+    <col style="width:25%;">
     <col style="width:13%;">
   </colgroup>
   <thead>
@@ -589,28 +619,28 @@ table { border-collapse: collapse; }
       <th rowspan="2">KOD<br>RUANG</th>
       <th rowspan="2">KOD<br>SUB<br>RUANG</th>
       <th rowspan="2">NAMA RUANG</th>
-      <th colspan="2" style="border-bottom:1px solid #000;">UKURAN RUANG</th>
+      <th colspan="2">UKURAN RUANG</th>
       <th rowspan="2">FUNGSI RUANG</th>
-      <th rowspan="2" style="font-size:10px; font-weight:bold; line-height:1.3;">
+      <th rowspan="2" style="font-size:10.5px; line-height:1.3;">
         KEMASAN<br>
         <span style="font-size:9px; font-weight:normal; font-style:italic;">(Jika ADA,<br>perlu diisi<br>helaian 4)</span>
       </th>
     </tr>
     <tr>
       <th>LUAS (m&#178;)</th>
-      <th>TINGGI (m)</th>
+      <th>TINGGI<br>(m)</th>
     </tr>
   </thead>
   <tbody>
     @for ($i = 0; $i < 12; $i++)
     <tr>
-      <td style="height:25px;">&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td class="c" style="font-size:10px; white-space:nowrap;">ADA / <span class="strike">TIADA</span></td>
+      <td style="height:28px;"></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td class="c" style="font-size:10px; white-space:nowrap;">ADA / TIADA</td>
     </tr>
     @endfor
   </tbody>
@@ -624,25 +654,25 @@ table { border-collapse: collapse; }
       <div class="sig-head">PENGUMPUL DATA :</div>
       <table class="ft">
         <tr>
-          <td class="lbl" style="width:82px; text-align:right; padding-right:4px;">Tandatangan</td>
+          <td class="lbl" style="width:80px; text-align:left; padding-right:4px;">Tandatangan</td>
           <td class="cln">:</td>
-          <td style="width:115px;"><div class="sig-box"></div></td>
+          <td style="width:120px;"><div class="sig-box"></div></td>
           <td></td>
         </tr>
         <tr>
-          <td class="lbl" style="width:82px; text-align:right; padding-right:4px;">Nama</td>
+          <td class="lbl" style="width:80px; text-align:left; padding-right:4px;">Nama</td>
           <td class="cln">:</td>
-          <td><div class="sig-line"></div></td>
+          <td colspan="2"><div class="sig-line"></div></td>
         </tr>
         <tr>
-          <td class="lbl" style="width:82px; text-align:right; padding-right:4px;">Jawatan</td>
+          <td class="lbl" style="width:80px; text-align:left; padding-right:4px;">Jawatan</td>
           <td class="cln">:</td>
-          <td><div class="sig-line"></div></td>
+          <td colspan="2"><div class="sig-line"></div></td>
         </tr>
         <tr>
-          <td class="lbl" style="width:82px; text-align:right; padding-right:4px;">Tarikh</td>
+          <td class="lbl" style="width:80px; text-align:left; padding-right:4px;">Tarikh</td>
           <td class="cln">:</td>
-          <td><div class="sig-line"></div></td>
+          <td colspan="2"><div class="sig-line"></div></td>
         </tr>
       </table>
     </td>
@@ -651,25 +681,25 @@ table { border-collapse: collapse; }
       <div class="sig-head">PENGESAH DATA :</div>
       <table class="ft">
         <tr>
-          <td class="lbl" style="width:82px; text-align:right; padding-right:4px;">Tandatangan</td>
+          <td class="lbl" style="width:80px; text-align:left; padding-right:4px;">Tandatangan</td>
           <td class="cln">:</td>
-          <td style="width:115px;"><div class="sig-box"></div></td>
+          <td style="width:120px;"><div class="sig-box"></div></td>
           <td></td>
         </tr>
         <tr>
-          <td class="lbl" style="width:82px; text-align:right; padding-right:4px;">Nama</td>
+          <td class="lbl" style="width:80px; text-align:left; padding-right:4px;">Nama</td>
           <td class="cln">:</td>
-          <td><div class="sig-line"></div></td>
+          <td colspan="2"><div class="sig-line"></div></td>
         </tr>
         <tr>
-          <td class="lbl" style="width:82px; text-align:right; padding-right:4px;">Jawatan</td>
+          <td class="lbl" style="width:80px; text-align:left; padding-right:4px;">Jawatan</td>
           <td class="cln">:</td>
-          <td><div class="sig-line"></div></td>
+          <td colspan="2"><div class="sig-line"></div></td>
         </tr>
         <tr>
-          <td class="lbl" style="width:82px; text-align:right; padding-right:4px;">Tarikh</td>
+          <td class="lbl" style="width:80px; text-align:left; padding-right:4px;">Tarikh</td>
           <td class="cln">:</td>
-          <td><div class="sig-line"></div></td>
+          <td colspan="2"><div class="sig-line"></div></td>
         </tr>
       </table>
     </td>
@@ -677,13 +707,22 @@ table { border-collapse: collapse; }
   </tr>
 </table>
 
-<div class="right" style="font-size:10px; margin-top:12px;">
-  Muka surat <span class="ms-blank">&nbsp;</span> dari <span class="ms-blank">&nbsp;</span>
-</div>
+<table class="ft" style="margin-top:10px;">
+  <tr>
+    <td></td>
+    <td style="text-align:right; font-size:10px; white-space:nowrap; width:auto;">
+      Muka surat
+      <span style="display:inline-block; border-bottom:1px solid #000; width:28px; height:14px; vertical-align:bottom;">&nbsp;</span>
+      dari
+      <span style="display:inline-block; border-bottom:1px solid #000; width:28px; height:14px; vertical-align:bottom;">&nbsp;</span>
+    </td>
+  </tr>
+</table>
 
 
 {{-- ================================================================
-     HELAIAN 4  (Landscape A4)
+     HELAIAN 4  —  Landscape A4
+     *MAKLUMAT KEMASAN DALAM RUANG — 13-row table + signatures
 ================================================================ --}}
 <pagebreak orientation="landscape" sheet-size="A4-L" />
 
@@ -691,22 +730,24 @@ table { border-collapse: collapse; }
 
 <div class="sec">*MAKLUMAT KEMASAN DALAM RUANG</div>
 
+{{-- Blok / Aras / Nama Aras header row (same as page 3) --}}
 <table class="ft" style="margin-bottom:5px;">
   <tr>
     <td class="lbl bold" style="width:28px;">Blok</td>
     <td class="cln">:</td>
     <td style="width:62px;"><div class="fb"></div></td>
-    <td style="width:16px;"></td>
+    <td style="width:14px;"></td>
     <td class="lbl bold" style="width:28px;">Aras</td>
     <td class="cln">:</td>
-    <td style="width:125px;"><div class="fb"></div></td>
-    <td style="width:20px;"></td>
+    <td style="width:126px;"><div class="fb"></div></td>
+    <td style="width:18px;"></td>
     <td class="lbl bold" style="width:62px;">Nama Aras</td>
     <td class="cln">:</td>
     <td><div class="fb"></div></td>
   </tr>
 </table>
 
+{{-- Main data table — single header row --}}
 <table class="dt">
   <colgroup>
     <col style="width:8%;">
@@ -725,25 +766,25 @@ table { border-collapse: collapse; }
       <th>KEMASAN DINDING</th>
       <th>LUAS (m&#178;)</th>
       <th>KEMASAN SILING</th>
-      <th>LUAS (m&#178;)</th>
+      <th>LUAS<br>(m&#178;)</th>
     </tr>
   </thead>
   <tbody>
     @for ($i = 0; $i < 13; $i++)
     <tr>
-      <td style="height:26px;">&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
-      <td>&nbsp;</td>
+      <td style="height:28px;"></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
     </tr>
     @endfor
   </tbody>
 </table>
 
-{{-- Signature section --}}
+{{-- Signature section (identical to page 3) --}}
 <table class="ft" style="margin-top:14px;">
   <tr>
     <td style="width:10%;"></td>
@@ -751,25 +792,25 @@ table { border-collapse: collapse; }
       <div class="sig-head">PENGUMPUL DATA :</div>
       <table class="ft">
         <tr>
-          <td class="lbl" style="width:82px; text-align:right; padding-right:4px;">Tandatangan</td>
+          <td class="lbl" style="width:80px; text-align:left; padding-right:4px;">Tandatangan</td>
           <td class="cln">:</td>
-          <td style="width:115px;"><div class="sig-box"></div></td>
+          <td style="width:120px;"><div class="sig-box"></div></td>
           <td></td>
         </tr>
         <tr>
-          <td class="lbl" style="width:82px; text-align:right; padding-right:4px;">Nama</td>
+          <td class="lbl" style="width:80px; text-align:left; padding-right:4px;">Nama</td>
           <td class="cln">:</td>
-          <td><div class="sig-line"></div></td>
+          <td colspan="2"><div class="sig-line"></div></td>
         </tr>
         <tr>
-          <td class="lbl" style="width:82px; text-align:right; padding-right:4px;">Jawatan</td>
+          <td class="lbl" style="width:80px; text-align:left; padding-right:4px;">Jawatan</td>
           <td class="cln">:</td>
-          <td><div class="sig-line"></div></td>
+          <td colspan="2"><div class="sig-line"></div></td>
         </tr>
         <tr>
-          <td class="lbl" style="width:82px; text-align:right; padding-right:4px;">Tarikh</td>
+          <td class="lbl" style="width:80px; text-align:left; padding-right:4px;">Tarikh</td>
           <td class="cln">:</td>
-          <td><div class="sig-line"></div></td>
+          <td colspan="2"><div class="sig-line"></div></td>
         </tr>
       </table>
     </td>
@@ -778,25 +819,25 @@ table { border-collapse: collapse; }
       <div class="sig-head">PENGESAH DATA :</div>
       <table class="ft">
         <tr>
-          <td class="lbl" style="width:82px; text-align:right; padding-right:4px;">Tandatangan</td>
+          <td class="lbl" style="width:80px; text-align:left; padding-right:4px;">Tandatangan</td>
           <td class="cln">:</td>
-          <td style="width:115px;"><div class="sig-box"></div></td>
+          <td style="width:120px;"><div class="sig-box"></div></td>
           <td></td>
         </tr>
         <tr>
-          <td class="lbl" style="width:82px; text-align:right; padding-right:4px;">Nama</td>
+          <td class="lbl" style="width:80px; text-align:left; padding-right:4px;">Nama</td>
           <td class="cln">:</td>
-          <td><div class="sig-line"></div></td>
+          <td colspan="2"><div class="sig-line"></div></td>
         </tr>
         <tr>
-          <td class="lbl" style="width:82px; text-align:right; padding-right:4px;">Jawatan</td>
+          <td class="lbl" style="width:80px; text-align:left; padding-right:4px;">Jawatan</td>
           <td class="cln">:</td>
-          <td><div class="sig-line"></div></td>
+          <td colspan="2"><div class="sig-line"></div></td>
         </tr>
         <tr>
-          <td class="lbl" style="width:82px; text-align:right; padding-right:4px;">Tarikh</td>
+          <td class="lbl" style="width:80px; text-align:left; padding-right:4px;">Tarikh</td>
           <td class="cln">:</td>
-          <td><div class="sig-line"></div></td>
+          <td colspan="2"><div class="sig-line"></div></td>
         </tr>
       </table>
     </td>
@@ -804,9 +845,17 @@ table { border-collapse: collapse; }
   </tr>
 </table>
 
-<div class="right" style="font-size:10px; margin-top:12px;">
-  Muka surat <span class="ms-blank">&nbsp;</span> dari <span class="ms-blank">&nbsp;</span>
-</div>
+<table class="ft" style="margin-top:10px;">
+  <tr>
+    <td></td>
+    <td style="text-align:right; font-size:10px; white-space:nowrap; width:auto;">
+      Muka surat
+      <span style="display:inline-block; border-bottom:1px solid #000; width:28px; height:14px; vertical-align:bottom;">&nbsp;</span>
+      dari
+      <span style="display:inline-block; border-bottom:1px solid #000; width:28px; height:14px; vertical-align:bottom;">&nbsp;</span>
+    </td>
+  </tr>
+</table>
 
 </body>
 </html>
