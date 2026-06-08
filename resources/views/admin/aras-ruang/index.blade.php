@@ -27,37 +27,10 @@
                 <i class="bi bi-plus-circle me-1"></i> Tambah Ruang
             </button>
 
-            {{-- Export PDF Dropdown --}}
-            <div class="dropdown">
-                <button class="btn btn-outline-danger dropdown-toggle" type="button"
-                    id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-file-earmark-pdf-fill me-1"></i> Export PDF
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="exportDropdown">
-                    <li>
-                        <h6 class="dropdown-header text-muted small">
-                            <i class="bi bi-funnel me-1"></i>Eksport mengikut penapis semasa
-                        </h6>
-                    </li>
-                    <li>
-                        {{-- Export All (no filters) --}}
-                        <a class="dropdown-item" href="{{ route('admin.aras-ruang.export-pdf') }}" target="_blank">
-                            <i class="bi bi-file-earmark-pdf me-2 text-danger"></i>
-                            Semua Aras &amp; Ruang
-                        </a>
-                    </li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li>
-                        {{-- Export with current filters applied --}}
-                        <a class="dropdown-item" id="exportWithFilters"
-                            href="{{ route('admin.aras-ruang.export-pdf', request()->only(['aras_search','aras_blok_id','aras_status','ruang_search','ruang_aras_id','ruang_status'])) }}"
-                            target="_blank">
-                            <i class="bi bi-filter me-2 text-primary"></i>
-                            Ikut Penapis Semasa
-                        </a>
-                    </li>
-                </ul>
-            </div>
+            {{-- Preview PDF Button --}}
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalPDF">
+                <i class="bi bi-file-pdf"></i> Preview PDF
+            </button>
         </div>
     </div>
 
@@ -777,6 +750,36 @@
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Preview PDF -->
+<div class="modal fade" id="modalPDF" tabindex="-1" aria-labelledby="modalPDFLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title fw-bold" id="modalPDFLabel">
+                    <i class="bi bi-file-pdf me-2"></i>Pratonton D.A.5 - Borang Pengumpulan Data Daftar Aset Khusus (DAK)
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+                <iframe
+                    src="{{ route('admin.aras-ruang.export-pdf') }}"
+                    width="100%"
+                    height="650px"
+                    style="border: none;">
+                </iframe>
+            </div>
+            <div class="modal-footer">
+                <a href="{{ route('admin.aras-ruang.export-pdf') }}" class="btn btn-success">
+                    <i class="bi bi-download me-1"></i> Muat Turun PDF
+                </a>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i> Tutup
+                </button>
+            </div>
         </div>
     </div>
 </div>

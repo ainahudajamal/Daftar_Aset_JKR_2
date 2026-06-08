@@ -8,7 +8,7 @@ use App\Models\KodBlok;
 use App\Models\KodRuang;
 use Illuminate\Http\Request;
 use App\Models\AuditLog;
-use Barryvdh\DomPDF\Facade\Pdf;
+use Mpdf\Mpdf;
 
 class ArasRuangController extends Controller
 {
@@ -154,8 +154,17 @@ class ArasRuangController extends Controller
         $filterRuangAras   = $request->ruang_aras_id ? (KodAras::find($request->ruang_aras_id)?->kod . ' - ' . KodAras::find($request->ruang_aras_id)?->nama) : null;
         $filterRuangStatus = $request->ruang_status  ? ucfirst($request->ruang_status) : null;
 
-        // ===== Generate PDF =====
-        $pdf = Pdf::loadView('admin.aras-ruang.pdf', compact(
+        // ===== Generate PDF with mPDF (supports mixed portrait/landscape) =====
+        $mpdf = new Mpdf([
+            'format'        => 'A4',
+            'margin_top'    => 15,
+            'margin_bottom' => 15,
+            'margin_left'   => 15,
+            'margin_right'  => 15,
+            'default_font'  => 'arial',
+        ]);
+
+        $html = view('admin.aras-ruang.pdf', compact(
             'arasAll',
             'ruangsAll',
             'filterInfo',
@@ -163,21 +172,12 @@ class ArasRuangController extends Controller
             'filterArasStatus',
             'filterRuangAras',
             'filterRuangStatus'
-        ));
+        ))->render();
 
-        $pdf->setPaper('a4', 'landscape');
-        $pdf->setOption([
-            'isHtml5ParserEnabled'  => true,
-            'isRemoteEnabled'       => false,
-            'defaultFont'           => 'Arial',
-            'dpi'                   => 150,
-            'isFontSubsettingEnabled' => true,
-            'defaultPaperSize'      => 'a4',
-            'defaultPaperOrientation' => 'landscape',
-        ]);
+        $mpdf->WriteHTML($html);
 
-        $filename = 'DA5-Konfigurasi-Aras-Ruang-' . date('Ymd-His') . '.pdf';
-
-        return $pdf->download($filename);
+        return response($mpdf->Output('DA5-Borang-Pengumpulan-Data.pdf', 'S'), 200)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'inline; filename="DA5-Borang-Pengumpulan-Data.pdf"');
     }
 }
