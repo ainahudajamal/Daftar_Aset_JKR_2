@@ -48,6 +48,370 @@
     </div>
     @endif
 
+    {{-- ===== COLLAPSIBLE D.A.5 FORM CARD ===== --}}
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#collapseFormDA5">
+            <h5 class="mb-0 fw-bold text-dark d-flex align-items-center">
+                <i class="bi bi-file-earmark-text-fill me-2 text-danger"></i>Maklumat Borang D.A.5
+            </h5>
+            <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle">
+                <i class="bi bi-chevron-down"></i> Klik untuk Papar/Sembunyi
+            </span>
+        </div>
+        <div id="collapseFormDA5" class="collapse show">
+            <form action="{{ route('admin.aras-ruang.save-form') }}" method="POST" id="formDA5">
+                @csrf
+                <div class="card-body bg-light border-top">
+                    
+                    {{-- ── 1. MAKLUMAT PREMIS & BLOK ── --}}
+                    <div class="mb-4">
+                        <h6 class="fw-bold text-primary mb-3"><i class="bi bi-geo-alt me-1"></i>1. Maklumat Premis & Blok / Binaan Luar</h6>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label text-muted small fw-semibold">Nama Premis</label>
+                                <select name="nama_premis" id="da5_nama_premis" class="form-select">
+                                    <option value="">-- Pilih Premis / Isi Manual --</option>
+                                    <option value="PARLIMEN MALAYSIA" {{ old('nama_premis', $da5_data['nama_premis'] ?? '') === 'PARLIMEN MALAYSIA' ? 'selected' : '' }}>PARLIMEN MALAYSIA</option>
+                                    <option value="PEJABAT JKR KUALA LUMPUR" {{ old('nama_premis', $da5_data['nama_premis'] ?? '') === 'PEJABAT JKR KUALA LUMPUR' ? 'selected' : '' }}>PEJABAT JKR KUALA LUMPUR</option>
+                                    <option value="HOSPITAL KUALA LUMPUR" {{ old('nama_premis', $da5_data['nama_premis'] ?? '') === 'HOSPITAL KUALA LUMPUR' ? 'selected' : '' }}>HOSPITAL KUALA LUMPUR</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-muted small fw-semibold">No. DPA</label>
+                                <input type="text" name="no_dpa" id="da5_no_dpa" class="form-control" value="{{ old('no_dpa', $da5_data['no_dpa'] ?? '') }}" placeholder="Contoh: 11011 01MYS.14004 4.BD0001">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-muted small fw-semibold">Kod Blok / Binaan Luar (Daripada Master Blok)</label>
+                                <select name="kod_blok" id="da5_kod_blok" class="form-select">
+                                    <option value="">-- Pilih Kod Blok --</option>
+                                    @foreach($bloks as $b)
+                                    <option value="{{ $b->kod }}" data-nama="{{ $b->nama }}" {{ old('kod_blok', $da5_data['kod_blok'] ?? '') === $b->kod ? 'selected' : '' }}>
+                                        {{ $b->kod }} - {{ $b->nama }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-muted small fw-semibold">Nama Blok / Binaan Luar</label>
+                                <input type="text" name="nama_blok" id="da5_nama_blok" class="form-control" value="{{ old('nama_blok', $da5_data['nama_blok'] ?? '') }}" placeholder="Auto-isi jika pilih kod blok">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-muted small fw-semibold">Fungsi Binaan (Blok)</label>
+                                <input type="text" name="fungsi_binaan" id="da5_fungsi_binaan" class="form-control" value="{{ old('fungsi_binaan', $da5_data['fungsi_binaan'] ?? '') }}" placeholder="Contoh: DEWAN">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-muted small fw-semibold">Jenis Binaan Luar</label>
+                                <input type="text" name="jenis_binaan" id="da5_jenis_binaan" class="form-control" value="{{ old('jenis_binaan', $da5_data['jenis_binaan'] ?? '') }}" placeholder="Contoh: PAGAR">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small fw-semibold">Koordinat GPS X</label>
+                                <input type="text" name="gps_x" id="da5_gps_x" class="form-control" value="{{ old('gps_x', $da5_data['gps_x'] ?? '') }}" placeholder="Contoh: 3.147">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small fw-semibold">Koordinat GPS Y</label>
+                                <input type="text" name="gps_y" id="da5_gps_y" class="form-control" value="{{ old('gps_y', $da5_data['gps_y'] ?? '') }}" placeholder="Contoh: 101.694">
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    {{-- ── 2. KONTRAKTOR & JURU PERUNDING ── --}}
+                    <div class="mb-4">
+                        <div class="row g-4">
+                            
+                            {{-- Kontraktor Column --}}
+                            <div class="col-md-6 border-end">
+                                <h6 class="fw-bold text-success mb-3"><i class="bi bi-people me-1"></i>2.1 Kontraktor</h6>
+                                <div class="row g-3 mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label text-muted small fw-semibold">Kontraktor Utama</label>
+                                        <input type="text" name="kontraktor_utama" id="da5_kontraktor_utama" class="form-control form-control-sm" value="{{ old('kontraktor_utama', $da5_data['kontraktor_utama'] ?? '') }}">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label text-muted small fw-semibold">Bidang Kerja (Utama)</label>
+                                        <input type="text" name="bidang_kontraktor_utama" id="da5_bidang_kontraktor_utama" class="form-control form-control-sm" value="{{ old('bidang_kontraktor_utama', $da5_data['bidang_kontraktor_utama'] ?? '') }}">
+                                    </div>
+                                </div>
+                                
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-sm align-middle" id="tableKontraktorList">
+                                        <thead class="table-secondary">
+                                            <tr>
+                                                <th>* Kontraktor (Tambahan)</th>
+                                                <th>* Bidang Kerja</th>
+                                                <th width="45"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="bodyKontraktorList">
+                                            @php
+                                                $kontraktors = old('kontraktor_list', $da5_data['kontraktor_list'] ?? []);
+                                            @endphp
+                                            @forelse($kontraktors as $idx => $k)
+                                            <tr>
+                                                <td><input type="text" name="kontraktor_list[{{ $idx }}][nama]" class="form-control form-control-sm" value="{{ $k['nama'] ?? '' }}"></td>
+                                                <td><input type="text" name="kontraktor_list[{{ $idx }}][bidang]" class="form-control form-control-sm" value="{{ $k['bidang'] ?? '' }}"></td>
+                                                <td class="text-center">
+                                                    <button type="button" class="btn btn-outline-danger btn-sm btn-padam-row-kontraktor"><i class="bi bi-trash"></i></button>
+                                                </td>
+                                            </tr>
+                                            @empty
+                                            <tr>
+                                                <td><input type="text" name="kontraktor_list[0][nama]" id="da5_kontraktor_1" class="form-control form-control-sm" placeholder="1."></td>
+                                                <td><input type="text" name="kontraktor_list[0][bidang]" id="da5_bidang_kontraktor_1" class="form-control form-control-sm"></td>
+                                                <td class="text-center">
+                                                    <button type="button" class="btn btn-outline-danger btn-sm btn-padam-row-kontraktor"><i class="bi bi-trash"></i></button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><input type="text" name="kontraktor_list[1][nama]" id="da5_kontraktor_2" class="form-control form-control-sm" placeholder="2."></td>
+                                                <td><input type="text" name="kontraktor_list[1][bidang]" id="da5_bidang_kontraktor_2" class="form-control form-control-sm"></td>
+                                                <td class="text-center">
+                                                    <button type="button" class="btn btn-outline-danger btn-sm btn-padam-row-kontraktor"><i class="bi bi-trash"></i></button>
+                                                </td>
+                                            </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <button type="button" class="btn btn-outline-success btn-sm" id="btnTambahRowKontraktor">
+                                    <i class="bi bi-plus-lg"></i> Tambah Kontraktor
+                                </button>
+                            </div>
+
+                            {{-- Perunding Column --}}
+                            <div class="col-md-6">
+                                <h6 class="fw-bold text-success mb-3"><i class="bi bi-people me-1"></i>2.2 Juru Perunding</h6>
+                                <div class="row g-3 mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label text-muted small fw-semibold">Juru Perunding Utama</label>
+                                        <input type="text" name="juru_perunding_utama" id="da5_juru_perunding_utama" class="form-control form-control-sm" value="{{ old('juru_perunding_utama', $da5_data['juru_perunding_utama'] ?? '') }}">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label text-muted small fw-semibold">Bidang Kerja (Utama)</label>
+                                        <input type="text" name="bidang_juru_perunding_utama" id="da5_bidang_juru_perunding_utama" class="form-control form-control-sm" value="{{ old('bidang_juru_perunding_utama', $da5_data['bidang_juru_perunding_utama'] ?? '') }}">
+                                    </div>
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-sm align-middle" id="tablePerundingList">
+                                        <thead class="table-secondary">
+                                            <tr>
+                                                <th>* Juru Perunding (Tambahan)</th>
+                                                <th>* Bidang Kerja</th>
+                                                <th width="45"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="bodyPerundingList">
+                                            @php
+                                                $perunding = old('juru_perunding_list', $da5_data['juru_perunding_list'] ?? []);
+                                            @endphp
+                                            @forelse($perunding as $idx => $p)
+                                            <tr>
+                                                <td><input type="text" name="juru_perunding_list[{{ $idx }}][nama]" class="form-control form-control-sm" value="{{ $p['nama'] ?? '' }}"></td>
+                                                <td><input type="text" name="juru_perunding_list[{{ $idx }}][bidang]" class="form-control form-control-sm" value="{{ $p['bidang'] ?? '' }}"></td>
+                                                <td class="text-center">
+                                                    <button type="button" class="btn btn-outline-danger btn-sm btn-padam-row-perunding"><i class="bi bi-trash"></i></button>
+                                                </td>
+                                            </tr>
+                                            @empty
+                                            <tr>
+                                                <td><input type="text" name="juru_perunding_list[0][nama]" id="da5_juru_perunding_1" class="form-control form-control-sm" placeholder="1."></td>
+                                                <td><input type="text" name="juru_perunding_list[0][bidang]" id="da5_bidang_juru_perunding_1" class="form-control form-control-sm"></td>
+                                                <td class="text-center">
+                                                    <button type="button" class="btn btn-outline-danger btn-sm btn-padam-row-perunding"><i class="bi bi-trash"></i></button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><input type="text" name="juru_perunding_list[1][nama]" id="da5_juru_perunding_2" class="form-control form-control-sm" placeholder="2."></td>
+                                                <td><input type="text" name="juru_perunding_list[1][bidang]" id="da5_bidang_juru_perunding_2" class="form-control form-control-sm"></td>
+                                                <td class="text-center">
+                                                    <button type="button" class="btn btn-outline-danger btn-sm btn-padam-row-perunding"><i class="bi bi-trash"></i></button>
+                                                </td>
+                                            </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <button type="button" class="btn btn-outline-success btn-sm" id="btnTambahRowPerunding">
+                                    <i class="bi bi-plus-lg"></i> Tambah Juru Perunding
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    {{-- ── 3. OPERASI, KEWANGAN & FIZIKAL ── --}}
+                    <div class="mb-4">
+                        <h6 class="fw-bold text-dark mb-3"><i class="bi bi-currency-dollar me-1"></i>3. Maklumat Kewangan, Operasi & Fizikal</h6>
+                        <div class="row g-3">
+                            {{-- Left Column --}}
+                            <div class="col-md-6">
+                                <div class="row g-2">
+                                    <div class="col-md-6">
+                                        <label class="form-label text-muted small fw-semibold">Tahun Siap Bina Asal</label>
+                                        <select name="tahun_siap_bina" id="da5_tahun_siap_bina" class="form-select">
+                                            <option value="">-- Pilih Tahun --</option>
+                                            @for($y = date('Y'); $y >= 1950; $y--)
+                                            <option value="{{ $y }}" {{ (old('tahun_siap_bina', $da5_data['tahun_siap_bina'] ?? '') == $y) ? 'selected' : '' }}>{{ $y }}</option>
+                                            @endfor
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label text-muted small fw-semibold">Tarikh Siap Bina Asal</label>
+                                        <input type="date" name="tarikh_siap_bina" id="da5_tarikh_siap_bina" class="form-control" value="{{ old('tarikh_siap_bina', $da5_data['tarikh_siap_bina'] ?? '') }}">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label text-muted small fw-semibold">Fungsi Asal</label>
+                                        <input type="text" name="fungsi_asal" id="da5_fungsi_asal" class="form-control" value="{{ old('fungsi_asal', $da5_data['fungsi_asal'] ?? '') }}">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label text-muted small fw-semibold">Jenis Struktur (Blok)</label>
+                                        <input type="text" name="jenis_struktur" id="da5_jenis_struktur" class="form-control" value="{{ old('jenis_struktur', $da5_data['jenis_struktur'] ?? '') }}">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label text-muted small fw-semibold">No. Siri Pendaftaran</label>
+                                        <input type="text" name="no_siri_pendaftaran" id="da5_no_siri_pendaftaran" class="form-control" value="{{ old('no_siri_pendaftaran', $da5_data['no_siri_pendaftaran'] ?? '') }}">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label text-muted small fw-semibold">Jangka Hayat (Tahun)</label>
+                                        <input type="number" name="jangka_hayat" id="da5_jangka_hayat" class="form-control" value="{{ old('jangka_hayat', $da5_data['jangka_hayat'] ?? '') }}">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label text-muted small fw-semibold">Kapasiti Penghuni Asal</label>
+                                        <input type="number" name="kapasiti_penghuni" id="da5_kapasiti_penghuni" class="form-control" value="{{ old('kapasiti_penghuni', $da5_data['kapasiti_penghuni'] ?? '') }}">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label text-muted small fw-semibold">Kos Bina Asal (RM)</label>
+                                        <input type="number" name="kos_bina_asal" id="da5_kos_bina_asal" class="form-control" value="{{ old('kos_bina_asal', $da5_data['kos_bina_asal'] ?? '') }}" step="0.01">
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Right Column --}}
+                            <div class="col-md-6">
+                                <div class="row g-2">
+                                    <div class="col-12">
+                                        <label class="form-label text-muted small fw-semibold">Nilai Semasa (RM)</label>
+                                        <input type="number" name="nilai_semasa" id="da5_nilai_semasa" class="form-control" value="{{ old('nilai_semasa', $da5_data['nilai_semasa'] ?? '') }}" step="0.01">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label text-muted small fw-semibold">Tahun Penilaian (Tarikh)</label>
+                                        <input type="date" name="tarikh_penilaian" id="da5_tarikh_penilaian" class="form-control" value="{{ old('tarikh_penilaian', $da5_data['tarikh_penilaian'] ?? '') }}">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label text-muted small fw-semibold">Sumber Pembiayaan</label>
+                                        <input type="text" name="sumber_pembiayaan" id="da5_sumber_pembiayaan" class="form-control" value="{{ old('sumber_pembiayaan', $da5_data['sumber_pembiayaan'] ?? '') }}">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label text-muted small fw-semibold">Kod PTJ</label>
+                                        <input type="text" name="kod_ptj" id="da5_kod_ptj" class="form-control" value="{{ old('kod_ptj', $da5_data['kod_ptj'] ?? '') }}">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label text-muted small fw-semibold">Penggunaan Tenaga [(kiloWatt/jam)/tahun]</label>
+                                        <input type="number" name="penggunaan_tenaga" id="da5_penggunaan_tenaga" class="form-control" value="{{ old('penggunaan_tenaga', $da5_data['penggunaan_tenaga'] ?? '') }}" step="0.01">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label text-muted small fw-semibold">Penggunaan Air (m³/tahun)</label>
+                                        <input type="number" name="penggunaan_air" id="da5_penggunaan_air" class="form-control" value="{{ old('penggunaan_air', $da5_data['penggunaan_air'] ?? '') }}" step="0.01">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label text-muted small fw-semibold">Jenis Milikan</label>
+                                        <select name="jenis_milikan" id="da5_jenis_milikan" class="form-select">
+                                            <option value="">-- Pilih --</option>
+                                            <option value="Pajakan" {{ old('jenis_milikan', $da5_data['jenis_milikan'] ?? '') === 'Pajakan' ? 'selected' : '' }}>Pajakan</option>
+                                            <option value="Pegangan Bebas" {{ old('jenis_milikan', $da5_data['jenis_milikan'] ?? '') === 'Pegangan Bebas' ? 'selected' : '' }}>Pegangan Bebas</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    {{-- ── 4. HELAIAN 2 DATA FIELDS ── --}}
+                    <div class="mb-2">
+                        <h6 class="fw-bold text-dark mb-3"><i class="bi bi-file-earmark-check me-1"></i>4. Maklumat Helaian 2</h6>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="row g-2">
+                                    <div class="col-12">
+                                        <label class="form-label text-muted small fw-semibold">Aset Warisan</label>
+                                        <div class="form-check form-switch mt-1">
+                                            <input class="form-check-input" type="checkbox" name="aset_warisan" id="da5_aset_warisan" value="1" {{ old('aset_warisan', $da5_data['aset_warisan'] ?? '') == '1' ? 'checked' : '' }}>
+                                            <label class="form-check-label text-muted small" for="da5_aset_warisan">Tandakan jika Ya</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label text-muted small fw-semibold">Bil. Aras Atas Tanah</label>
+                                        <input type="number" name="bil_aras_atas" id="da5_bil_aras_atas" class="form-control" value="{{ old('bil_aras_atas', $da5_data['bil_aras_atas'] ?? '') }}">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label text-muted small fw-semibold">Bil. Aras Bawah Tanah</label>
+                                        <input type="number" name="bil_aras_bawah" id="da5_bil_aras_bawah" class="form-control" value="{{ old('bil_aras_bawah', $da5_data['bil_aras_bawah'] ?? '') }}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row g-2">
+                                    <div class="col-12">
+                                        <label class="form-label text-muted small fw-semibold">Status Blok/Binaan Luar</label>
+                                        <select name="status_blok" id="da5_status_blok" class="form-select">
+                                            <option value="">-- Pilih --</option>
+                                            <option value="aktif" {{ old('status_blok', $da5_data['status_blok'] ?? '') === 'aktif' ? 'selected' : '' }}>Aktif</option>
+                                            <option value="tidak_aktif" {{ old('status_blok', $da5_data['status_blok'] ?? '') === 'tidak_aktif' ? 'selected' : '' }}>Tidak Aktif</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label text-muted small fw-semibold">Jumlah Luas Lantai Blok (m²)</label>
+                                        <input type="number" name="jumlah_luas_lantai" id="da5_jumlah_luas_lantai" class="form-control" value="{{ old('jumlah_luas_lantai', $da5_data['jumlah_luas_lantai'] ?? '') }}" step="0.01">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label text-muted small fw-semibold">Luas Tapak Blok/Binaan Luar (m²)</label>
+                                        <input type="number" name="luas_tapak" id="da5_luas_tapak" class="form-control" value="{{ old('luas_tapak', $da5_data['luas_tapak'] ?? '') }}" step="0.01">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                
+                {{-- Form Actions Footer --}}
+                <div class="card-footer bg-white border-top py-3 d-flex justify-content-between align-items-center">
+                    <div>
+                        @if(!empty($da5_data))
+                        <span class="text-success small fw-semibold">
+                            <i class="bi bi-check-circle-fill me-1"></i> Data D.A.5 sedang aktif dalam sesi.
+                        </span>
+                        @else
+                        <span class="text-muted small">
+                            Sila isi dan Simpan untuk memaparkan data dalam Preview PDF.
+                        </span>
+                        @endif
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-floppy me-1"></i> Simpan Maklumat D.A.5
+                        </button>
+                        @if(!empty($da5_data))
+                        <button type="button" class="btn btn-outline-danger" id="btnClearDA5">
+                            <i class="bi bi-trash me-1"></i> Padam Data Sesi
+                        </button>
+                        @endif
+                    </div>
+                </div>
+            </form>
+
+            <form id="clearFormDA5" action="{{ route('admin.aras-ruang.clear-form') }}" method="POST" class="d-none">
+                @csrf
+            </form>
+        </div>
+    </div>
+
     {{-- ===== TAB NAVIGATION ===== --}}
     <div class="card border-0 shadow-sm mb-0">
         <div class="card-header bg-white border-bottom-0 pt-3 pb-0">
