@@ -29,7 +29,17 @@
                 </nav>
             </div>
 
-            <form action="#" method="POST" enctype="multipart/form-data">
+            @if($errors->any())
+            <div class="alert alert-danger">
+                <ul class="mb-0">
+                    @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
+
+            <form action="{{ route('admin.premis.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <!-- Tab Navigation -->
@@ -52,104 +62,97 @@
                     <div class="tab-pane fade show active" id="helaian1">
                         <div class="card border-0 shadow-sm mb-4">
                             <div class="card-header bg-primary text-white">
-                                <h5 class="mb-0"> KAD PENDAFTARAN ASET TAK ALIH (Premis Hak Milik)</h5>
+                                <h5 class="mb-0">KAD PENDAFTARAN ASET TAK ALIH (Premis Hak Milik)</h5>
                             </div>
                             <div class="card-body">
 
                                 <div class="row g-3 mb-3">
-                                    <!-- 1. Nama Premis -->
                                     <div class="col-12">
                                         <label class="form-label fw-semibold">Nama Premis <span class="text-danger">*</span></label>
-                                        <input type="text" name="nama_premis" class="form-control" required placeholder="Contoh: PARLIMEN MALAYSIA">
+                                        <input type="text" name="nama_premis" class="form-control" required placeholder="Contoh: PARLIMEN MALAYSIA" value="{{ old('nama_premis') }}">
                                     </div>
-
-                                    <!-- 2. Alamat Premis -->
                                     <div class="col-12">
-                                        <label class="form-label fw-semibold">Alamat Premis <span class="text-danger">*</span></label>
-                                        <textarea name="alamat_premis" class="form-control" rows="3" required placeholder="Masukkan alamat penuh"></textarea>
+                                        <label class="form-label fw-semibold">Alamat Premis</label>
+                                        <textarea name="alamat_premis" class="form-control" rows="3" placeholder="Masukkan alamat penuh">{{ old('alamat_premis') }}</textarea>
                                     </div>
-
-                                    <!-- 3. Poskod + GPS -->
                                     <div class="col-md-4">
                                         <label class="form-label fw-semibold">Poskod</label>
-                                        <input type="text" name="poskod" class="form-control" placeholder="Contoh: 50480">
+                                        <input type="text" name="poskod" class="form-control" placeholder="Contoh: 50480" value="{{ old('poskod') }}">
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label fw-semibold">Koordinat GPS — X</label>
-                                        <input type="text" name="koordinat_x" class="form-control" placeholder="Contoh: 3.147">
+                                        <input type="text" name="koordinat_x" class="form-control" placeholder="Contoh: 3.147" value="{{ old('koordinat_x') }}">
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label fw-semibold">Koordinat GPS — Y</label>
-                                        <input type="text" name="koordinat_y" class="form-control" placeholder="Contoh: 101.694">
+                                        <input type="text" name="koordinat_y" class="form-control" placeholder="Contoh: 101.694" value="{{ old('koordinat_y') }}">
                                     </div>
                                 </div>
 
                                 <hr>
 
-                                <!-- 4-8. Agensi & Lokasi -->
                                 <div class="row g-3 mb-3">
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">Kumpulan Agensi</label>
-                                        <input type="text" name="kumpulan_agensi" class="form-control">
+                                        <input type="text" name="kumpulan_agensi" class="form-control" value="{{ old('kumpulan_agensi') }}">
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">Daerah</label>
-                                        <input type="text" name="daerah" class="form-control">
+                                        <input type="text" name="daerah" class="form-control" value="{{ old('daerah') }}">
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">Kementerian</label>
-                                        <input type="text" name="kementerian" class="form-control">
+                                        <input type="text" name="kementerian" class="form-control" value="{{ old('kementerian') }}">
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">Mukim / Bandar</label>
-                                        <input type="text" name="mukim_bandar" class="form-control">
+                                        <input type="text" name="mukim_bandar" class="form-control" value="{{ old('mukim_bandar') }}">
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">Jabatan</label>
-                                        <input type="text" name="jabatan" class="form-control">
+                                        <input type="text" name="jabatan" class="form-control" value="{{ old('jabatan') }}">
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">Kategori Premis</label>
-                                        <input type="text" name="kategori_premis" class="form-control">
+                                        <input type="text" name="kategori_premis" class="form-control" value="{{ old('kategori_premis') }}">
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">Negara</label>
-                                        <input type="text" name="negara" class="form-control" value="Malaysia">
+                                        <input type="text" name="negara" class="form-control" value="{{ old('negara', 'Malaysia') }}">
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">Sub Kategori</label>
-                                        <input type="text" name="sub_kategori" class="form-control">
+                                        <input type="text" name="sub_kategori" class="form-control" value="{{ old('sub_kategori') }}">
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">Negeri</label>
                                         <select name="negeri" class="form-select">
                                             <option value="">-- Pilih Negeri --</option>
                                             @foreach(['Johor','Kedah','Kelantan','Melaka','Negeri Sembilan','Pahang','Perak','Perlis','Pulau Pinang','Sabah','Sarawak','Selangor','Terengganu','W.P. Kuala Lumpur','W.P. Labuan','W.P. Putrajaya'] as $negeri)
-                                            <option value="{{ $negeri }}">{{ $negeri }}</option>
+                                            <option value="{{ $negeri }}" {{ old('negeri') == $negeri ? 'selected' : '' }}>{{ $negeri }}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">Jumlah Keluasan Premis</label>
-                                        <input type="text" name="jumlah_keluasan" class="form-control" placeholder="Contoh: 5000 m²">
+                                        <input type="text" name="jumlah_keluasan" class="form-control" placeholder="Contoh: 5000" value="{{ old('jumlah_keluasan') }}">
                                     </div>
                                 </div>
 
                                 <hr>
 
-                                <!-- 9-15. Status, Kos, Tarikh -->
                                 <div class="row g-3 mb-3">
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">Status Premis</label>
                                         <select name="status_premis" class="form-select">
-                                            <option value="aktif">Aktif</option>
-                                            <option value="tidak_aktif">Tidak Aktif</option>
+                                            <option value="Aktif" {{ old('status_premis') == 'Aktif' ? 'selected' : '' }}>Aktif</option>
+                                            <option value="Tidak Aktif" {{ old('status_premis') == 'Tidak Aktif' ? 'selected' : '' }}>Tidak Aktif</option>
                                         </select>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label fw-semibold">Aset Warisan <small class="text-muted">(tandakan jika Ya)</small></label>
+                                        <label class="form-label fw-semibold">Aset Warisan</label>
                                         <div class="form-check form-switch mt-2">
-                                            <input class="form-check-input" type="checkbox" name="aset_warisan" id="aset_warisan">
+                                            <input class="form-check-input" type="checkbox" name="aset_warisan" id="aset_warisan" value="1" {{ old('aset_warisan') ? 'checked' : '' }}>
                                             <label class="form-check-label" for="aset_warisan">Ya</label>
                                         </div>
                                     </div>
@@ -157,39 +160,39 @@
                                         <label class="form-label fw-semibold">Kos Siap Bina Asal (RM)</label>
                                         <div class="input-group">
                                             <span class="input-group-text">RM</span>
-                                            <input type="number" name="kos_siap_bina" class="form-control" placeholder="0.00" step="0.01">
+                                            <input type="number" name="kos_siap_bina_asal" class="form-control" placeholder="0.00" step="0.01" value="{{ old('kos_siap_bina_asal') }}">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">Sumber Pembiayaan</label>
-                                        <input type="text" name="sumber_pembiayaan" class="form-control">
+                                        <input type="text" name="sumber_pembiayaan" class="form-control" value="{{ old('sumber_pembiayaan') }}">
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">*Kos Tambahan PPUN (RM)</label>
                                         <div class="input-group">
                                             <span class="input-group-text">RM</span>
-                                            <input type="number" name="kos_tambahan_ppun" class="form-control" placeholder="0.00" step="0.01">
+                                            <input type="number" name="kos_tambahan_ppun" class="form-control" placeholder="0.00" step="0.01" value="{{ old('kos_tambahan_ppun') }}">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">Kod PTJ</label>
-                                        <input type="text" name="kod_ptj" class="form-control">
+                                        <input type="text" name="kod_ptj" class="form-control" value="{{ old('kod_ptj') }}">
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">Kos Keseluruhan Aset (RM)</label>
-                                        <input type="number" name="kos_keseluruhan" class="form-control" placeholder="0.00" step="0.01">
+                                        <input type="number" name="kos_keseluruhan" class="form-control" placeholder="0.00" step="0.01" value="{{ old('kos_keseluruhan') }}">
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">Nilai Semasa (RM)</label>
-                                        <input type="number" name="nilai_semasa" class="form-control" placeholder="0.00" step="0.01">
+                                        <input type="number" name="nilai_semasa" class="form-control" placeholder="0.00" step="0.01" value="{{ old('nilai_semasa') }}">
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">Tarikh Siap Bina</label>
-                                        <input type="date" name="tarikh_siap_bina" class="form-control">
+                                        <input type="date" name="tarikh_siap_bina" class="form-control" value="{{ old('tarikh_siap_bina') }}">
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">Tarikh Penilaian</label>
-                                        <input type="date" name="tarikh_penilaian" class="form-control">
+                                        <input type="date" name="tarikh_penilaian" class="form-control" value="{{ old('tarikh_penilaian') }}">
                                     </div>
                                     <div class="col-md-6 d-flex align-items-center">
                                         <small class="text-muted fst-italic">* Pemulihan, Pemuliharaan, Ubahsuai & Naiktaraf</small>
@@ -198,22 +201,18 @@
                                         <div class="row g-2">
                                             <div class="col-6">
                                                 <label class="form-label fw-semibold">Bil. Blok Bangunan</label>
-                                                <input type="number" name="bil_blok_bangunan" class="form-control" min="0" value="0">
+                                                <input type="number" name="bil_blok_bangunan" class="form-control" min="0" value="{{ old('bil_blok_bangunan', 0) }}">
                                             </div>
                                             <div class="col-6">
                                                 <label class="form-label fw-semibold">Bil. Binaan Luar</label>
-                                                <input type="number" name="bil_binaan_luar" class="form-control" min="0" value="0">
+                                                <input type="number" name="bil_binaan_luar" class="form-control" min="0" value="{{ old('bil_binaan_luar', 0) }}">
                                             </div>
                                         </div>
                                     </div>
-
-                                    <!-- 16. Catatan -->
                                     <div class="col-12">
                                         <label class="form-label fw-semibold">Catatan</label>
-                                        <textarea name="catatan" class="form-control" rows="3"></textarea>
+                                        <textarea name="catatan" class="form-control" rows="3">{{ old('catatan') }}</textarea>
                                     </div>
-
-                                    <!-- 17. Gambar Premis -->
                                     <div class="col-12">
                                         <label class="form-label fw-semibold">Gambar Premis</label>
                                         <div class="alert alert-info py-2">
@@ -222,23 +221,21 @@
                                         <input type="file" name="gambar_premis" class="form-control" accept="image/*">
                                         <small class="text-muted">Format: JPG, PNG. Maksimum 2MB</small>
                                     </div>
-
-                                    <!-- 18. No DPA -->
                                     <div class="col-12">
                                         <label class="form-label fw-semibold">**NO DPA</label>
                                         <div class="d-flex" style="border: 1px solid #dee2e6; width: fit-content;">
-                                            @for($i = 0; $i < 20; $i++)
+                                            @for($i = 0; $i < 24; $i++)
                                             <input type="text" maxlength="1" class="dpa-box"
-                                                style="width: 36px; height: 38px; border: none; border-right: 1px solid #dee2e6; text-align: center; font-weight: bold; background: white; outline: none;">
+                                                style="width: 30px; height: 38px; border: none; border-right: 1px solid #dee2e6; text-align: center; font-weight: bold; background: white; outline: none;">
                                             @endfor
                                         </div>
-        
+                                        <input type="hidden" name="no_dpa" id="no_dpa">
+                                        <small class="text-muted">** Nombor Daftar Premis Aset</small>
                                     </div>
                                 </div>
 
                                 <hr>
 
-                                <!-- 19. Tandatangan -->
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <div class="card border">
@@ -250,15 +247,15 @@
                                                 </div>
                                                 <div class="mb-2">
                                                     <label class="form-label">Nama</label>
-                                                    <input type="text" name="pengumpul_nama" class="form-control">
+                                                    <input type="text" name="pengumpul_nama" class="form-control" value="{{ old('pengumpul_nama') }}">
                                                 </div>
                                                 <div class="mb-2">
                                                     <label class="form-label">Jawatan</label>
-                                                    <input type="text" name="pengumpul_jawatan" class="form-control">
+                                                    <input type="text" name="pengumpul_jawatan" class="form-control" value="{{ old('pengumpul_jawatan') }}">
                                                 </div>
                                                 <div class="mb-2">
                                                     <label class="form-label">Tarikh</label>
-                                                    <input type="date" name="pengumpul_tarikh" class="form-control">
+                                                    <input type="date" name="pengumpul_tarikh" class="form-control" value="{{ old('pengumpul_tarikh') }}">
                                                 </div>
                                             </div>
                                         </div>
@@ -273,22 +270,21 @@
                                                 </div>
                                                 <div class="mb-2">
                                                     <label class="form-label">Nama</label>
-                                                    <input type="text" name="pengesah_nama" class="form-control">
+                                                    <input type="text" name="pengesah_nama" class="form-control" value="{{ old('pengesah_nama') }}">
                                                 </div>
                                                 <div class="mb-2">
                                                     <label class="form-label">Jawatan</label>
-                                                    <input type="text" name="pengesah_jawatan" class="form-control">
+                                                    <input type="text" name="pengesah_jawatan" class="form-control" value="{{ old('pengesah_jawatan') }}">
                                                 </div>
                                                 <div class="mb-2">
                                                     <label class="form-label">Tarikh</label>
-                                                    <input type="date" name="pengesah_tarikh" class="form-control">
+                                                    <input type="date" name="pengesah_tarikh" class="form-control" value="{{ old('pengesah_tarikh') }}">
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- Next Button -->
                                 <div class="d-flex justify-content-end mt-4">
                                     <button type="button" class="btn btn-primary" onclick="nextTab()">
                                         Seterusnya <i class="bi bi-arrow-right"></i>
@@ -298,12 +294,10 @@
                             </div>
                         </div>
                     </div>
-                    <!-- ==================== AKHIR HELAIAN 1 ==================== -->
 
                     <!-- ==================== HELAIAN 2 ==================== -->
                     <div class="tab-pane fade" id="helaian2">
 
-                        <!-- Maklumat Tanah -->
                         <div class="card border-0 shadow-sm mb-4">
                             <div class="card-header bg-secondary text-white">
                                 <h5 class="mb-0">Maklumat Tanah (jika ada)</h5>
@@ -330,7 +324,7 @@
                                                 <td>1</td>
                                                 <td><input type="text" name="tanah[0][no_lot]" class="form-control form-control-sm"></td>
                                                 <td>
-                                                    <select name="tanah[0][status_hak_milik]" class="form-select form-select-sm">
+                                                    <select name="tanah[0][status_hakmilik]" class="form-select form-select-sm">
                                                         <option value="">-- Pilih --</option>
                                                         <option>Hakmilik</option>
                                                         <option>Rizab</option>
@@ -338,7 +332,7 @@
                                                         <option>Lain-lain</option>
                                                     </select>
                                                 </td>
-                                                <td><input type="text" name="tanah[0][keluasan]" class="form-control form-control-sm"></td>
+                                                <td><input type="text" name="tanah[0][keluasan_tanah]" class="form-control form-control-sm"></td>
                                                 <td><input type="text" name="tanah[0][no_hakmilik]" class="form-control form-control-sm"></td>
                                                 <td>
                                                     <select name="tanah[0][jenis_hakmilik]" class="form-select form-select-sm">
@@ -347,7 +341,7 @@
                                                         <option>Pajak</option>
                                                     </select>
                                                 </td>
-                                                <td><input type="text" name="tanah[0][kegunaan]" class="form-control form-control-sm"></td>
+                                                <td><input type="text" name="tanah[0][kegunaan_tanah]" class="form-control form-control-sm"></td>
                                                 <td><input type="number" name="tanah[0][harga_perolehan]" class="form-control form-control-sm" step="0.01"></td>
                                                 <td><input type="number" name="tanah[0][harga_semasa]" class="form-control form-control-sm" step="0.01"></td>
                                                 <td>
@@ -365,7 +359,6 @@
                             </div>
                         </div>
 
-                        <!-- Senarai Lukisan -->
                         <div class="card border-0 shadow-sm mb-4">
                             <div class="card-header bg-dark text-white">
                                 <h5 class="mb-0">Senarai Lukisan Siap Bina</h5>
@@ -387,7 +380,7 @@
                                             <tr>
                                                 <td>1</td>
                                                 <td><input type="text" name="lukisan[0][bidang]" class="form-control form-control-sm"></td>
-                                                <td><input type="text" name="lukisan[0][tajuk]" class="form-control form-control-sm"></td>
+                                                <td><input type="text" name="lukisan[0][tajuk_lukisan]" class="form-control form-control-sm"></td>
                                                 <td><input type="text" name="lukisan[0][no_rujukan]" class="form-control form-control-sm"></td>
                                                 <td><input type="text" name="lukisan[0][catatan]" class="form-control form-control-sm"></td>
                                                 <td>
@@ -405,7 +398,6 @@
                             </div>
                         </div>
 
-                        <!-- Buttons -->
                         <div class="d-flex gap-2 justify-content-between mb-4">
                             <button type="button" class="btn btn-secondary" onclick="prevTab()">
                                 <i class="bi bi-arrow-left"></i> Sebelumnya
@@ -421,7 +413,6 @@
                         </div>
 
                     </div>
-                    <!-- ==================== AKHIR HELAIAN 2 ==================== -->
 
                 </div>
             </form>
@@ -452,7 +443,7 @@ function addTanahRow() {
             <td>${tanahCount + 1}</td>
             <td><input type="text" name="tanah[${tanahCount}][no_lot]" class="form-control form-control-sm"></td>
             <td>
-                <select name="tanah[${tanahCount}][status_hak_milik]" class="form-select form-select-sm">
+                <select name="tanah[${tanahCount}][status_hakmilik]" class="form-select form-select-sm">
                     <option value="">-- Pilih --</option>
                     <option>Hakmilik</option>
                     <option>Rizab</option>
@@ -460,7 +451,7 @@ function addTanahRow() {
                     <option>Lain-lain</option>
                 </select>
             </td>
-            <td><input type="text" name="tanah[${tanahCount}][keluasan]" class="form-control form-control-sm"></td>
+            <td><input type="text" name="tanah[${tanahCount}][keluasan_tanah]" class="form-control form-control-sm"></td>
             <td><input type="text" name="tanah[${tanahCount}][no_hakmilik]" class="form-control form-control-sm"></td>
             <td>
                 <select name="tanah[${tanahCount}][jenis_hakmilik]" class="form-select form-select-sm">
@@ -469,7 +460,7 @@ function addTanahRow() {
                     <option>Pajak</option>
                 </select>
             </td>
-            <td><input type="text" name="tanah[${tanahCount}][kegunaan]" class="form-control form-control-sm"></td>
+            <td><input type="text" name="tanah[${tanahCount}][kegunaan_tanah]" class="form-control form-control-sm"></td>
             <td><input type="number" name="tanah[${tanahCount}][harga_perolehan]" class="form-control form-control-sm" step="0.01"></td>
             <td><input type="number" name="tanah[${tanahCount}][harga_semasa]" class="form-control form-control-sm" step="0.01"></td>
             <td><button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)"><i class="bi bi-trash"></i></button></td>
@@ -484,7 +475,7 @@ function addLukisanRow() {
         <tr>
             <td>${lukisanCount + 1}</td>
             <td><input type="text" name="lukisan[${lukisanCount}][bidang]" class="form-control form-control-sm"></td>
-            <td><input type="text" name="lukisan[${lukisanCount}][tajuk]" class="form-control form-control-sm"></td>
+            <td><input type="text" name="lukisan[${lukisanCount}][tajuk_lukisan]" class="form-control form-control-sm"></td>
             <td><input type="text" name="lukisan[${lukisanCount}][no_rujukan]" class="form-control form-control-sm"></td>
             <td><input type="text" name="lukisan[${lukisanCount}][catatan]" class="form-control form-control-sm"></td>
             <td><button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)"><i class="bi bi-trash"></i></button></td>
@@ -497,10 +488,15 @@ function removeRow(btn) {
     btn.closest('tr').remove();
 }
 
-// Auto move to next DPA box
+// Auto move DPA box
 const dpaBoxes = document.querySelectorAll('.dpa-box');
 dpaBoxes.forEach((box, index) => {
     box.addEventListener('input', function() {
+        // Gabungkan semua nilai ke hidden input
+        let dpaValue = '';
+        dpaBoxes.forEach(b => dpaValue += b.value);
+        document.getElementById('no_dpa').value = dpaValue.trim();
+
         if (this.value.length === 1 && index < dpaBoxes.length - 1) {
             dpaBoxes[index + 1].focus();
         }
