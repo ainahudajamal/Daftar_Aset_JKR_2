@@ -1238,6 +1238,380 @@ document.querySelectorAll('input[name="kod"]').forEach(function(el) {
         this.value = this.value.toUpperCase();
     });
 });
+
+// ===== D.A.5 FORM JAVASCRIPT LOGIC =====
+document.addEventListener('DOMContentLoaded', function () {
+    const bodyKontraktorList = document.getElementById('bodyKontraktorList');
+    const btnTambahRowKontraktor = document.getElementById('btnTambahRowKontraktor');
+    const bodyPerundingList = document.getElementById('bodyPerundingList');
+    const btnTambahRowPerunding = document.getElementById('btnTambahRowPerunding');
+    const da5_nama_premis = document.getElementById('da5_nama_premis');
+    const da5_kod_blok = document.getElementById('da5_kod_blok');
+    const btnClearDA5 = document.getElementById('btnClearDA5');
+
+    // Dynamic Row addition for Kontraktor
+    function reindexKontraktor() {
+        const rows = bodyKontraktorList.querySelectorAll('tr');
+        rows.forEach((row, index) => {
+            const nameInput = row.querySelector('input[name*="[nama]"]');
+            const bidangInput = row.querySelector('input[name*="[bidang]"]');
+            if (nameInput) {
+                nameInput.name = `kontraktor_list[${index}][nama]`;
+                nameInput.placeholder = `${index + 1}.`;
+            }
+            if (bidangInput) {
+                bidangInput.name = `kontraktor_list[${index}][bidang]`;
+            }
+        });
+    }
+
+    if (btnTambahRowKontraktor) {
+        btnTambahRowKontraktor.addEventListener('click', function () {
+            const idx = bodyKontraktorList.querySelectorAll('tr').length;
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><input type="text" name="kontraktor_list[${idx}][nama]" class="form-control form-control-sm" placeholder="${idx + 1}."></td>
+                <td><input type="text" name="kontraktor_list[${idx}][bidang]" class="form-control form-control-sm"></td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-outline-danger btn-sm btn-padam-row-kontraktor"><i class="bi bi-trash"></i></button>
+                </td>
+            `;
+            bodyKontraktorList.appendChild(tr);
+        });
+    }
+
+    if (bodyKontraktorList) {
+        bodyKontraktorList.addEventListener('click', function (e) {
+            if (e.target.closest('.btn-padam-row-kontraktor')) {
+                e.target.closest('tr').remove();
+                reindexKontraktor();
+            }
+        });
+    }
+
+    // Dynamic Row addition for Juru Perunding
+    function reindexPerunding() {
+        const rows = bodyPerundingList.querySelectorAll('tr');
+        rows.forEach((row, index) => {
+            const nameInput = row.querySelector('input[name*="[nama]"]');
+            const bidangInput = row.querySelector('input[name*="[bidang]"]');
+            if (nameInput) {
+                nameInput.name = `juru_perunding_list[${index}][nama]`;
+                nameInput.placeholder = `${index + 1}.`;
+            }
+            if (bidangInput) {
+                bidangInput.name = `juru_perunding_list[${index}][bidang]`;
+            }
+        });
+    }
+
+    if (btnTambahRowPerunding) {
+        btnTambahRowPerunding.addEventListener('click', function () {
+            const idx = bodyPerundingList.querySelectorAll('tr').length;
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><input type="text" name="juru_perunding_list[${idx}][nama]" class="form-control form-control-sm" placeholder="${idx + 1}."></td>
+                <td><input type="text" name="juru_perunding_list[${idx}][bidang]" class="form-control form-control-sm"></td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-outline-danger btn-sm btn-padam-row-perunding"><i class="bi bi-trash"></i></button>
+                </td>
+            `;
+            bodyPerundingList.appendChild(tr);
+        });
+    }
+
+    if (bodyPerundingList) {
+        bodyPerundingList.addEventListener('click', function (e) {
+            if (e.target.closest('.btn-padam-row-perunding')) {
+                e.target.closest('tr').remove();
+                reindexPerunding();
+            }
+        });
+    }
+
+    // Auto-fill template mappings
+    const templates = {
+        "PARLIMEN MALAYSIA": {
+            no_dpa: "11011 01MYS.14004 4.BD0001",
+            kod_blok: "A",
+            nama_blok: "BLOK A - UTAMA",
+            fungsi_binaan: "DEWAN PERSIDANGAN",
+            jenis_binaan: "",
+            gps_x: "3.1477",
+            gps_y: "101.6939",
+            kontraktor_utama: "AZMAN HAMZAH SHAH SDN BHD",
+            bidang_kontraktor_utama: "PEMBINAAN BANGUNAN",
+            kontraktor_list: [
+                { nama: "MECTEC ENGINEERING SDN BHD", bidang: "MEKANIKAL & ELEKTRIKAL" },
+                { nama: "JAYA AC & VENTILATION LTD", bidang: "SISTEM PENYAMAN UDARA" }
+            ],
+            juru_perunding_utama: "ARKITEK JKR MALAYSIA",
+            bidang_juru_perunding_utama: "REKABENTUK ARKITEK",
+            juru_perunding_list: [
+                { nama: "MAJU PERUNDING CIVIL S/B", bidang: "STRUKTUR & AWAL" },
+                { nama: "PERUNDING ELEKTRIK BERSEKUTU", bidang: "ELEKTRIKAL" }
+            ],
+            tahun_siap_bina: "2013",
+            tarikh_siap_bina: "2013-05-20",
+            fungsi_asal: "DEWAN PERSIDANGAN & PEJABAT",
+            jenis_struktur: "KONKRIT BERTULANG & STRUKTUR BESI",
+            no_siri_pendaftaran: "JKR/PARLIMEN/2013/001",
+            jangka_hayat: "50",
+            kapasiti_penghuni: "1000",
+            kos_bina_asal: "250000000",
+            nilai_semasa: "320000000",
+            tarikh_penilaian: "2024-08-15",
+            sumber_pembiayaan: "KERAJAAN PERSEKUTUAN",
+            kod_ptj: "11011",
+            penggunaan_tenaga: "120000",
+            penggunaan_air: "4500",
+            jenis_milikan: "Pegangan Bebas",
+            aset_warisan: true,
+            status_blok: "aktif",
+            bil_aras_atas: "4",
+            bil_aras_bawah: "1",
+            jumlah_luas_lantai: "12500.50",
+            luas_tapak: "4509.26"
+        },
+        "PEJABAT JKR KUALA LUMPUR": {
+            no_dpa: "11011 01MYS.14004 4.BD0002",
+            kod_blok: "B",
+            nama_blok: "BLOK B - PEJABAT",
+            fungsi_binaan: "PEJABAT PENTADBIRAN",
+            jenis_binaan: "",
+            gps_x: "3.1539",
+            gps_y: "101.6981",
+            kontraktor_utama: "MUHIBBAH ENGINEERING BHD",
+            bidang_kontraktor_utama: "PEMBINAAN AM",
+            kontraktor_list: [
+                { nama: "KEJURUTERAAN SINAR SDN BHD", bidang: "PENDAWAIAN ELEKTRIK" }
+            ],
+            juru_perunding_utama: "PERUNDING ALAM BINA",
+            bidang_juru_perunding_utama: "ARKITEKTURAL",
+            juru_perunding_list: [
+                { nama: "SSP CONSULTING ENGINEERS", bidang: "AWAM & STRUKTUR" }
+            ],
+            tahun_siap_bina: "2018",
+            tarikh_siap_bina: "2018-09-12",
+            fungsi_asal: "PEJABAT KERAJAAN",
+            jenis_struktur: "KONKRIT BERTULANG",
+            no_siri_pendaftaran: "JKR/PEJABAT-KL/2018/002",
+            jangka_hayat: "40",
+            kapasiti_penghuni: "500",
+            kos_bina_asal: "85000000",
+            nilai_semasa: "92000000",
+            tarikh_penilaian: "2023-11-10",
+            sumber_pembiayaan: "KERAJAAN PERSEKUTUAN (JKR)",
+            kod_ptj: "14004",
+            penggunaan_tenaga: "85000",
+            penggunaan_air: "2800",
+            jenis_milikan: "Pegangan Bebas",
+            aset_warisan: false,
+            status_blok: "aktif",
+            bil_aras_atas: "6",
+            bil_aras_bawah: "0",
+            jumlah_luas_lantai: "8900.00",
+            luas_tapak: "3200.00"
+        },
+        "HOSPITAL KUALA LUMPUR": {
+            no_dpa: "11011 01MYS.14004 4.BD0003",
+            kod_blok: "C",
+            nama_blok: "BLOK C - KAFETERIA",
+            fungsi_binaan: "KAFETERIA HOSPITAL",
+            jenis_binaan: "",
+            gps_x: "3.1685",
+            gps_y: "101.6985",
+            kontraktor_utama: "WCT HOLDINGS BERHAD",
+            bidang_kontraktor_utama: "PEMBINAAN KHAS HOSPITAL",
+            kontraktor_list: [
+                { nama: "MEDIC-SYSTEMS (M) SDN BHD", bidang: "PERALATAN MEDIKAL" }
+            ],
+            juru_perunding_utama: "ARKITEK MINCONSULT",
+            bidang_juru_perunding_utama: "ARKITEK DAN STRUKTUR",
+            juru_perunding_list: [
+                { nama: "MEP CONSULTANTS SDN BHD", bidang: "MEKANIKAL & ELEKTRIKAL" }
+            ],
+            tahun_siap_bina: "2008",
+            tarikh_siap_bina: "2008-03-15",
+            fungsi_asal: "KAFETERIA & PUSAT SAJIAN",
+            jenis_struktur: "RANGKA KONKRIT",
+            no_siri_pendaftaran: "JKR/HKL-KAFE/2008/003",
+            jangka_hayat: "50",
+            kapasiti_penghuni: "350",
+            kos_bina_asal: "4500000",
+            nilai_semasa: "6200000",
+            tarikh_penilaian: "2025-02-28",
+            sumber_pembiayaan: "Kementerian Kesihatan Malaysia (KKM)",
+            kod_ptj: "24011",
+            penggunaan_tenaga: "45000",
+            penggunaan_air: "1500",
+            jenis_milikan: "Pajakan",
+            aset_warisan: false,
+            status_blok: "aktif",
+            bil_aras_atas: "2",
+            bil_aras_bawah: "0",
+            jumlah_luas_lantai: "1500.00",
+            luas_tapak: "850.00"
+        }
+    };
+
+    if (da5_nama_premis) {
+        da5_nama_premis.addEventListener('change', function () {
+            const selected = this.value;
+            if (templates[selected]) {
+                const t = templates[selected];
+                document.getElementById('da5_no_dpa').value = t.no_dpa;
+                document.getElementById('da5_kod_blok').value = t.kod_blok;
+                document.getElementById('da5_nama_blok').value = t.nama_blok;
+                document.getElementById('da5_fungsi_binaan').value = t.fungsi_binaan;
+                document.getElementById('da5_jenis_binaan').value = t.jenis_binaan;
+                document.getElementById('da5_gps_x').value = t.gps_x;
+                document.getElementById('da5_gps_y').value = t.gps_y;
+                document.getElementById('da5_kontraktor_utama').value = t.kontraktor_utama;
+                document.getElementById('da5_bidang_kontraktor_utama').value = t.bidang_kontraktor_utama;
+                document.getElementById('da5_juru_perunding_utama').value = t.juru_perunding_utama;
+                document.getElementById('da5_bidang_juru_perunding_utama').value = t.bidang_juru_perunding_utama;
+                document.getElementById('da5_tahun_siap_bina').value = t.tahun_siap_bina;
+                document.getElementById('da5_tarikh_siap_bina').value = t.tarikh_siap_bina;
+                document.getElementById('da5_fungsi_asal').value = t.fungsi_asal;
+                document.getElementById('da5_jenis_struktur').value = t.jenis_struktur;
+                document.getElementById('da5_no_siri_pendaftaran').value = t.no_siri_pendaftaran;
+                document.getElementById('da5_jangka_hayat').value = t.jangka_hayat;
+                document.getElementById('da5_kapasiti_penghuni').value = t.kapasiti_penghuni;
+                document.getElementById('da5_kos_bina_asal').value = t.kos_bina_asal;
+                document.getElementById('da5_nilai_semasa').value = t.nilai_semasa;
+                document.getElementById('da5_tarikh_penilaian').value = t.tarikh_penilaian;
+                document.getElementById('da5_sumber_pembiayaan').value = t.sumber_pembiayaan;
+                document.getElementById('da5_kod_ptj').value = t.kod_ptj;
+                document.getElementById('da5_penggunaan_tenaga').value = t.penggunaan_tenaga;
+                document.getElementById('da5_penggunaan_air').value = t.penggunaan_air;
+                document.getElementById('da5_jenis_milikan').value = t.jenis_milikan;
+                document.getElementById('da5_aset_warisan').checked = t.aset_warisan;
+                document.getElementById('da5_status_blok').value = t.status_blok;
+                document.getElementById('da5_bil_aras_atas').value = t.bil_aras_atas;
+                document.getElementById('da5_bil_aras_bawah').value = t.bil_aras_bawah;
+                document.getElementById('da5_jumlah_luas_lantai').value = t.jumlah_luas_lantai;
+                document.getElementById('da5_luas_tapak').value = t.luas_tapak;
+
+                // Populate dynamic contractors
+                bodyKontraktorList.innerHTML = '';
+                t.kontraktor_list.forEach((item, idx) => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><input type="text" name="kontraktor_list[${idx}][nama]" class="form-control form-control-sm" value="${item.nama}" placeholder="${idx + 1}."></td>
+                        <td><input type="text" name="kontraktor_list[${idx}][bidang]" class="form-control form-control-sm" value="${item.bidang}"></td>
+                        <td class="text-center">
+                            <button type="button" class="btn btn-outline-danger btn-sm btn-padam-row-kontraktor"><i class="bi bi-trash"></i></button>
+                        </td>
+                    `;
+                    bodyKontraktorList.appendChild(tr);
+                });
+
+                // Populate dynamic perundings
+                bodyPerundingList.innerHTML = '';
+                t.juru_perunding_list.forEach((item, idx) => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><input type="text" name="juru_perunding_list[${idx}][nama]" class="form-control form-control-sm" value="${item.nama}" placeholder="${idx + 1}."></td>
+                        <td><input type="text" name="juru_perunding_list[${idx}][bidang]" class="form-control form-control-sm" value="${item.bidang}"></td>
+                        <td class="text-center">
+                            <button type="button" class="btn btn-outline-danger btn-sm btn-padam-row-perunding"><i class="bi bi-trash"></i></button>
+                        </td>
+                    `;
+                    bodyPerundingList.appendChild(tr);
+                });
+            } else {
+                // Clear all inputs if empty option selected
+                document.getElementById('da5_no_dpa').value = '';
+                document.getElementById('da5_kod_blok').value = '';
+                document.getElementById('da5_nama_blok').value = '';
+                document.getElementById('da5_fungsi_binaan').value = '';
+                document.getElementById('da5_jenis_binaan').value = '';
+                document.getElementById('da5_gps_x').value = '';
+                document.getElementById('da5_gps_y').value = '';
+                document.getElementById('da5_kontraktor_utama').value = '';
+                document.getElementById('da5_bidang_kontraktor_utama').value = '';
+                document.getElementById('da5_juru_perunding_utama').value = '';
+                document.getElementById('da5_bidang_juru_perunding_utama').value = '';
+                document.getElementById('da5_tahun_siap_bina').value = '';
+                document.getElementById('da5_tarikh_siap_bina').value = '';
+                document.getElementById('da5_fungsi_asal').value = '';
+                document.getElementById('da5_jenis_struktur').value = '';
+                document.getElementById('da5_no_siri_pendaftaran').value = '';
+                document.getElementById('da5_jangka_hayat').value = '';
+                document.getElementById('da5_kapasiti_penghuni').value = '';
+                document.getElementById('da5_kos_bina_asal').value = '';
+                document.getElementById('da5_nilai_semasa').value = '';
+                document.getElementById('da5_tarikh_penilaian').value = '';
+                document.getElementById('da5_sumber_pembiayaan').value = '';
+                document.getElementById('da5_kod_ptj').value = '';
+                document.getElementById('da5_penggunaan_tenaga').value = '';
+                document.getElementById('da5_penggunaan_air').value = '';
+                document.getElementById('da5_jenis_milikan').value = '';
+                document.getElementById('da5_aset_warisan').checked = false;
+                document.getElementById('da5_status_blok').value = '';
+                document.getElementById('da5_bil_aras_atas').value = '';
+                document.getElementById('da5_bil_aras_bawah').value = '';
+                document.getElementById('da5_jumlah_luas_lantai').value = '';
+                document.getElementById('da5_luas_tapak').value = '';
+
+                // Reset to 2 empty rows for contractors
+                bodyKontraktorList.innerHTML = `
+                    <tr>
+                        <td><input type="text" name="kontraktor_list[0][nama]" class="form-control form-control-sm" placeholder="1."></td>
+                        <td><input type="text" name="kontraktor_list[0][bidang]" class="form-control form-control-sm"></td>
+                        <td class="text-center">
+                            <button type="button" class="btn btn-outline-danger btn-sm btn-padam-row-kontraktor"><i class="bi bi-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" name="kontraktor_list[1][nama]" class="form-control form-control-sm" placeholder="2."></td>
+                        <td><input type="text" name="kontraktor_list[1][bidang]" class="form-control form-control-sm"></td>
+                        <td class="text-center">
+                            <button type="button" class="btn btn-outline-danger btn-sm btn-padam-row-kontraktor"><i class="bi bi-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+
+                // Reset to 2 empty rows for perundings
+                bodyPerundingList.innerHTML = `
+                    <tr>
+                        <td><input type="text" name="juru_perunding_list[0][nama]" class="form-control form-control-sm" placeholder="1."></td>
+                        <td><input type="text" name="juru_perunding_list[0][bidang]" class="form-control form-control-sm"></td>
+                        <td class="text-center">
+                            <button type="button" class="btn btn-outline-danger btn-sm btn-padam-row-perunding"><i class="bi bi-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" name="juru_perunding_list[1][nama]" class="form-control form-control-sm" placeholder="2."></td>
+                        <td><input type="text" name="juru_perunding_list[1][bidang]" class="form-control form-control-sm"></td>
+                        <td class="text-center">
+                            <button type="button" class="btn btn-outline-danger btn-sm btn-padam-row-perunding"><i class="bi bi-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            }
+        });
+    }
+
+    // Auto-fill nama_blok from selected kod_blok
+    if (da5_kod_blok) {
+        da5_kod_blok.addEventListener('change', function () {
+            const selectedOption = this.options[this.selectedIndex];
+            const namaBlok = selectedOption.getAttribute('data-nama') || '';
+            document.getElementById('da5_nama_blok').value = namaBlok;
+        });
+    }
+
+    // Clear data confirmation
+    if (btnClearDA5) {
+        btnClearDA5.addEventListener('click', function () {
+            if (confirm('Adakah anda pasti ingin memadam data sesi D.A.5?')) {
+                document.getElementById('clearFormDA5').submit();
+            }
+        });
+    }
+});
 </script>
 
 <style>

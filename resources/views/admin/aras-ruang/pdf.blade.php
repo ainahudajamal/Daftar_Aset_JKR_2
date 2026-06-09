@@ -73,6 +73,53 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
      HELAIAN 1  —  Portrait A4
      MAKLUMAT PREMIS + MAKLUMAT BLOK/BINAAN LUAR + DATA FIELDS
 ================================================================ --}}
+@php
+    $dpaStr = str_replace(' ', '', $da5_data['no_dpa'] ?? '');
+    $dpaChars = str_split($dpaStr);
+
+    $kontraktorList = $da5_data['kontraktor_list'] ?? [];
+    $perundingList = $da5_data['juru_perunding_list'] ?? [];
+
+    $tarikhSiapBinaFormatted = '';
+    if (!empty($da5_data['tarikh_siap_bina'])) {
+        $tarikhSiapBinaFormatted = date('d/m/Y', strtotime($da5_data['tarikh_siap_bina']));
+    }
+
+    $tarikhPenilaianFormatted = '';
+    if (!empty($da5_data['tarikh_penilaian'])) {
+        $tarikhPenilaianFormatted = date('d/m/Y', strtotime($da5_data['tarikh_penilaian']));
+    }
+
+    $kosBinaAsalFormatted = '';
+    if (isset($da5_data['kos_bina_asal']) && $da5_data['kos_bina_asal'] !== '') {
+        $kosBinaAsalFormatted = number_format((float)$da5_data['kos_bina_asal'], 2);
+    }
+
+    $nilaiSemasaFormatted = '';
+    if (isset($da5_data['nilai_semasa']) && $da5_data['nilai_semasa'] !== '') {
+        $nilaiSemasaFormatted = number_format((float)$da5_data['nilai_semasa'], 2);
+    }
+
+    $penggunaanTenagaFormatted = '';
+    if (isset($da5_data['penggunaan_tenaga']) && $da5_data['penggunaan_tenaga'] !== '') {
+        $penggunaanTenagaFormatted = number_format((float)$da5_data['penggunaan_tenaga'], 2);
+    }
+
+    $penggunaanAirFormatted = '';
+    if (isset($da5_data['penggunaan_air']) && $da5_data['penggunaan_air'] !== '') {
+        $penggunaanAirFormatted = number_format((float)$da5_data['penggunaan_air'], 2);
+    }
+
+    $jumlahLuasLantaiFormatted = '';
+    if (isset($da5_data['jumlah_luas_lantai']) && $da5_data['jumlah_luas_lantai'] !== '') {
+        $jumlahLuasLantaiFormatted = number_format((float)$da5_data['jumlah_luas_lantai'], 2);
+    }
+
+    $luasTapakFormatted = '';
+    if (isset($da5_data['luas_tapak']) && $da5_data['luas_tapak'] !== '') {
+        $luasTapakFormatted = number_format((float)$da5_data['luas_tapak'], 2);
+    }
+@endphp
 
 <div class="h-wrap"><span class="h-badge">helaian 1</span></div>
 <div style="text-align:right; font-weight:bold; font-size:13px; margin-bottom:3px;">D.A. 5 (JKR.PATA.F6/12 rev 1)</div>
@@ -86,7 +133,7 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
   <tr>
     <td class="lbl" style="width:82px;">Nama Premis</td>
     <td class="cln">:</td>
-    <td><div class="fline"></div></td>
+    <td><div class="fline" style="padding-left: 5px; line-height: 20px; font-weight: bold;">{{ $da5_data['nama_premis'] ?? '' }}</div></td>
   </tr>
 </table>
 
@@ -99,7 +146,9 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
       <table style="border-collapse:collapse; margin:0; padding:0; font-size:0;">
         <tr>
           @for ($i = 0; $i < 24; $i++)
-          <td style="border:1px solid #000; width:18px; height:22px; padding:0; font-size:0;"></td>
+          <td style="border:1px solid #000; width:18px; height:22px; padding:0; font-size:11px; text-align:center; vertical-align:middle; line-height:22px; font-family: monospace; font-weight: bold;">
+            {{ $dpaChars[$i] ?? '' }}
+          </td>
           @endfor
         </tr>
       </table>
@@ -115,7 +164,7 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
   <tr>
     <td class="lbl" style="width:132px;">Kod Blok/ Binaan Luar</td>
     <td class="cln">:</td>
-    <td style="width:162px;"><div class="fb"></div></td>
+    <td style="width:162px;"><div class="fb" style="padding-left: 5px; line-height: 20px; font-weight: bold;">{{ $da5_data['kod_blok'] ?? '' }}</div></td>
     <td></td>
   </tr>
 </table>
@@ -125,7 +174,7 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
   <tr>
     <td class="lbl" style="width:132px; vertical-align:top; padding-top:2px;">Nama Blok/ Binaan<br>Luar</td>
     <td class="cln" style="vertical-align:top; padding-top:2px;">:</td>
-    <td><div class="fline"></div></td>
+    <td><div class="fline" style="padding-left: 5px; line-height: 20px; font-weight: bold;">{{ $da5_data['nama_blok'] ?? '' }}</div></td>
   </tr>
 </table>
 
@@ -134,11 +183,11 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
   <tr>
     <td class="lbl" style="width:132px;">Fungsi Binaan (Blok)</td>
     <td class="cln">:</td>
-    <td style="width:152px;"><div class="fb"></div></td>
+    <td style="width:152px;"><div class="fb" style="padding-left: 5px; line-height: 20px; font-weight: bold;">{{ $da5_data['fungsi_binaan'] ?? '' }}</div></td>
     <td style="width:12px;"></td>
     <td class="lbl" style="width:100px;">Jenis Binaan Luar</td>
     <td class="cln">:</td>
-    <td><div class="fb"></div></td>
+    <td><div class="fb" style="padding-left: 5px; line-height: 20px; font-weight: bold;">{{ $da5_data['jenis_binaan'] ?? '' }}</div></td>
   </tr>
 </table>
 
@@ -151,10 +200,10 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
       <table style="border-collapse:collapse; font-size:11px;">
         <tr>
           <td style="border:none; font-weight:bold; padding:0 4px 0 0; white-space:nowrap;">X:</td>
-          <td style="border:none; border-bottom:1px solid #000; width:150px; height:22px;"></td>
+          <td style="border:none; border-bottom:1px solid #000; width:150px; height:22px; padding-left: 5px; font-weight: bold;">{{ $da5_data['gps_x'] ?? '' }}</td>
           <td style="border:none; font-weight:bold; padding:0 5px; white-space:nowrap;">;</td>
           <td style="border:none; font-weight:bold; padding:0 4px 0 0; white-space:nowrap;">Y:</td>
-          <td style="border:none; border-bottom:1px solid #000; width:150px; height:22px;"></td>
+          <td style="border:none; border-bottom:1px solid #000; width:150px; height:22px; padding-left: 5px; font-weight: bold;">{{ $da5_data['gps_y'] ?? '' }}</td>
         </tr>
       </table>
     </td>
@@ -170,7 +219,7 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
         <tr>
           <td class="lbl" style="width:125px;">Kontraktor Utama</td>
           <td class="cln">:</td>
-          <td><div class="fb"></div></td>
+          <td><div class="fb" style="padding-left: 5px; line-height: 20px; font-weight: bold;">{{ $da5_data['kontraktor_utama'] ?? '' }}</div></td>
         </tr>
       </table>
     </td>
@@ -180,7 +229,7 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
         <tr>
           <td class="lbl" style="width:78px;">Bidang Kerja</td>
           <td class="cln">:</td>
-          <td><div class="fb"></div></td>
+          <td><div class="fb" style="padding-left: 5px; line-height: 20px; font-weight: bold;">{{ $da5_data['bidang_kontraktor_utama'] ?? '' }}</div></td>
         </tr>
       </table>
     </td>
@@ -197,8 +246,8 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
           <td class="cln">:</td>
           <td>
             <table style="width:100%; border-collapse:collapse; border:1px solid #000;">
-              <tr><td style="height:22px; padding:0 4px; border-bottom:1px solid #000; font-size:11px;">1.</td></tr>
-              <tr><td style="height:22px; padding:0 4px; font-size:11px;">2.</td></tr>
+              <tr><td style="height:22px; padding:0 4px; border-bottom:1px solid #000; font-size:11px; vertical-align:middle; font-weight: bold;">1. {{ $kontraktorList[0]['nama'] ?? '' }}</td></tr>
+              <tr><td style="height:22px; padding:0 4px; font-size:11px; vertical-align:middle; font-weight: bold;">2. {{ $kontraktorList[1]['nama'] ?? '' }}</td></tr>
             </table>
           </td>
         </tr>
@@ -212,8 +261,8 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
           <td class="cln">:</td>
           <td>
             <table style="width:100%; border-collapse:collapse; border:1px solid #000;">
-              <tr><td style="height:22px; padding:0 4px; border-bottom:1px solid #000; font-size:11px;">1.</td></tr>
-              <tr><td style="height:22px; padding:0 4px; font-size:11px;">2.</td></tr>
+              <tr><td style="height:22px; padding:0 4px; border-bottom:1px solid #000; font-size:11px; vertical-align:middle; font-weight: bold;">{{ $kontraktorList[0]['bidang'] ?? '' }}</td></tr>
+              <tr><td style="height:22px; padding:0 4px; font-size:11px; vertical-align:middle; font-weight: bold;">{{ $kontraktorList[1]['bidang'] ?? '' }}</td></tr>
             </table>
           </td>
         </tr>
@@ -231,7 +280,7 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
         <tr>
           <td class="lbl" style="width:125px;">Juru Perunding Utama</td>
           <td class="cln">:</td>
-          <td><div class="fb"></div></td>
+          <td><div class="fb" style="padding-left: 5px; line-height: 20px; font-weight: bold;">{{ $da5_data['juru_perunding_utama'] ?? '' }}</div></td>
         </tr>
       </table>
     </td>
@@ -241,7 +290,7 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
         <tr>
           <td class="lbl" style="width:78px;">Bidang Kerja</td>
           <td class="cln">:</td>
-          <td><div class="fb"></div></td>
+          <td><div class="fb" style="padding-left: 5px; line-height: 20px; font-weight: bold;">{{ $da5_data['bidang_juru_perunding_utama'] ?? '' }}</div></td>
         </tr>
       </table>
     </td>
@@ -258,8 +307,8 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
           <td class="cln">:</td>
           <td>
             <table style="width:100%; border-collapse:collapse; border:1px solid #000;">
-              <tr><td style="height:22px; padding:0 4px; border-bottom:1px solid #000; font-size:11px;">1.</td></tr>
-              <tr><td style="height:22px; padding:0 4px; font-size:11px;">2.</td></tr>
+              <tr><td style="height:22px; padding:0 4px; border-bottom:1px solid #000; font-size:11px; vertical-align:middle; font-weight: bold;">1. {{ $perundingList[0]['nama'] ?? '' }}</td></tr>
+              <tr><td style="height:22px; padding:0 4px; font-size:11px; vertical-align:middle; font-weight: bold;">2. {{ $perundingList[1]['nama'] ?? '' }}</td></tr>
             </table>
           </td>
         </tr>
@@ -273,8 +322,8 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
           <td class="cln">:</td>
           <td>
             <table style="width:100%; border-collapse:collapse; border:1px solid #000;">
-              <tr><td style="height:22px; padding:0 4px; border-bottom:1px solid #000; font-size:11px;">1.</td></tr>
-              <tr><td style="height:22px; padding:0 4px; font-size:11px;">2.</td></tr>
+              <tr><td style="height:22px; padding:0 4px; border-bottom:1px solid #000; font-size:11px; vertical-align:middle; font-weight: bold;">{{ $perundingList[0]['bidang'] ?? '' }}</td></tr>
+              <tr><td style="height:22px; padding:0 4px; font-size:11px; vertical-align:middle; font-weight: bold;">{{ $perundingList[1]['bidang'] ?? '' }}</td></tr>
             </table>
           </td>
         </tr>
@@ -294,7 +343,7 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
         <tr>
           <td class="lbl" style="width:148px;">Tahun Siap Bina Asal</td>
           <td class="cln">:</td>
-          <td><div class="fb"></div></td>
+          <td><div class="fb" style="padding-left: 5px; line-height: 20px; font-weight: bold;">{{ $da5_data['tahun_siap_bina'] ?? '' }}</div></td>
         </tr>
         <tr>
           <td class="lbl" style="width:148px;">Tarikh Siap Bina Asal</td>
@@ -302,8 +351,8 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
           <td>
             <table style="width:100%; border-collapse:collapse; border:1px solid #000;">
               <tr>
-                <td style="height:22px; padding:0 3px; width:50%;"></td>
-                <td class="hint" style="padding-right:3px;">( hh / bb / tttt )</td>
+                <td style="height:22px; padding:0 5px; width:50%; font-size:11px; vertical-align:middle; font-weight: bold;">{{ $tarikhSiapBinaFormatted }}</td>
+                <td class="hint" style="padding-right:3px; text-align:right;">( hh / bb / tttt )</td>
               </tr>
             </table>
           </td>
@@ -311,32 +360,32 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
         <tr>
           <td class="lbl" style="width:148px;">Fungsi Asal</td>
           <td class="cln">:</td>
-          <td><div class="fb"></div></td>
+          <td><div class="fb" style="padding-left: 5px; line-height: 20px; font-weight: bold;">{{ $da5_data['fungsi_asal'] ?? '' }}</div></td>
         </tr>
         <tr>
           <td class="lbl" style="width:148px;">Jenis Struktur (blok)</td>
           <td class="cln">:</td>
-          <td><div class="fb"></div></td>
+          <td><div class="fb" style="padding-left: 5px; line-height: 20px; font-weight: bold;">{{ $da5_data['jenis_struktur'] ?? '' }}</div></td>
         </tr>
         <tr>
           <td class="lbl" style="width:148px;">No. Siri Pendaftaran</td>
           <td class="cln">:</td>
-          <td><div class="fb"></div></td>
+          <td><div class="fb" style="padding-left: 5px; line-height: 20px; font-weight: bold;">{{ $da5_data['no_siri_pendaftaran'] ?? '' }}</div></td>
         </tr>
         <tr>
           <td class="lbl" style="width:148px;">Jangka hayat (Tahun)</td>
           <td class="cln">:</td>
-          <td><div class="fb"></div></td>
+          <td><div class="fb" style="padding-left: 5px; line-height: 20px; font-weight: bold;">{{ $da5_data['jangka_hayat'] ?? '' }}</div></td>
         </tr>
         <tr>
           <td class="lbl" style="width:148px;">Kapasiti Penghuni Asal</td>
           <td class="cln">:</td>
-          <td><div class="fb"></div></td>
+          <td><div class="fb" style="padding-left: 5px; line-height: 20px; font-weight: bold;">{{ $da5_data['kapasiti_penghuni'] ?? '' }}</div></td>
         </tr>
         <tr>
           <td class="lbl" style="width:148px;">Kos Bina Asal (RM)</td>
           <td class="cln">:</td>
-          <td><div class="fb"></div></td>
+          <td><div class="fb" style="padding-left: 5px; line-height: 20px; font-weight: bold;">{{ $kosBinaAsalFormatted }}</div></td>
         </tr>
       </table>
     </td>
@@ -347,7 +396,7 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
         <tr>
           <td class="lbl" style="width:125px;">Nilai Semasa (RM)</td>
           <td class="cln">:</td>
-          <td><div class="fb"></div></td>
+          <td><div class="fb" style="padding-left: 5px; line-height: 20px; font-weight: bold;">{{ $nilaiSemasaFormatted }}</div></td>
         </tr>
         <tr>
           <td class="lbl" style="width:125px;">Tahun Penilaian</td>
@@ -355,8 +404,8 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
           <td>
             <table style="width:100%; border-collapse:collapse; border:1px solid #000;">
               <tr>
-                <td style="height:22px; padding:0 3px; width:40%;"></td>
-                <td class="hint" style="padding-right:3px;">( hh / bb / tttt )</td>
+                <td style="height:22px; padding:0 5px; width:40%; font-size:11px; vertical-align:middle; font-weight: bold;">{{ $tarikhPenilaianFormatted }}</td>
+                <td class="hint" style="padding-right:3px; text-align:right;">( hh / bb / tttt )</td>
               </tr>
             </table>
           </td>
@@ -364,12 +413,12 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
         <tr>
           <td class="lbl" style="width:125px;">Sumber Pembiayaan</td>
           <td class="cln">:</td>
-          <td><div class="fb"></div></td>
+          <td><div class="fb" style="padding-left: 5px; line-height: 20px; font-weight: bold;">{{ $da5_data['sumber_pembiayaan'] ?? '' }}</div></td>
         </tr>
         <tr>
           <td class="lbl" style="width:125px;">Kod PTJ</td>
           <td class="cln">:</td>
-          <td><div class="fb"></div></td>
+          <td><div class="fb" style="padding-left: 5px; line-height: 20px; font-weight: bold;">{{ $da5_data['kod_ptj'] ?? '' }}</div></td>
         </tr>
         <tr>
           <td class="lbl" style="width:125px;">Penggunaan Tenaga</td>
@@ -377,8 +426,8 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
           <td>
             <table style="width:100%; border-collapse:collapse; border:1px solid #000;">
               <tr>
-                <td style="height:22px; padding:0 3px; width:30%;"></td>
-                <td class="hint" style="padding-right:3px;">(kiloWatt/jam/tahun)</td>
+                <td style="height:22px; padding:0 5px; width:30%; font-size:11px; vertical-align:middle; font-weight: bold;">{{ $penggunaanTenagaFormatted }}</td>
+                <td class="hint" style="padding-right:3px; text-align:right;">(kiloWatt/jam/tahun)</td>
               </tr>
             </table>
           </td>
@@ -389,8 +438,8 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
           <td>
             <table style="width:100%; border-collapse:collapse; border:1px solid #000;">
               <tr>
-                <td style="height:22px; padding:0 3px;"></td>
-                <td class="hint" style="padding-right:3px;">m&#179;/tahun</td>
+                <td style="height:22px; padding:0 5px; font-size:11px; vertical-align:middle; font-weight: bold;">{{ $penggunaanAirFormatted }}</td>
+                <td class="hint" style="padding-right:3px; text-align:right;">m&#179;/tahun</td>
               </tr>
             </table>
           </td>
@@ -398,7 +447,15 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
         <tr>
           <td class="lbl" style="width:125px; vertical-align:top; padding-top:2px;">Jenis Milikan</td>
           <td class="cln" style="vertical-align:top; padding-top:2px;">:</td>
-          <td style="padding:2px 1px; line-height:1.4;">Pajakan/ Pegangan<br>Bebas</td>
+          <td style="padding:2px 1px; line-height:1.4; font-weight: bold;">
+            @if(($da5_data['jenis_milikan'] ?? '') === 'Pajakan')
+              <u>Pajakan</u> / <span style="text-decoration: line-through; font-weight: normal; color: #555;">Pegangan Bebas</span>
+            @elseif(($da5_data['jenis_milikan'] ?? '') === 'Pegangan Bebas')
+              <span style="text-decoration: line-through; font-weight: normal; color: #555;">Pajakan</span> / <u>Pegangan Bebas</u>
+            @else
+              Pajakan / Pegangan Bebas
+            @endif
+          </td>
         </tr>
       </table>
     </td>
@@ -425,7 +482,9 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
           <td class="lbl" style="width:85px;">Aset Warisan</td>
           <td class="cln">:</td>
           <td style="vertical-align:middle;">
-            <span class="small-box"></span>
+            <span class="small-box" style="text-align:center; line-height:12px; font-weight:bold; font-size:12px;">
+              {{ ($da5_data['aset_warisan'] ?? '') == '1' ? '✓' : '' }}
+            </span>
             <span style="font-style:italic; font-size:9.5px; vertical-align:middle;">(tandakan jika Ya)</span>
           </td>
         </tr>
@@ -437,7 +496,15 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
         <tr>
           <td class="lbl" style="width:128px; vertical-align:top;">Status Blok /<br>Binaan Luar</td>
           <td class="cln" style="vertical-align:top; padding-top:2px;">:</td>
-          <td style="padding:2px 1px;">Aktif / Tidak Aktif</td>
+          <td style="padding:2px 1px; font-weight: bold;">
+            @if(($da5_data['status_blok'] ?? '') === 'aktif')
+              <u>Aktif</u> / <span style="text-decoration: line-through; font-weight: normal; color: #555;">Tidak Aktif</span>
+            @elseif(($da5_data['status_blok'] ?? '') === 'tidak_aktif')
+              <span style="text-decoration: line-through; font-weight: normal; color: #555;">Aktif</span> / <u>Tidak Aktif</u>
+            @else
+              Aktif / Tidak Aktif
+            @endif
+          </td>
         </tr>
       </table>
     </td>
@@ -452,7 +519,7 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
         <tr>
           <td class="lbl" style="width:152px;">** Bil. Aras Atas Tanah</td>
           <td class="cln">:</td>
-          <td style="width:115px;"><div class="fb"></div></td>
+          <td style="width:115px;"><div class="fb" style="padding-left: 5px; line-height: 20px; font-weight: bold;">{{ $da5_data['bil_aras_atas'] ?? '' }}</div></td>
           <td></td>
         </tr>
       </table>
@@ -466,8 +533,8 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
           <td>
             <table style="width:100%; border-collapse:collapse; border:1px solid #000;">
               <tr>
-                <td style="height:22px; padding:0 3px;"></td>
-                <td style="text-align:right; padding-right:4px; font-size:11px; white-space:nowrap;">m&#178;</td>
+                <td style="height:22px; padding:0 5px; font-size:11px; vertical-align:middle; font-weight: bold;">{{ $jumlahLuasLantaiFormatted }}</td>
+                <td style="text-align:right; padding-right:4px; font-size:11px; white-space:nowrap; width:25px;">m&#178;</td>
               </tr>
             </table>
           </td>
@@ -485,7 +552,7 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
         <tr>
           <td class="lbl" style="width:152px; vertical-align:top;">** Bil. Aras Bawah<br>&nbsp;&nbsp;&nbsp;&nbsp;Tanah</td>
           <td class="cln" style="vertical-align:top; padding-top:2px;">:</td>
-          <td style="width:115px;"><div class="fb"></div></td>
+          <td style="width:115px;"><div class="fb" style="padding-left: 5px; line-height: 20px; font-weight: bold;">{{ $da5_data['bil_aras_bawah'] ?? '' }}</div></td>
           <td></td>
         </tr>
       </table>
@@ -499,8 +566,8 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
           <td>
             <table style="width:100%; border-collapse:collapse; border:1px solid #000;">
               <tr>
-                <td style="height:22px; padding:0 3px;"></td>
-                <td style="text-align:right; padding-right:4px; font-size:11px; white-space:nowrap;">m&#178;</td>
+                <td style="height:22px; padding:0 5px; font-size:11px; vertical-align:middle; font-weight: bold;">{{ $luasTapakFormatted }}</td>
+                <td style="text-align:right; padding-right:4px; font-size:11px; white-space:nowrap; width:25px;">m&#178;</td>
               </tr>
             </table>
           </td>
