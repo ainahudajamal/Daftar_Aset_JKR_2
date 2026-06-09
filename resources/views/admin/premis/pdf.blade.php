@@ -151,18 +151,14 @@
                 <td class="label">Nama Premis</td>
                 <td class="colon">:</td>
                 <td>
-                    <div class="input-box">
-                        {!! $premis->nama_premis ?? '&nbsp;' !!}
-                    </div>
+                    <div class="input-box">{!! $premis->nama_premis ?? '&nbsp;' !!}</div>
                 </td>
             </tr>
             <tr>
                 <td class="label">Alamat Premis</td>
                 <td class="colon">:</td>
                 <td>
-                    <div class="input-box">
-                        {!! $premis->alamat_premis ?? '&nbsp;' !!}
-                    </div>
+                    <div class="input-box">{!! $premis->alamat_premis ?? '&nbsp;' !!}</div>
                 </td>
             </tr>
         </table>
@@ -174,14 +170,13 @@
                 <td width="150px">
                     <div class="input-box">{{ $premis->poskod ?? '' }}</div>
                 </td>
-                <td style="font-weight:bold; text-align:right; white-space:nowrap; width:130px;">Koordinat GPS : X :
-                </td>
+                <td style="font-weight:bold; text-align:right; white-space:nowrap; width:130px;">Koordinat GPS : X :</td>
                 <td width="100px">
-                    <div class="input-box">{{ $premis->gps_x ?? '' }}</div>
+                    <div class="input-box">{{ $premis->koordinat_x ?? '' }}</div>
                 </td>
                 <td style="font-weight:bold; text-align:center; width:30px;">; Y :</td>
                 <td width="100px">
-                    <div class="input-box">{{ $premis->gps_y ?? '' }}</div>
+                    <div class="input-box">{{ $premis->koordinat_y ?? '' }}</div>
                 </td>
             </tr>
         </table>
@@ -195,37 +190,27 @@
                         <tr>
                             <td class="label">Kumpulan Agensi</td>
                             <td class="colon">:</td>
-                            <td>
-                                <div class="input-box">{{ $premis->kumpulan_agensi ?? '' }}</div>
-                            </td>
+                            <td><div class="input-box">{{ $premis->kumpulan_agensi ?? '' }}</div></td>
                         </tr>
                         <tr>
                             <td class="label">Kementerian</td>
                             <td class="colon">:</td>
-                            <td>
-                                <div class="input-box">{{ $premis->kementerian ?? '' }}</div>
-                            </td>
+                            <td><div class="input-box">{{ $premis->kementerian ?? '' }}</div></td>
                         </tr>
                         <tr>
                             <td class="label">Jabatan</td>
                             <td class="colon">:</td>
-                            <td>
-                                <div class="input-box">{{ $premis->jabatan ?? '' }}</div>
-                            </td>
+                            <td><div class="input-box">{{ $premis->jabatan ?? '' }}</div></td>
                         </tr>
                         <tr>
                             <td class="label">Negara</td>
                             <td class="colon">:</td>
-                            <td>
-                                <div class="input-box">{{ $premis->negara ?? '' }}</div>
-                            </td>
+                            <td><div class="input-box">{{ $premis->negara ?? '' }}</div></td>
                         </tr>
                         <tr>
                             <td class="label">Negeri</td>
                             <td class="colon">:</td>
-                            <td>
-                                <div class="input-box">{{ $premis->negeri ?? '' }}</div>
-                            </td>
+                            <td><div class="input-box">{{ $premis->negeri ?? '' }}</div></td>
                         </tr>
                     </table>
                 </td>
@@ -235,38 +220,27 @@
                         <tr>
                             <td class="label">Daerah</td>
                             <td class="colon">:</td>
-                            <td>
-                                <div class="input-box">{{ $premis->daerah ?? '' }}</div>
-                            </td>
+                            <td><div class="input-box">{{ $premis->daerah ?? '' }}</div></td>
                         </tr>
                         <tr>
                             <td class="label">Mukim/ Bandar</td>
                             <td class="colon">:</td>
-                            <td>
-                                <div class="input-box">{{ $premis->mukim_bandar ?? '' }}</div>
-                            </td>
+                            <td><div class="input-box">{{ $premis->mukim_bandar ?? '' }}</div></td>
                         </tr>
                         <tr>
                             <td class="label">Kategori Premis</td>
                             <td class="colon">:</td>
-                            <td>
-                                <div class="input-box">{{ $premis->kategori_premis ?? '' }}</div>
-                            </td>
+                            <td><div class="input-box">{{ $premis->kategori_premis ?? '' }}</div></td>
                         </tr>
-                        
                         <tr>
                             <td class="label">Sub Kategori</td>
                             <td class="colon">:</td>
-                            <td>
-                                <div class="input-box">{{ $premis->sub_kategori ?? '' }}</div>
-                            </td>
+                            <td><div class="input-box">{{ $premis->sub_kategori ?? '' }}</div></td>
                         </tr>
                         <tr>
                             <td class="label">Jumlah Keluasan Premis</td>
                             <td class="colon">:</td>
-                            <td>
-                                <div class="input-box">{{ $premis->jumlah_keluasan ?? '' }}</div>
-                            </td>
+                            <td><div class="input-box">{{ $premis->jumlah_keluasan ?? '' }}</div></td>
                         </tr>
                     </table>
                 </td>
@@ -282,7 +256,7 @@
                         <tr>
                             <td class="label">Status Premis</td>
                             <td class="colon">:</td>
-                            <td>Aktif</td>
+                            <td>{{ $premis->status_premis ?? 'Aktif' }}</td>
                         </tr>
                     </table>
                 </td>
@@ -293,7 +267,7 @@
                             <td class="label">Aset Warisan</td>
                             <td class="colon">:</td>
                             <td>
-                                <span class="small-box"></span>
+                                <span class="small-box">{{ $premis->aset_warisan ? '✓' : '' }}</span>
                                 <span class="note" style="margin-left: 5px;">(tandakan jika Ya)</span>
                             </td>
                         </tr>
@@ -311,30 +285,22 @@
                         <tr>
                             <td class="label">Kos Siap Bina Asal</td>
                             <td class="colon">:</td>
-                            <td>
-                                <div class="input-box">RM {{ $premis->kos_siap_bina ?? '' }}</div>
-                            </td>
+                            <td><div class="input-box">RM {{ $premis->kos_siap_bina_asal ?? '' }}</div></td>
                         </tr>
                         <tr>
                             <td class="label">*Kos Tambahan (PPUN)</td>
                             <td class="colon">:</td>
-                            <td>
-                                <div class="input-box">RM {{ $premis->kos_tambahan ?? '' }}</div>
-                            </td>
+                            <td><div class="input-box">RM {{ $premis->kos_tambahan_ppun ?? '' }}</div></td>
                         </tr>
                         <tr>
                             <td class="label">Kos Keseluruhan Aset</td>
                             <td class="colon">:</td>
-                            <td>
-                                <div class="input-box">{{ $premis->kos_keseluruhan ?? '' }}</div>
-                            </td>
+                            <td><div class="input-box">{{ $premis->kos_keseluruhan ?? '' }}</div></td>
                         </tr>
                         <tr>
                             <td class="label">Tarikh Siap Bina</td>
                             <td class="colon">:</td>
-                            <td>
-                                <div class="input-box">{{ $premis->tarikh_siap_bina ?? '' }}</div>
-                            </td>
+                            <td><div class="input-box">{{ $premis->tarikh_siap_bina ? $premis->tarikh_siap_bina->format('d/m/Y') : '' }}</div></td>
                         </tr>
                         <tr>
                             <td colspan="3" style="padding-top: 15px;">
@@ -349,44 +315,32 @@
                         <tr>
                             <td class="label">Sumber Pembiayaan</td>
                             <td class="colon">:</td>
-                            <td>
-                                <div class="input-box">{{ $premis->sumber_pembiayaan ?? '' }}</div>
-                            </td>
+                            <td><div class="input-box">{{ $premis->sumber_pembiayaan ?? '' }}</div></td>
                         </tr>
                         <tr>
                             <td class="label">Kod PTJ</td>
                             <td class="colon">:</td>
-                            <td>
-                                <div class="input-box">{{ $premis->kod_ptj ?? '' }}</div>
-                            </td>
+                            <td><div class="input-box">{{ $premis->kod_ptj ?? '' }}</div></td>
                         </tr>
                         <tr>
                             <td class="label">Nilai Semasa</td>
                             <td class="colon">:</td>
-                            <td>
-                                <div class="input-box">{{ $premis->nilai_semasa ?? '' }}</div>
-                            </td>
+                            <td><div class="input-box">{{ $premis->nilai_semasa ?? '' }}</div></td>
                         </tr>
                         <tr>
                             <td class="label">Tarikh Penilaian</td>
                             <td class="colon">:</td>
-                            <td>
-                                <div class="input-box">{{ $premis->tarikh_penilaian ?? '' }}</div>
-                            </td>
+                            <td><div class="input-box">{{ $premis->tarikh_penilaian ? $premis->tarikh_penilaian->format('d/m/Y') : '' }}</div></td>
                         </tr>
                         <tr>
                             <td class="label">Bil. Blok Bangunan</td>
                             <td class="colon">:</td>
-                            <td>
-                                <div class="input-box">{{ $premis->bil_blok ?? '' }}</div>
-                            </td>
+                            <td><div class="input-box">{{ $premis->bil_blok_bangunan ?? '' }}</div></td>
                         </tr>
                         <tr>
                             <td class="label">Bil. Binaan Luar</td>
                             <td class="colon">:</td>
-                            <td>
-                                <div class="input-box">{{ $premis->bil_binaan_luar ?? '' }}</div>
-                            </td>
+                            <td><div class="input-box">{{ $premis->bil_binaan_luar ?? '' }}</div></td>
                         </tr>
                     </table>
                 </td>
@@ -399,9 +353,7 @@
             <tr>
                 <td class="label">Catatan</td>
                 <td class="colon">:</td>
-                <td>
-                    <div class="line-box">{{ $premis->catatan ?? '' }}</div>
-                </td>
+                <td><div class="line-box">{{ $premis->catatan ?? '' }}</div></td>
             </tr>
         </table>
 
@@ -422,8 +374,9 @@
                 <td class="label"><b>**NO DPA</b></td>
                 <td class="colon">:</td>
                 <td style="white-space: nowrap;">
+                    @php $dpa = str_split(str_pad((string)($premis->no_dpa ?? ''), 24)); @endphp
                     @for ($i = 0; $i < 24; $i++)
-                        <span class="dpa-box"></span>
+                        <span class="dpa-box">{{ $dpa[$i] ?? '' }}</span>
                     @endfor
                 </td>
             </tr>
@@ -448,64 +401,48 @@
                         <tr>
                             <td class="label" style="width: 80px;">Tandatangan</td>
                             <td class="colon">:</td>
-                            <td>
-                                <div class="signature-box"></div>
-                            </td>
+                            <td><div class="signature-box"></div></td>
                         </tr>
                         <tr>
                             <td class="label" style="width: 80px;">Nama</td>
                             <td class="colon">:</td>
-                            <td>
-                                <div class="line-box"></div>
-                            </td>
+                            <td><div class="line-box">{{ $premis->pengumpul_nama ?? '' }}</div></td>
                         </tr>
                         <tr>
                             <td class="label" style="width: 80px;">Jawatan</td>
                             <td class="colon">:</td>
-                            <td>
-                                <div class="line-box"></div>
-                            </td>
+                            <td><div class="line-box">{{ $premis->pengumpul_jawatan ?? '' }}</div></td>
                         </tr>
                         <tr>
                             <td class="label" style="width: 80px;">Tarikh</td>
                             <td class="colon">:</td>
-                            <td>
-                                <div class="line-box"></div>
-                            </td>
+                            <td><div class="line-box">{{ $premis->pengumpul_tarikh ?? '' }}</div></td>
                         </tr>
                     </table>
                 </td>
                 <td width="10%"></td>
                 <td width="45%" valign="top">
-                    <h3 style="text-align:left; margin-bottom: 10px; font-size: 12px;">PENGESAH DATA :</h3>
+                    <h3 style="text-align:left; margin-bottom: 10px; font-size: 12px;">PENGESAH DATA:</h3>
                     <table class="no-border">
                         <tr>
                             <td class="label" style="width: 80px;">Tandatangan</td>
                             <td class="colon">:</td>
-                            <td>
-                                <div class="signature-box"></div>
-                            </td>
+                            <td><div class="signature-box"></div></td>
                         </tr>
                         <tr>
                             <td class="label" style="width: 80px;">Nama</td>
                             <td class="colon">:</td>
-                            <td>
-                                <div class="line-box"></div>
-                            </td>
+                            <td><div class="line-box">{{ $premis->pengesah_nama ?? '' }}</div></td>
                         </tr>
                         <tr>
                             <td class="label" style="width: 80px;">Jawatan</td>
                             <td class="colon">:</td>
-                            <td>
-                                <div class="line-box"></div>
-                            </td>
+                            <td><div class="line-box">{{ $premis->pengesah_jawatan ?? '' }}</div></td>
                         </tr>
                         <tr>
                             <td class="label" style="width: 80px;">Tarikh</td>
                             <td class="colon">:</td>
-                            <td>
-                                <div class="line-box"></div>
-                            </td>
+                            <td><div class="line-box">{{ $premis->pengesah_tarikh ?? '' }}</div></td>
                         </tr>
                     </table>
                 </td>
@@ -537,28 +474,40 @@
                     <th colspan="2" style="width: 20%;">Nilai Tanah</th>
                 </tr>
                 <tr>
-                    <th style="font-weight: normal; font-size: 9px; font-style: italic;">* Hakmilik / Rizab/ Strata /
-                        Lain-lain</th>
-                    <th style="font-weight: normal; font-size: 9px; font-style: italic;">*Kekal/ Pajak (
-                        &nbsp;&nbsp;&nbsp; ) Tahun</th>
+                    <th style="font-weight: normal; font-size: 9px; font-style: italic;">* Hakmilik / Rizab / Strata / Lain-lain</th>
+                    <th style="font-weight: normal; font-size: 9px; font-style: italic;">*Kekal / Pajak ( &nbsp;&nbsp;&nbsp; ) Tahun</th>
                     <th>Harga Perolehan (RM)</th>
                     <th>Harga Semasa (RM)</th>
                 </tr>
             </thead>
             <tbody>
+                @forelse($premis->tanah as $index => $tanah)
+                <tr>
+                    <td>{{ $index + 1 }}</td>
+                    <td>{{ $tanah->no_lot }}</td>
+                    <td>{{ $tanah->status_hakmilik }}</td>
+                    <td>{{ $tanah->keluasan_tanah }}</td>
+                    <td>{{ $tanah->no_hakmilik }}</td>
+                    <td>{{ $tanah->jenis_hakmilik }}</td>
+                    <td>{{ $tanah->kegunaan_tanah }}</td>
+                    <td>{{ $tanah->harga_perolehan }}</td>
+                    <td>{{ $tanah->harga_semasa }}</td>
+                </tr>
+                @empty
                 @for ($i = 0; $i < 3; $i++)
-                    <tr>
-                        <td height="25">&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                    </tr>
+                <tr>
+                    <td height="25">&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
                 @endfor
+                @endforelse
             </tbody>
         </table>
 
@@ -577,15 +526,25 @@
                 </tr>
             </thead>
             <tbody>
+                @forelse($premis->lukisan as $index => $lukisan)
+                <tr>
+                    <td>{{ $index + 1 }}</td>
+                    <td>{{ $lukisan->bidang }}</td>
+                    <td>{{ $lukisan->tajuk_lukisan }}</td>
+                    <td>{{ $lukisan->no_rujukan }}</td>
+                    <td>{{ $lukisan->catatan }}</td>
+                </tr>
+                @empty
                 @for ($i = 0; $i < 5; $i++)
-                    <tr>
-                        <td height="25">&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                    </tr>
+                <tr>
+                    <td height="25">&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
                 @endfor
+                @endforelse
             </tbody>
         </table>
 
