@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Premis;
+use App\Models\PremisTanah;
+use App\Models\PremisLukisan;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -10,7 +13,8 @@ class AdminPremisController extends Controller
 {
     public function index()
     {
-        return view('admin.premis.index');
+        $premis = Premis::latest()->paginate(10);
+        return view('admin.premis.index', compact('premis'));
     }
 
     public function create()
@@ -18,54 +22,106 @@ class AdminPremisController extends Controller
         return view('admin.premis.create');
     }
 
+    public function store(Request $request)
+{
+    $request->validate([
+        'nama_premis'  => 'required|string|max:255',
+        'no_dpa'       => 'nullable|string|unique:premis,no_dpa',
+        'koordinat_x'  => 'nullable|numeric|between:-90,90',
+        'koordinat_y'  => 'nullable|numeric|between:-180,180',
+    ]);
+
+    $premis = Premis::create($request->except(['tanah', 'lukisan']));
+
+    // Simpan premis_tanah
+    if ($request->has('tanah')) {
+        foreach ($request->tanah as $tanah) {
+            if (!empty($tanah['no_lot'])) {
+                $premis->tanah()->create($tanah);
+            }
+        }
+    }
+
+    // Simpan premis_lukisan
+    if ($request->has('lukisan')) {
+        foreach ($request->lukisan as $lukisan) {
+            if (!empty($lukisan['tajuk_lukisan'])) {
+                $premis->lukisan()->create($lukisan);
+            }
+        }
+    }
+
+    return redirect()->route('admin.premis.index')
+        ->with('success', 'Premis berjaya didaftarkan.');
+}
+
     public function show($id)
     {
-        return view('admin.premis.show');
+        $premis = Premis::with(['tanah', 'lukisan'])->findOrFail($id);
+        return view('admin.premis.show', compact('premis'));
     }
 
     public function edit($id)
     {
-        return view('admin.premis.edit');
+        $premis = Premis::with(['tanah', 'lukisan'])->findOrFail($id);
+        return view('admin.premis.edit', compact('premis'));
     }
 
-   public function exportPdf()
-{
-    $premis = (object)[
-        'nama_premis'       => '',
-        'alamat_premis'     => '',
-        'poskod'            => '',
-        'gps_x'             => '',
-        'gps_y'             => '',
-        'kumpulan_agensi'   => '',
-        'kementerian'       => '',
-        'jabatan'           => '',
-        'negara'            => '',
-        'negeri'            => '',
-        'daerah'            => '',
-        'mukim_bandar'      => '',
-        'kategori_premis'   => '',
-        'sub_kategori'      => '',
-        'jumlah_keluasan'   => '',
-        'kos_siap_bina'     => '',
-        'kos_tambahan'      => '',
-        'kos_keseluruhan'   => '',
-        'tarikh_siap_bina'  => '',
-        'sumber_pembiayaan' => '',
-        'kod_ptj'           => '',
-        'nilai_semasa'      => '',
-        'tarikh_penilaian'  => '',
-        'bil_blok'          => '',
-        'bil_binaan_luar'   => '',
-        'catatan'           => '',
-    ];
+    public function update(Request $request, $id)
+    {
+        $premis = Premis::findOrFail($id);
 
-    $pdf = Pdf::loadView('admin.premis.pdf', compact('premis'))
-        ->setPaper('a4', 'portrait')
-        ->setOption('margin_top', 10)
-        ->setOption('margin_bottom', 10)
-        ->setOption('margin_left', 10)
-        ->setOption('margin_right', 10);
+        $request->validate([
+            'nama_premis' => 'required|string|max:255',
+            'no_dpa'      => 'nullable|string|unique:premis,no_dpa,' . $id,
+        ]);
 
-    return $pdf->stream('DA3-Premis.pdf');
-}
+        $premis->update($request->except(['tanah', 'lukisan']));
+
+        // Update premis_tanah
+        $premis->tanah()->delete();
+        if ($request->has('tanah')) {
+            foreach ($request->tanah as $tanah) {
+                if (!empty($tanah['no_lot'])) {
+                    $premis->tanah()->create($tanah);
+                }
+            }
+        }
+
+        // Update premis_lukisan
+        $premis->lukisan()->delete();
+        if ($request->has('lukisan')) {
+            foreach ($request->lukisan as $lukisan) {
+                if (!empty($lukisan['tajuk_lukisan'])) {
+                    $premis->lukisan()->create($lukisan);
+                }
+            }
+        }
+
+        return redirect()->route('admin.premis.index')
+            ->with('success', 'Premis berjaya dikemaskini.');
+    }
+
+    public function destroy($id)
+    {
+        $premis = Premis::findOrFail($id);
+        $premis->delete();
+
+        return redirect()->route('admin.premis.index')
+            ->with('success', 'Premis berjaya dipadam.');
+    }
+
+    public function exportPdf($id)
+    {
+        $premis = Premis::with(['tanah', 'lukisan'])->findOrFail($id);
+
+        $pdf = Pdf::loadView('admin.premis.pdf', compact('premis'))
+            ->setPaper('a4', 'portrait')
+            ->setOption('margin_top', 10)
+            ->setOption('margin_bottom', 10)
+            ->setOption('margin_left', 10)
+            ->setOption('margin_right', 10);
+
+        return $pdf->stream('DA3-Premis.pdf');
+    }
 }
