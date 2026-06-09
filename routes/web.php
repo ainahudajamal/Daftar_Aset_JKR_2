@@ -164,9 +164,12 @@ Route::middleware('auth')->group(function () {
         // Premis Management
         Route::get('premis', [AdminPremisController::class, 'index'])->name('premis.index');
         Route::get('premis/create', [AdminPremisController::class, 'create'])->name('premis.create');
-        Route::get('premis/export-pdf', [AdminPremisController::class, 'exportPdf'])->name('premis.export-pdf');
+        Route::get('premis/{premis}/export-pdf', [AdminPremisController::class, 'exportPdf'])->name('premis.export-pdf');
         Route::get('premis/{premis}', [AdminPremisController::class, 'show'])->name('premis.show');
         Route::get('premis/{premis}/edit', [AdminPremisController::class, 'edit'])->name('premis.edit');
+        Route::post('premis', [AdminPremisController::class, 'store'])->name('premis.store');
+        Route::put('premis/{premis}', [AdminPremisController::class, 'update'])->name('premis.update');
+        Route::delete('premis/{premis}', [AdminPremisController::class, 'destroy'])->name('premis.destroy');
 
         // Audit Log Management
         Route::get('audit-log', [AuditLogController::class, 'index'])->name('audit_log.index');
