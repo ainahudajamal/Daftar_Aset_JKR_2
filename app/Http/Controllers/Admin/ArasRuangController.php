@@ -70,13 +70,15 @@ class ArasRuangController extends Controller
         // ===== SHARED DATA =====
         $bloks   = KodBlok::where('is_active', true)->orderBy('kod')->get();
         $arasAll = KodAras::with('blok')->where('is_active', true)->orderBy('kod')->get();
+        $da5_data = session('da5_data', []);
 
         return view('admin.aras-ruang.index', compact(
             'arasPaginated',
             'ruangsPaginated',
             'bloks',
             'arasAll',
-            'activeTab'
+            'activeTab',
+            'da5_data'
         ));
     }
 
@@ -154,6 +156,8 @@ class ArasRuangController extends Controller
         $filterRuangAras   = $request->ruang_aras_id ? (KodAras::find($request->ruang_aras_id)?->kod . ' - ' . KodAras::find($request->ruang_aras_id)?->nama) : null;
         $filterRuangStatus = $request->ruang_status  ? ucfirst($request->ruang_status) : null;
 
+        $da5_data = session('da5_data', []);
+
         // ===== Generate PDF with mPDF (supports mixed portrait/landscape) =====
         $mpdf = new Mpdf([
             'format'        => 'A4',
@@ -171,7 +175,8 @@ class ArasRuangController extends Controller
             'filterArasBlok',
             'filterArasStatus',
             'filterRuangAras',
-            'filterRuangStatus'
+            'filterRuangStatus',
+            'da5_data'
         ))->render();
 
         $mpdf->WriteHTML($html);
@@ -179,5 +184,17 @@ class ArasRuangController extends Controller
         return response($mpdf->Output('DA5-Borang-Pengumpulan-Data.pdf', 'S'), 200)
             ->header('Content-Type', 'application/pdf')
             ->header('Content-Disposition', 'inline; filename="DA5-Borang-Pengumpulan-Data.pdf"');
+    }
+
+    public function saveFormData(Request $request)
+    {
+        session(['da5_data' => $request->except('_token')]);
+        return redirect()->back()->with('success', 'Maklumat D.A.5 berjaya disimpan.');
+    }
+
+    public function clearFormData()
+    {
+        session()->forget('da5_data');
+        return redirect()->back()->with('success', 'Maklumat D.A.5 berjaya dipadam.');
     }
 }
