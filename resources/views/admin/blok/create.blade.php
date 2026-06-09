@@ -76,7 +76,7 @@
                                     for="chkBlok" style="cursor:pointer;">
                                     <i class="bi bi-building"></i>
                                     Blok
-                                    <span class="fw-normal opacity-75">(Tandakan '√' jika berkenaan)</span>
+                                    
                                 </label>
                             </div>
                         </div>
@@ -162,7 +162,7 @@
                                     for="chkBinaan" style="cursor:pointer;">
                                     <i class="bi bi-sign-intersection"></i>
                                     Binaan Luar
-                                    <span class="fw-normal opacity-75">(Tandakan '√' jika berkenaan)</span>
+                                    
                                 </label>
                             </div>
                         </div>
