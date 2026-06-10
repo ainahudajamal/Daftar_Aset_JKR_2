@@ -9,13 +9,20 @@ class Blok extends Model
 {
     use HasFactory;
 
+    protected $table = 'blok';
+
     protected $fillable = [
-        'kod',
-        'nama',
-        'is_active',
+        'premis_id',
+        'bil',
+        'nama_blok',
+        'fungsi_binaan',
+        'luas_tapak',
+        'kod_blok_myspata',
+        'catatan',
     ];
 
-    protected $casts = [
-        'is_active' => 'boolean',
-    ];
+    public function premis()
+    {
+        return $this->belongsTo(Premis::class);
+    }
 }
