@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Konfigurasi Aras dan Ruang')
+@section('title', 'Borang D.A.5')
 
 @section('content')
 <div class="container-fluid">
@@ -62,7 +62,7 @@
             <form action="{{ route('admin.aras-ruang.save-form') }}" method="POST" id="formDA5">
                 @csrf
                 <div class="card-body bg-light border-top">
-                    
+
                     {{-- ── 1. MAKLUMAT PREMIS & BLOK ── --}}
                     <div class="mb-4">
                         <h6 class="fw-bold text-primary mb-3"><i class="bi bi-geo-alt me-1"></i>1. Maklumat Premis & Blok / Binaan Luar</h6>
@@ -79,7 +79,7 @@
                                     @endforeach
                                 </select>
                                 <input type="hidden" name="nama_premis" id="da5_nama_premis_hidden" value="{{ old('nama_premis', $da5_data['nama_premis'] ?? '') }}">
-                                
+
                                 <div id="wrapper_nama_premis_manual" class="mt-2 {{ (old('nama_premis_id', $da5_data['nama_premis_id'] ?? '') === 'manual' || empty($da5_data['nama_premis_id']) && !empty($da5_data['nama_premis'])) ? '' : 'd-none' }}">
                                     <input type="text" name="nama_premis_manual" id="da5_nama_premis_manual" class="form-control" value="{{ old('nama_premis_manual', $da5_data['nama_premis_manual'] ?? ($da5_data['nama_premis'] ?? '')) }}" placeholder="Taip Nama Premis Manual di sini">
                                 </div>
@@ -127,7 +127,7 @@
                     {{-- ── 2. KONTRAKTOR & JURU PERUNDING ── --}}
                     <div class="mb-4">
                         <div class="row g-4">
-                            
+
                             {{-- Kontraktor Column --}}
                             <div class="col-md-6 border-end">
                                 <h6 class="fw-bold text-success mb-3"><i class="bi bi-people me-1"></i>2.1 Kontraktor</h6>
@@ -141,7 +141,7 @@
                                         <input type="text" name="bidang_kontraktor_utama" id="da5_bidang_kontraktor_utama" class="form-control form-control-sm" value="{{ old('bidang_kontraktor_utama', $da5_data['bidang_kontraktor_utama'] ?? '') }}">
                                     </div>
                                 </div>
-                                
+
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-sm align-middle" id="tableKontraktorList">
                                         <thead class="table-secondary">
@@ -387,7 +387,7 @@
                     </div>
 
                 </div>
-                
+
                 {{-- Form Actions Footer --}}
                 <div class="card-footer bg-white border-top py-3 d-flex justify-content-between align-items-center">
                     <div>
