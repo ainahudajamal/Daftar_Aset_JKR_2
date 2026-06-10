@@ -77,10 +77,15 @@
                                         {{ $p->nama_premis }}
                                     </option>
                                     @endforeach
+                                    @if(empty(old('nama_premis_id', $da5_data['nama_premis_id'] ?? '')) && !empty(old('nama_premis', $da5_data['nama_premis'] ?? '')))
+                                    <option value="{{ old('nama_premis', $da5_data['nama_premis'] ?? '') }}" selected>
+                                        {{ old('nama_premis', $da5_data['nama_premis'] ?? '') }}
+                                    </option>
+                                    @endif
                                 </select>
                                 <input type="hidden" name="nama_premis" id="da5_nama_premis_hidden" value="{{ old('nama_premis', $da5_data['nama_premis'] ?? '') }}">
 
-                                <div id="wrapper_nama_premis_manual" class="mt-2 {{ (old('nama_premis_id', $da5_data['nama_premis_id'] ?? '') === 'manual' || empty($da5_data['nama_premis_id']) && !empty($da5_data['nama_premis'])) ? '' : 'd-none' }}">
+                                <div id="wrapper_nama_premis_manual" class="mt-2 {{ (old('nama_premis_id', $da5_data['nama_premis_id'] ?? '') === 'manual') ? '' : 'd-none' }}">
                                     <input type="text" name="nama_premis_manual" id="da5_nama_premis_manual" class="form-control" value="{{ old('nama_premis_manual', $da5_data['nama_premis_manual'] ?? ($da5_data['nama_premis'] ?? '')) }}" placeholder="Taip Nama Premis Manual di sini">
                                 </div>
                             </div>
@@ -1509,8 +1514,29 @@ document.addEventListener('DOMContentLoaded', function () {
         `;
     }
 
+    // Initialize Select2 on the premise dropdown
     if (da5_nama_premis) {
-        da5_nama_premis.addEventListener('change', function () {
+        $(da5_nama_premis).select2({
+            theme: 'bootstrap-5',
+            placeholder: '-- Pilih Premis --',
+            allowClear: true,
+            tags: true, // Enables typing custom tags directly
+            createTag: function (params) {
+                const term = $.trim(params.term);
+                if (term === '') {
+                    return null;
+                }
+                return {
+                    id: term,
+                    text: term,
+                    newTag: true
+                };
+            }
+        });
+    }
+
+    if (da5_nama_premis) {
+        $(da5_nama_premis).on('change', function () {
             const selectedVal = this.value;
             const hiddenInput = document.getElementById('da5_nama_premis_hidden');
             const manualWrapper = document.getElementById('wrapper_nama_premis_manual');
@@ -1526,10 +1552,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 hiddenInput.value = "";
                 clearAllFields();
                 restoreMasterBlocks();
-            } else {
+            } else if (!isNaN(selectedVal)) {
+                // Numeric database ID
                 manualWrapper.classList.add('d-none');
                 const selectedOption = this.options[this.selectedIndex];
-                const premisName = selectedOption.getAttribute('data-nama');
+                const premisName = selectedOption ? selectedOption.getAttribute('data-nama') : '';
                 hiddenInput.value = premisName;
 
                 // Fetch data from database
@@ -1738,6 +1765,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     .catch(err => {
                         console.error('Error fetching premise details:', err);
                     });
+            } else {
+                // String custom tag (typed name)
+                manualWrapper.classList.add('d-none');
+                hiddenInput.value = selectedVal;
+                clearAllFields();
+                restoreMasterBlocks();
             }
         });
     }
@@ -1751,7 +1784,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // On page load, check if a database premise is selected and fetch its blocks
-    if (da5_nama_premis && da5_nama_premis.value && da5_nama_premis.value !== "manual") {
+    if (da5_nama_premis && da5_nama_premis.value && da5_nama_premis.value !== "manual" && !isNaN(da5_nama_premis.value)) {
         const selectedBlockVal = "{{ old('kod_blok', $da5_data['kod_blok'] ?? '') }}";
         fetch(`/admin/aras-ruang/premis/${da5_nama_premis.value}`)
             .then(response => response.json())
