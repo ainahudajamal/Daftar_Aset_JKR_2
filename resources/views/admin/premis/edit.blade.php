@@ -73,9 +73,17 @@
                                         <label class="form-label fw-semibold">Nama Premis <span class="text-danger">*</span></label>
                                         <input type="text" name="nama_premis" class="form-control" required value="{{ old('nama_premis', $premis->nama_premis) }}">
                                     </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-semibold">No. DPA</label>
-                                        <input type="text" class="form-control" value="{{ $premis->no_dpa }}" readonly>
+                                    <div class="col-12">
+                                        <label class="form-label fw-semibold">**NO DPA</label>
+                                        <div class="d-flex" style="border: 1px solid #dee2e6; width: fit-content;">
+                                            @for ($i = 0; $i < 24; $i++)
+                                                <input type="text" maxlength="1" class="dpa-box"
+                                                    style="width: 30px; height: 38px; border: none; border-right: 1px solid #dee2e6; text-align: center; font-weight: bold; background: white; outline: none;"
+                                                    value="{{ $premis->no_dpa ? mb_substr($premis->no_dpa, $i, 1) : '' }}">
+                                            @endfor
+                                        </div>
+                                        <input type="hidden" name="no_dpa" id="no_dpa" value="{{ $premis->no_dpa }}">
+                                        <small class="text-muted">** Nombor Daftar Premis Aset</small>
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label fw-semibold">Alamat Premis</label>
@@ -221,6 +229,22 @@
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label fw-semibold">Gambar Premis</label>
+                                        @if($premis->gambar_premis)
+                                            <div class="mb-2">
+                                                <div class="position-relative d-inline-block">
+                                                    <img src="{{ asset('storage/' . $premis->gambar_premis) }}"
+                                                        alt="Gambar Premis" id="previewGambar"
+                                                        style="max-height: 150px; border-radius: 6px; border: 1px solid #dee2e6;">
+                                                    <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1"
+                                                        onclick="padamGambar()" title="Padam Gambar">
+                                                        <i class="bi bi-x-lg"></i>
+                                                    </button>
+                                                </div>
+                                                <input type="hidden" name="padam_gambar" id="padam_gambar" value="0">
+                                            </div>
+                                        @else
+                                            <input type="hidden" name="padam_gambar" id="padam_gambar" value="0">
+                                        @endif
                                         <input type="file" name="gambar_premis" class="form-control" accept="image/*">
                                         <small class="text-muted">Kosongkan jika tidak mahu tukar gambar</small>
                                     </div>
@@ -289,33 +313,41 @@
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table class="table table-bordered">
+                                    <table class="table table-bordered align-middle" style="min-width:1100px;">
                                         <thead class="table-dark">
                                             <tr>
-                                                <th>Bil</th>
-                                                <th>No. Lot</th>
-                                                <th>Status Hak Milik Tanah</th>
-                                                <th>Keluasan Tanah</th>
-                                                <th>No. Hakmilik</th>
-                                                <th>Jenis Hakmilik</th>
-                                                <th>Kegunaan Tanah</th>
-                                                <th>Harga Perolehan (RM)</th>
-                                                <th>Harga Semasa (RM)</th>
-                                                <th>Tindakan</th>
+                                                <th style="width:40px;">Bil</th>
+                                                <th style="min-width:90px;">No. Lot</th>
+                                                <th style="min-width:170px;">Status Hak Milik Tanah</th>
+                                                <th style="min-width:120px;">Keluasan Tanah</th>
+                                                <th style="min-width:110px;">No. Hakmilik</th>
+                                                <th style="min-width:120px;">Jenis Hakmilik</th>
+                                                <th style="min-width:120px;">Kegunaan Tanah</th>
+                                                <th style="min-width:130px;">Harga Perolehan (RM)</th>
+                                                <th style="min-width:120px;">Harga Semasa (RM)</th>
+                                                <th style="width:60px;">Tindakan</th>
                                             </tr>
                                         </thead>
                                         <tbody id="tanah-body">
                                             @forelse($premis->tanah as $index => $tanah)
+                                            @php
+                                                $statusTetap = ['Hakmilik','Rizab','Strata','Lain-lain'];
+                                                $isLainLain = !in_array($tanah->status_hakmilik, $statusTetap);
+                                            @endphp
                                             <tr>
-                                                <td>{{ $index + 1 }}</td>
+                                                <td class="text-center">{{ $index + 1 }}</td>
                                                 <td><input type="text" name="tanah[{{ $index }}][no_lot]" class="form-control form-control-sm" value="{{ $tanah->no_lot }}"></td>
                                                 <td>
-                                                    <select name="tanah[{{ $index }}][status_hakmilik]" class="form-select form-select-sm">
+                                                    <select name="tanah[{{ $index }}][status_hakmilik]" class="form-select form-select-sm status-hakmilik-select" onchange="toggleLainLain(this)">
                                                         <option value="">-- Pilih --</option>
-                                                        @foreach(['Hakmilik','Rizab','Strata','Lain-lain'] as $s)
-                                                        <option {{ $tanah->status_hakmilik == $s ? 'selected' : '' }}>{{ $s }}</option>
+                                                        @foreach($statusTetap as $s)
+                                                        <option {{ (!$isLainLain && $tanah->status_hakmilik == $s) ? 'selected' : ($isLainLain && $s == 'Lain-lain' ? 'selected' : '') }}>{{ $s }}</option>
                                                         @endforeach
                                                     </select>
+                                                    <input type="text" name="tanah[{{ $index }}][status_hakmilik_lain]"
+                                                        class="form-control form-control-sm mt-1 {{ $isLainLain ? '' : 'd-none' }}"
+                                                        placeholder="Nyatakan..."
+                                                        value="{{ $isLainLain ? $tanah->status_hakmilik : '' }}">
                                                 </td>
                                                 <td><input type="text" name="tanah[{{ $index }}][keluasan_tanah]" class="form-control form-control-sm" value="{{ $tanah->keluasan_tanah }}"></td>
                                                 <td><input type="text" name="tanah[{{ $index }}][no_hakmilik]" class="form-control form-control-sm" value="{{ $tanah->no_hakmilik }}"></td>
@@ -330,20 +362,21 @@
                                                 <td><input type="text" name="tanah[{{ $index }}][kegunaan_tanah]" class="form-control form-control-sm" value="{{ $tanah->kegunaan_tanah }}"></td>
                                                 <td><input type="number" name="tanah[{{ $index }}][harga_perolehan]" class="form-control form-control-sm" step="0.01" value="{{ $tanah->harga_perolehan }}"></td>
                                                 <td><input type="number" name="tanah[{{ $index }}][harga_semasa]" class="form-control form-control-sm" step="0.01" value="{{ $tanah->harga_semasa }}"></td>
-                                                <td><button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)"><i class="bi bi-trash"></i></button></td>
+                                                <td class="text-center"><button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)"><i class="bi bi-trash"></i></button></td>
                                             </tr>
                                             @empty
                                             <tr>
-                                                <td>1</td>
+                                                <td class="text-center">1</td>
                                                 <td><input type="text" name="tanah[0][no_lot]" class="form-control form-control-sm"></td>
                                                 <td>
-                                                    <select name="tanah[0][status_hakmilik]" class="form-select form-select-sm">
+                                                    <select name="tanah[0][status_hakmilik]" class="form-select form-select-sm status-hakmilik-select" onchange="toggleLainLain(this)">
                                                         <option value="">-- Pilih --</option>
                                                         <option>Hakmilik</option>
                                                         <option>Rizab</option>
                                                         <option>Strata</option>
                                                         <option>Lain-lain</option>
                                                     </select>
+                                                    <input type="text" name="tanah[0][status_hakmilik_lain]" class="form-control form-control-sm mt-1 d-none" placeholder="Nyatakan...">
                                                 </td>
                                                 <td><input type="text" name="tanah[0][keluasan_tanah]" class="form-control form-control-sm"></td>
                                                 <td><input type="text" name="tanah[0][no_hakmilik]" class="form-control form-control-sm"></td>
@@ -357,7 +390,7 @@
                                                 <td><input type="text" name="tanah[0][kegunaan_tanah]" class="form-control form-control-sm"></td>
                                                 <td><input type="number" name="tanah[0][harga_perolehan]" class="form-control form-control-sm" step="0.01"></td>
                                                 <td><input type="number" name="tanah[0][harga_semasa]" class="form-control form-control-sm" step="0.01"></td>
-                                                <td><button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)"><i class="bi bi-trash"></i></button></td>
+                                                <td class="text-center"><button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)"><i class="bi bi-trash"></i></button></td>
                                             </tr>
                                             @endforelse
                                         </tbody>
@@ -375,35 +408,35 @@
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table class="table table-bordered">
+                                    <table class="table table-bordered align-middle" style="min-width:700px;">
                                         <thead class="table-dark">
                                             <tr>
-                                                <th>Bil</th>
-                                                <th>Bidang</th>
-                                                <th>Tajuk Lukisan</th>
-                                                <th>No. Rujukan</th>
-                                                <th>Catatan</th>
-                                                <th>Tindakan</th>
+                                                <th style="width:40px;">Bil</th>
+                                                <th style="min-width:130px;">Bidang</th>
+                                                <th style="min-width:180px;">Tajuk Lukisan</th>
+                                                <th style="min-width:140px;">No. Rujukan</th>
+                                                <th style="min-width:180px;">Catatan</th>
+                                                <th style="width:60px;">Tindakan</th>
                                             </tr>
                                         </thead>
                                         <tbody id="lukisan-body">
                                             @forelse($premis->lukisan as $index => $lukisan)
                                             <tr>
-                                                <td>{{ $index + 1 }}</td>
+                                                <td class="text-center">{{ $index + 1 }}</td>
                                                 <td><input type="text" name="lukisan[{{ $index }}][bidang]" class="form-control form-control-sm" value="{{ $lukisan->bidang }}"></td>
                                                 <td><input type="text" name="lukisan[{{ $index }}][tajuk_lukisan]" class="form-control form-control-sm" value="{{ $lukisan->tajuk_lukisan }}"></td>
                                                 <td><input type="text" name="lukisan[{{ $index }}][no_rujukan]" class="form-control form-control-sm" value="{{ $lukisan->no_rujukan }}"></td>
                                                 <td><input type="text" name="lukisan[{{ $index }}][catatan]" class="form-control form-control-sm" value="{{ $lukisan->catatan }}"></td>
-                                                <td><button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)"><i class="bi bi-trash"></i></button></td>
+                                                <td class="text-center"><button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)"><i class="bi bi-trash"></i></button></td>
                                             </tr>
                                             @empty
                                             <tr>
-                                                <td>1</td>
+                                                <td class="text-center">1</td>
                                                 <td><input type="text" name="lukisan[0][bidang]" class="form-control form-control-sm"></td>
                                                 <td><input type="text" name="lukisan[0][tajuk_lukisan]" class="form-control form-control-sm"></td>
                                                 <td><input type="text" name="lukisan[0][no_rujukan]" class="form-control form-control-sm"></td>
                                                 <td><input type="text" name="lukisan[0][catatan]" class="form-control form-control-sm"></td>
-                                                <td><button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)"><i class="bi bi-trash"></i></button></td>
+                                                <td class="text-center"><button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)"><i class="bi bi-trash"></i></button></td>
                                             </tr>
                                             @endforelse
                                         </tbody>
@@ -414,7 +447,6 @@
                                 </button>
                             </div>
                         </div>
-
                         <div class="d-flex gap-2 justify-content-between mb-4">
                             <button type="button" class="btn btn-secondary" onclick="prevTab()">
                                 <i class="bi bi-arrow-left"></i> Sebelumnya
@@ -457,16 +489,17 @@ function addTanahRow() {
     const tbody = document.getElementById('tanah-body');
     const row = `
         <tr>
-            <td>${tanahCount + 1}</td>
+            <td class="text-center">${tanahCount + 1}</td>
             <td><input type="text" name="tanah[${tanahCount}][no_lot]" class="form-control form-control-sm"></td>
             <td>
-                <select name="tanah[${tanahCount}][status_hakmilik]" class="form-select form-select-sm">
+                <select name="tanah[${tanahCount}][status_hakmilik]" class="form-select form-select-sm status-hakmilik-select" onchange="toggleLainLain(this)">
                     <option value="">-- Pilih --</option>
                     <option>Hakmilik</option>
                     <option>Rizab</option>
                     <option>Strata</option>
                     <option>Lain-lain</option>
                 </select>
+                <input type="text" name="tanah[${tanahCount}][status_hakmilik_lain]" class="form-control form-control-sm mt-1 d-none" placeholder="Nyatakan...">
             </td>
             <td><input type="text" name="tanah[${tanahCount}][keluasan_tanah]" class="form-control form-control-sm"></td>
             <td><input type="text" name="tanah[${tanahCount}][no_hakmilik]" class="form-control form-control-sm"></td>
@@ -480,10 +513,22 @@ function addTanahRow() {
             <td><input type="text" name="tanah[${tanahCount}][kegunaan_tanah]" class="form-control form-control-sm"></td>
             <td><input type="number" name="tanah[${tanahCount}][harga_perolehan]" class="form-control form-control-sm" step="0.01"></td>
             <td><input type="number" name="tanah[${tanahCount}][harga_semasa]" class="form-control form-control-sm" step="0.01"></td>
-            <td><button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)"><i class="bi bi-trash"></i></button></td>
+            <td class="text-center"><button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)"><i class="bi bi-trash"></i></button></td>
         </tr>`;
     tbody.insertAdjacentHTML('beforeend', row);
     tanahCount++;
+}
+
+function toggleLainLain(select) {
+    const input = select.nextElementSibling;
+    if (select.value === 'Lain-lain') {
+        input.classList.remove('d-none');
+        input.required = true;
+    } else {
+        input.classList.add('d-none');
+        input.required = false;
+        input.value = '';
+    }
 }
 
 function addLukisanRow() {
@@ -503,6 +548,35 @@ function addLukisanRow() {
 
 function removeRow(btn) {
     btn.closest('tr').remove();
+}
+
+// Auto move DPA box
+const dpaBoxes = document.querySelectorAll('.dpa-box');
+dpaBoxes.forEach((box, index) => {
+    box.addEventListener('input', function() {
+        let dpaValue = '';
+        dpaBoxes.forEach(b => dpaValue += b.value);
+        document.getElementById('no_dpa').value = dpaValue.trim();
+
+        if (this.value.length === 1 && index < dpaBoxes.length - 1) {
+            dpaBoxes[index + 1].focus();
+        }
+    });
+    box.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace' && this.value === '' && index > 0) {
+            dpaBoxes[index - 1].focus();
+        }
+    });
+});
+
+function padamGambar() {
+    if (confirm('Padam gambar ini?')) {
+        // Set hidden input value
+        document.getElementById('padam_gambar').value = '1';
+        // Sorok gambar dan button, tunjuk mesej
+        const wrapper = document.querySelector('#previewGambar').closest('.position-relative');
+        wrapper.innerHTML = '<p class="text-muted fst-italic mt-1"><i class="bi bi-image"></i> Gambar akan dipadam selepas simpan</p>';
+    }
 }
 </script>
 @endsection
