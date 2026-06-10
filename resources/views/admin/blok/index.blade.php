@@ -1,33 +1,145 @@
 @extends('layouts.app')
 
-@section('title', 'Konfigurasi Blok & Binaan Luar')
+@section('title', 'Borang D.A.4')
 
 @section('content')
 <div class="container-fluid">
 
     <div class="d-flex justify-content-between align-items-start mb-4">
         <div>
-            <h2 class="mb-1"><i class="bi bi-building"></i> Konfigurasi Blok & Binaan Luar</h2>
+            <h2 class="mb-1"><i class="bi bi-building"></i> Borang D.A.4</h2>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item active">Konfigurasi Blok</li>
+                    <li class="breadcrumb-item active">Borang D.A.4</li>
                 </ol>
             </nav>
         </div>
-        <a href="{{ route('admin.blok.create') }}" class="btn btn-primary">
+        <a href="{{ route('admin.blok.create') }}" class="btn btn-primary shadow-sm">
             <i class="bi bi-plus-lg"></i> Tambah Baru
         </a>
     </div>
 
     @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show">
-        {{ session('success') }}
+    <div class="alert alert-success alert-dismissible fade show shadow-sm">
+        <i class="bi bi-check-circle-fill me-2"></i> {{ session('success') }}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
     @endif
 
-    @forelse($bloks as $premis)
+    <div class="row g-3 mb-4 row-cols-1 row-cols-md-3">
+        <div class="col">
+            <div class="card bg-primary text-white h-100 border-0 shadow-sm rounded-3">
+                <div class="card-body p-3 d-flex align-items-center">
+                    <div class="flex-shrink-0 me-3">
+                        <div class="bg-white bg-opacity-25 p-2 rounded-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                            <i class="bi bi-bank fs-4"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h6 class="mb-0 text-white-50" style="font-size: 0.8rem;">Premis Berdaftar</h6>
+                        <h4 class="mb-0 fw-bold">{{ $totalPremisDa4 ?? 0 }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card text-white h-100 border-0 shadow-sm rounded-3" style="background-color: #6f42c1;">
+                <div class="card-body p-3 d-flex align-items-center">
+                    <div class="flex-shrink-0 me-3">
+                        <div class="bg-white bg-opacity-25 p-2 rounded-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                            <i class="bi bi-grid-fill fs-4"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h6 class="mb-0 text-white-50" style="font-size: 0.8rem;">Jumlah Blok</h6>
+                        <h4 class="mb-0 fw-bold">{{ $totalBlok ?? 0 }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card bg-info text-dark h-100 border-0 shadow-sm rounded-3">
+                <div class="card-body p-3 d-flex align-items-center">
+                    <div class="flex-shrink-0 me-3">
+                        <div class="bg-dark bg-opacity-10 p-2 rounded-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                            <i class="bi bi-house-gear fs-4 text-dark"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h6 class="mb-0 text-dark text-opacity-75" style="font-size: 0.8rem;">Jumlah Binaan Luar</h6>
+                        <h4 class="mb-0 fw-bold">{{ $totalBinaanLuar ?? 0 }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card shadow-sm mb-4 border-0 bg-light">
+        <div class="card-body p-4">
+            <form action="{{ route('admin.blok.index') }}" method="GET">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label for="search" class="form-label text-muted small fw-semibold mb-1">Carian</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                            <input type="text" class="form-control border-start-0" id="search" name="search" 
+                                   placeholder="No. DPA atau Nama Premis..." 
+                                   value="{{ request('search') }}">
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="negeri" class="form-label text-muted small fw-semibold mb-1">Negeri</label>
+                        <select class="form-select" id="negeri" name="negeri">
+                            <option value="">Semua Negeri</option>
+                            <option value="Johor" {{ request('negeri') == 'Johor' ? 'selected' : '' }}>Johor</option>
+                            <option value="Kedah" {{ request('negeri') == 'Kedah' ? 'selected' : '' }}>Kedah</option>
+                            <option value="Kelantan" {{ request('negeri') == 'Kelantan' ? 'selected' : '' }}>Kelantan</option>
+                            <option value="Melaka" {{ request('negeri') == 'Melaka' ? 'selected' : '' }}>Melaka</option>
+                            <option value="Negeri Sembilan" {{ request('negeri') == 'Negeri Sembilan' ? 'selected' : '' }}>Negeri Sembilan</option>
+                            <option value="Pahang" {{ request('negeri') == 'Pahang' ? 'selected' : '' }}>Pahang</option>
+                            <option value="Perak" {{ request('negeri') == 'Perak' ? 'selected' : '' }}>Perak</option>
+                            <option value="Perlis" {{ request('negeri') == 'Perlis' ? 'selected' : '' }}>Perlis</option>
+                            <option value="Pulau Pinang" {{ request('negeri') == 'Pulau Pinang' ? 'selected' : '' }}>Pulau Pinang</option>
+                            <option value="Sabah" {{ request('negeri') == 'Sabah' ? 'selected' : '' }}>Sabah</option>
+                            <option value="Sarawak" {{ request('negeri') == 'Sarawak' ? 'selected' : '' }}>Sarawak</option>
+                            <option value="Selangor" {{ request('negeri') == 'Selangor' ? 'selected' : '' }}>Selangor</option>
+                            <option value="Terengganu" {{ request('negeri') == 'Terengganu' ? 'selected' : '' }}>Terengganu</option>
+                            <option value="W.P. Kuala Lumpur" {{ request('negeri') == 'W.P. Kuala Lumpur' ? 'selected' : '' }}>W.P. Kuala Lumpur</option>
+                            <option value="W.P. Labuan" {{ request('negeri') == 'W.P. Labuan' ? 'selected' : '' }}>W.P. Labuan</option>
+                            <option value="W.P. Putrajaya" {{ request('negeri') == 'W.P. Putrajaya' ? 'selected' : '' }}>W.P. Putrajaya</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-2">
+                        <label for="status" class="form-label text-muted small fw-semibold mb-1">Status</label>
+                        <select class="form-select" id="status" name="status">
+                            <option value="">Semua</option>
+                            <option value="Aktif" {{ request('status') == 'Aktif' ? 'selected' : '' }}>Aktif</option>
+                            <option value="Tidak Aktif" {{ request('status') == 'Tidak Aktif' ? 'selected' : '' }}>Tidak Aktif</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-dark flex-grow-1">
+                                <i class="bi bi-funnel"></i> Tapis
+                            </button>
+                            @if(request()->anyFilled(['search', 'negeri', 'status']))
+                                <a href="{{ route('admin.blok.index') }}" class="btn btn-outline-secondary" title="Reset Tapisan">
+                                    <i class="bi bi-arrow-counterclockwise"></i>
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+   @forelse($bloks as $premis)
     <div class="card border-0 shadow-sm mb-4">
         <div class="card-header py-2 d-flex justify-content-between align-items-center" style="background-color:#4a5568;">
             <div>
@@ -45,11 +157,11 @@
                     <i class="bi bi-pencil"></i> Edit
                 </a>
                 <button type="button" class="btn btn-danger btn-sm"
-                    onclick="previewPdf({{ $premis->id }}, '{{ $premis->nama_premis }}')">
+                    onclick="previewPdf({{ $premis->id }}, '{{ addslashes($premis->nama_premis) }}')">
                     <i class="bi bi-file-pdf"></i> PDF
                 </button>
                 <form action="{{ route('admin.blok.destroy', $premis->id) }}" method="POST"
-                    onsubmit="return confirm('Padam semua blok dan binaan luar untuk {{ $premis->nama_premis }}?')">
+                    onsubmit="return confirm('Padam semua blok dan binaan luar untuk {{ addslashes($premis->nama_premis) }}?')">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-outline-light btn-sm">
@@ -63,7 +175,7 @@
                 <table class="table table-bordered table-hover align-middle mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th style="width:50px;">Bil</th>
+                            <th style="width:50px;" class="text-center">Bil</th>
                             <th>Jenis</th>
                             <th>Nama</th>
                             <th>Fungsi / Jenis Binaan</th>
@@ -84,7 +196,7 @@
                         @endforeach
                         @foreach($premis->binaanLuar as $index => $binaan)
                         <tr>
-                            <td class="text-center">{{ $index + 1 }}</td>
+                            <td class="text-center">{{ $premis->blok->count() + $index + 1 }}</td>
                             <td><span class="badge" style="background-color:#198754;">Binaan Luar</span></td>
                             <td>{{ $binaan->nama_binaan_luar }}</td>
                             <td>{{ $binaan->jenis_binaan_luar ?? '-' }}</td>
@@ -94,7 +206,7 @@
                         @endforeach
                         @if($premis->blok->count() == 0 && $premis->binaanLuar->count() == 0)
                         <tr>
-                            <td colspan="6" class="text-center text-muted">Tiada data</td>
+                            <td colspan="6" class="text-center text-muted py-4">Tiada rekod blok atau binaan luar didaftarkan untuk premis ini.</td>
                         </tr>
                         @endif
                     </tbody>
@@ -103,42 +215,50 @@
         </div>
     </div>
     @empty
-    <div class="card border-0 shadow-sm">
+    <div class="card border-0 shadow-sm mb-4">
         <div class="card-body text-center py-5">
-            <i class="bi bi-inbox display-4 text-muted"></i>
-            <p class="mt-3 text-muted">Tiada rekod blok atau binaan luar dijumpai.</p>
-            <a href="{{ route('admin.blok.create') }}" class="btn btn-primary">
-                <i class="bi bi-plus-lg"></i> Tambah Sekarang
-            </a>
+            <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                <i class="bi bi-inbox fs-1 text-muted"></i>
+            </div>
+            <h5 class="text-muted">Tiada rekod blok atau binaan luar dijumpai.</h5>
+            <p class="text-muted mb-4">Sila ubah tapisan anda atau tambah rekod baru.</p>
+            @if(!request()->anyFilled(['search', 'negeri', 'status']))
+                <a href="{{ route('admin.blok.create') }}" class="btn btn-primary">
+                    <i class="bi bi-plus-lg me-1"></i> Tambah Sekarang
+                </a>
+            @else
+                <a href="{{ route('admin.blok.index') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Carian
+                </a>
+            @endif
         </div>
     </div>
     @endforelse
 
     <div class="d-flex justify-content-end mt-3">
-        {{ $bloks->links() }}
+        {{ $bloks->appends(request()->query())->links() }}
     </div>
 
 </div>
 
-<!-- Modal Preview PDF -->
 <div class="modal fade" id="modalPDF" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="bi bi-file-pdf text-danger"></i> Pratonton Konfigurasi Blok — <span id="modalPremisNama"></span>
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title fw-bold">
+                    <i class="bi bi-file-pdf-fill text-danger me-2"></i>Pratonton Konfigurasi Blok — <span id="modalPremisNama" class="text-primary"></span>
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body p-0">
+            <div class="modal-body p-0 bg-secondary">
                 <iframe id="pdfFrame" src="" width="100%" height="650px" style="border: none;"></iframe>
             </div>
-            <div class="modal-footer">
-                <a id="pdfDownload" href="#" class="btn btn-success">
-                    <i class="bi bi-download"></i> Muat Turun PDF
+            <div class="modal-footer bg-light">
+                <a id="pdfDownload" href="#" class="btn btn-danger">
+                    <i class="bi bi-download me-1"></i> Muat Turun PDF
                 </a>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="bi bi-x-circle"></i> Tutup
+                    Tutup
                 </button>
             </div>
         </div>

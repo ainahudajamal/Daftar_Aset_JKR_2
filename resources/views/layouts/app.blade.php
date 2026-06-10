@@ -623,7 +623,7 @@
                             class="nav-link {{ request()->routeIs('admin.premis.*') ? 'active' : '' }}"
                             data-title="Premis">
                             <i class="bi bi-bank"></i>
-                            <span class="nav-link-text">Konfigurasi Premis</span>
+                            <span class="nav-link-text">Borang D.A.3</span>
                         </a>
                     </div>
 
@@ -631,7 +631,7 @@
                         <a href="{{ route('admin.blok.index') }}"
                             class="nav-link {{ request()->routeIs('admin.blok.*') ? 'active' : '' }}" data-title="Blok">
                             <i class="bi bi-grid-3x3-gap-fill"></i>
-                            <span class="nav-link-text">Konfigurasi Blok</span>
+                            <span class="nav-link-text">Borang D.A.4</span>
                         </a>
                     </div>
 

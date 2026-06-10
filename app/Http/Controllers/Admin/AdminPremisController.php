@@ -11,10 +11,51 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class AdminPremisController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $premis = Premis::latest()->paginate(10);
-        return view('admin.premis.index', compact('premis'));
+        $query = Premis::query();
+
+        // 1. Filter Carian (No DPA atau Nama Premis)
+        $query->when($request->filled('search'), function ($q) use ($request) {
+            $search = $request->search;
+            // Gunakan sub-query supaya "orWhere" tidak membatalkan filter yang lain
+            $q->where(function ($subQ) use ($search) {
+                $subQ->where('nama_premis', 'LIKE', "%{$search}%")
+                     ->orWhere('no_dpa', 'LIKE', "%{$search}%");
+            });
+        });
+
+        // 2. Filter Negeri
+        $query->when($request->filled('negeri'), function ($q) use ($request) {
+            $q->where('negeri', $request->negeri);
+        });
+
+        // 3. Filter Status
+        $query->when($request->filled('status'), function ($q) use ($request) {
+            $q->where('status_premis', $request->status);
+        });
+
+        // 4. Filter Tarikh Dari
+        $query->when($request->filled('tarikh_dari'), function ($q) use ($request) {
+            $q->whereDate('created_at', '>=', $request->tarikh_dari);
+        });
+
+        // 5. Filter Tarikh Hingga
+        $query->when($request->filled('tarikh_hingga'), function ($q) use ($request) {
+            $q->whereDate('created_at', '<=', $request->tarikh_hingga);
+        });
+
+        // 6. Laksanakan query berserta pagination
+        $premis = $query->latest()->paginate(10);
+
+        // KIRAAN STATISTIK KESELURUHAN (Atau bergantung pada tapisan, buang 'query' ganti dengan 'Premis' jika mahu statik)
+    $totalPremis = Premis::count();
+    $aktifPremis = Premis::where('status_premis', 'Aktif')->count();
+    $tidakAktifPremis = Premis::where('status_premis', 'Tidak Aktif')->count();
+    $totalBlok = Premis::sum('bil_blok_bangunan');         
+$totalBinaanLuar = Premis::sum('bil_binaan_luar');  
+
+        return view('admin.premis.index', compact('premis', 'totalPremis', 'aktifPremis', 'tidakAktifPremis', 'totalBlok', 'totalBinaanLuar'));
     }
 
     public function create()

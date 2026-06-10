@@ -11,16 +11,45 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class BlokPremisController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $bloks = Premis::with(['blok', 'binaanLuar'])
-            ->whereHas('blok')
-            ->orWhereHas('binaanLuar')
-            ->latest()
-            ->paginate(10);
-        return view('admin.blok.index', compact('bloks'));
-    }
+        $query = Premis::with(['blok', 'binaanLuar'])
+            ->where(function ($q) {
+                $q->whereHas('blok')
+                  ->orWhereHas('binaanLuar');
+            });
 
+        // 1. Filter Carian
+        $query->when($request->filled('search'), function ($q) use ($request) {
+            $search = $request->search;
+            $q->where(function ($subQ) use ($search) {
+                $subQ->where('nama_premis', 'LIKE', "%{$search}%")
+                     ->orWhere('no_dpa', 'LIKE', "%{$search}%");
+            });
+        });
+
+        // 2. Filter Negeri
+        $query->when($request->filled('negeri'), function ($q) use ($request) {
+            $q->where('negeri', $request->negeri);
+        });
+
+        // 3. Filter Status
+        $query->when($request->filled('status'), function ($q) use ($request) {
+            $q->where('status_premis', $request->status);
+        });
+
+        $bloks = $query->latest()->paginate(10);
+
+        // --- PENGIRAAN STATISTIK D.A.4 ---
+        // Kira jumlah premis yang HANYA mempunyai blok atau binaan luar (D.A.4)
+        $totalPremisDa4 = Premis::has('blok')->orHas('binaanLuar')->count();
+        
+        // Kira keseluruhan rekod dari table Blok dan BinaanLuar
+        $totalBlok = Blok::count();
+        $totalBinaanLuar = BinaanLuar::count();
+
+        return view('admin.blok.index', compact('bloks', 'totalPremisDa4', 'totalBlok', 'totalBinaanLuar'));
+    }
     public function create()
     {
         $premis = Premis::all();

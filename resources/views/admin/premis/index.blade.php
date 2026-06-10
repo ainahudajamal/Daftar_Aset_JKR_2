@@ -1,101 +1,272 @@
 @extends('layouts.app')
 
-@section('title', 'Konfigurasi Premis')
+@section('title', 'Borang D.A.3')
 
 @section('content')
-<div class="container-fluid">
+<div class="container-fluid px-4">
 
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    {{-- Page Header --}}
+    <div class="d-flex justify-content-between align-items-start mb-4 pt-2">
         <div>
-            <h2 class="mb-1"><i class="bi bi-bank"></i> Konfigurasi Premis</h2>
+            <h2 class="mb-1 fw-bold text-dark">
+                <i class="bi bi-bank2 me-2 text-primary"></i>Borang D.A.3
+            </h2>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item active">Premis</li>
+                    <li class="breadcrumb-item">
+                        <a href="{{ route('admin.dashboard') }}" class="text-decoration-none">
+                            <i class="bi bi-house-door me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active text-muted">Borang D.A.3</li>
                 </ol>
             </nav>
         </div>
-        <a href="{{ route('admin.premis.create') }}" class="btn btn-primary btn-lg">
-            <i class="bi bi-plus-circle"></i> Tambah Premis
+        <a href="{{ route('admin.premis.create') }}" class="btn btn-primary d-flex align-items-center gap-2 shadow-sm">
+            <i class="bi bi-plus-circle-fill"></i>
+            <span>Tambah Premis</span>
         </a>
     </div>
 
+    {{-- Alert --}}
     @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <div class="alert alert-success alert-dismissible fade show d-flex align-items-center gap-2 shadow-sm mb-4" role="alert">
+        <i class="bi bi-check-circle-fill fs-5"></i>
+        <span>{{ session('success') }}</span>
+        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
     </div>
     @endif
 
-    <!-- Table Premis -->
-    <div class="card shadow-sm">
-        <div class="card-header bg-white">
-            <h5 class="mb-0"><i class="bi bi-list-ul"></i> Senarai Premis</h5>
+    {{-- Stats Cards --}}
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-4 col-xl">
+            <div class="card border-0 rounded-3 h-100" style="background: #0d6efd1a;">
+                <div class="card-body d-flex align-items-center gap-3 p-3">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
+                         style="width:44px;height:44px;background:#0d6efd33;">
+                        <i class="bi bi-buildings fs-5 text-primary"></i>
+                    </div>
+                    <div>
+                        <div class="text-primary fw-semibold" style="font-size:0.75rem;letter-spacing:.04em;">JUMLAH PREMIS</div>
+                        <div class="fw-bold fs-4 text-primary lh-1 mt-1">{{ $totalPremis ?? 0 }}</div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="card-body">
 
+        <div class="col-6 col-md-4 col-xl">
+            <div class="card border-0 rounded-3 h-100" style="background:#1982210d;">
+                <div class="card-body d-flex align-items-center gap-3 p-3">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
+                         style="width:44px;height:44px;background:#19822126;">
+                        <i class="bi bi-check2-circle fs-5 text-success"></i>
+                    </div>
+                    <div>
+                        <div class="text-success fw-semibold" style="font-size:0.75rem;letter-spacing:.04em;">PREMIS AKTIF</div>
+                        <div class="fw-bold fs-4 text-success lh-1 mt-1">{{ $aktifPremis ?? 0 }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-4 col-xl">
+            <div class="card border-0 rounded-3 h-100" style="background:#6c757d1a;">
+                <div class="card-body d-flex align-items-center gap-3 p-3">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
+                         style="width:44px;height:44px;background:#6c757d33;">
+                        <i class="bi bi-x-circle fs-5 text-secondary"></i>
+                    </div>
+                    <div>
+                        <div class="text-secondary fw-semibold" style="font-size:0.75rem;letter-spacing:.04em;">TIDAK AKTIF</div>
+                        <div class="fw-bold fs-4 text-secondary lh-1 mt-1">{{ $tidakAktifPremis ?? 0 }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    {{-- Filter Panel --}}
+    <div class="card border-0 shadow-sm rounded-3 mb-4">
+        <div class="card-header bg-white border-bottom py-3 px-4 d-flex align-items-center gap-2">
+            <i class="bi bi-funnel text-muted"></i>
+            <span class="fw-semibold text-dark">Tapisan & Carian</span>
+        </div>
+        <div class="card-body p-4">
+            <form action="{{ route('admin.premis.index') }}" method="GET">
+                <div class="row g-3">
+                    <div class="col-12 col-md-4">
+                        <label for="search" class="form-label text-muted small fw-semibold mb-1">Carian</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="bi bi-search text-muted small"></i></span>
+                            <input type="text" class="form-control border-start-0 ps-0" id="search" name="search"
+                                   placeholder="No. DPA atau Nama Premis..."
+                                   value="{{ request('search') }}">
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                        <label for="negeri" class="form-label text-muted small fw-semibold mb-1">Negeri</label>
+                        <select class="form-select" id="negeri" name="negeri">
+                            <option value="">Semua Negeri</option>
+                            @foreach(['Johor','Kedah','Kelantan','Melaka','Negeri Sembilan','Pahang','Perak','Perlis','Pulau Pinang','Sabah','Sarawak','Selangor','Terengganu','W.P. Kuala Lumpur','W.P. Labuan','W.P. Putrajaya'] as $n)
+                                <option value="{{ $n }}" {{ request('negeri') == $n ? 'selected' : '' }}>{{ $n }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                        <label for="status" class="form-label text-muted small fw-semibold mb-1">Status</label>
+                        <select class="form-select" id="status" name="status">
+                            <option value="">Semua</option>
+                            <option value="Aktif" {{ request('status') == 'Aktif' ? 'selected' : '' }}>Aktif</option>
+                            <option value="Tidak Aktif" {{ request('status') == 'Tidak Aktif' ? 'selected' : '' }}>Tidak Aktif</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                        <label for="tarikh_dari" class="form-label text-muted small fw-semibold mb-1">Mula Didaftar (Dari)</label>
+                        <input type="date" class="form-control" id="tarikh_dari" name="tarikh_dari"
+                               value="{{ request('tarikh_dari') }}">
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                        <label for="tarikh_hingga" class="form-label text-muted small fw-semibold mb-1">Mula Didaftar (Hingga)</label>
+                        <input type="date" class="form-control" id="tarikh_hingga" name="tarikh_hingga"
+                               value="{{ request('tarikh_hingga') }}">
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-2 mt-3 pt-3 border-top">
+                    <button type="submit" class="btn btn-dark px-4">
+                        <i class="bi bi-funnel me-1"></i> Tapis
+                    </button>
+                    @if(request()->anyFilled(['search','negeri','status','tarikh_dari','tarikh_hingga']))
+                        <a href="{{ route('admin.premis.index') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
+                        </a>
+                        <span class="text-muted small ms-1">
+                            <i class="bi bi-info-circle me-1"></i>Tapisan aktif
+                        </span>
+                    @endif
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {{-- Table Card --}}
+    <div class="card border-0 shadow-sm rounded-3">
+        <div class="card-header bg-white border-bottom py-3 px-4 d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-list-ul text-primary"></i>
+                <span class="fw-semibold text-dark">Senarai Premis</span>
+                @if($premis->total() > 0)
+                    <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 ms-1">
+                        {{ $premis->total() }} rekod
+                    </span>
+                @endif
+            </div>
+        </div>
+
+        <div class="card-body p-0">
             @if($premis->count() > 0)
             <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Bil</th>
-                            <th>No. DPA</th>
-                            <th>Nama Premis</th>
-                            <th>Negeri</th>
-                            <th>Status</th>
-                            <th>Bil. Blok</th>
-                            <th>Bil. Binaan Luar</th>
-                            <th>Tindakan</th>
+                <table class="table table-hover align-middle mb-0" style="min-width:800px;">
+                    <thead>
+                        <tr class="table-dark">
+                            <th class="ps-4 py-3" style="width:50px;">Bil</th>
+                            <th class="py-3" style="width:130px;">No. DPA</th>
+                            <th class="py-3">Nama Premis</th>
+                            <th class="py-3" style="width:120px;">Negeri</th>
+                            <th class="py-3 text-center" style="width:100px;">Status</th>
+                            <th class="py-3" style="width:130px;">Tarikh Daftar</th>
+                            <th class="py-3 text-center" style="width:80px;">Blok</th>
+                            <th class="py-3 text-center" style="width:100px;">Binaan Luar</th>
+                            <th class="pe-4 py-3 text-center" style="width:130px;">Tindakan</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($premis as $index => $p)
                         <tr>
-                            <td>{{ $premis->firstItem() + $index }}</td>
+                            <td class="ps-4 text-muted small">{{ $premis->firstItem() + $index }}</td>
+
                             <td>
                                 @if($p->no_dpa)
-                                    <span class="badge bg-secondary">{{ $p->no_dpa }}</span>
+                                    <span class="badge bg-light text-dark border fw-normal font-monospace">
+                                        {{ $p->no_dpa }}
+                                    </span>
                                 @else
                                     <span class="text-muted">—</span>
                                 @endif
                             </td>
+
                             <td>
-                                <a href="{{ route('admin.premis.show', $p->id) }}" class="fw-semibold text-decoration-none">
+                                <a href="{{ route('admin.premis.show', $p->id) }}"
+                                   class="fw-semibold text-decoration-none text-dark d-block">
                                     {{ $p->nama_premis }}
                                 </a>
                                 @if($p->alamat_premis)
-                                <br><small class="text-muted">{{ Str::limit($p->alamat_premis, 50) }}</small>
+                                    <small class="text-muted d-block mt-1">
+                                        <i class="bi bi-geo-alt me-1"></i>{{ Str::limit($p->alamat_premis, 55) }}
+                                    </small>
                                 @endif
                             </td>
-                            <td>{{ $p->negeri ?? '—' }}</td>
+
                             <td>
+                                <small class="text-dark">{{ $p->negeri ?? '—' }}</small>
+                            </td>
+
+                            <td class="text-center">
                                 @if($p->status_premis == 'Aktif')
-                                    <span class="badge bg-success">Aktif</span>
+                                    <span class="badge rounded-pill bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3">
+                                        <i class="bi bi-circle-fill me-1" style="font-size:.45rem;vertical-align:middle;"></i>Aktif
+                                    </span>
                                 @else
-                                    <span class="badge bg-secondary">Tidak Aktif</span>
+                                    <span class="badge rounded-pill bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 px-3">
+                                        <i class="bi bi-circle-fill me-1" style="font-size:.45rem;vertical-align:middle;"></i>Tidak Aktif
+                                    </span>
                                 @endif
                             </td>
-                            <td><span class="badge bg-primary">{{ $p->bil_blok_bangunan ?? 0 }}</span></td>
-                            <td><span class="badge bg-info text-dark">{{ $p->bil_binaan_luar ?? 0 }}</span></td>
+
                             <td>
-                                <div class="d-flex gap-1">
-                                    <a href="{{ route('admin.premis.show', $p->id) }}" class="btn btn-sm btn-outline-info" title="Lihat">
+                                <small class="text-muted">
+                                    {{ $p->created_at ? $p->created_at->format('d/m/Y') : '—' }}
+                                </small>
+                            </td>
+
+                            <td class="text-center">
+                                <span class="badge rounded-pill bg-primary">{{ $p->bil_blok_bangunan ?? 0 }}</span>
+                            </td>
+
+                            <td class="text-center">
+                                <span class="badge rounded-pill bg-info text-dark">{{ $p->bil_binaan_luar ?? 0 }}</span>
+                            </td>
+
+                            <td class="pe-4">
+                                <div class="d-flex justify-content-center gap-1">
+                                    <a href="{{ route('admin.premis.show', $p->id) }}"
+                                       class="btn btn-sm btn-outline-primary border-0 bg-primary bg-opacity-10"
+                                       title="Lihat">
                                         <i class="bi bi-eye"></i>
                                     </a>
-                                    <a href="{{ route('admin.premis.edit', $p->id) }}" class="btn btn-sm btn-outline-warning" title="Edit">
+                                    <a href="{{ route('admin.premis.edit', $p->id) }}"
+                                       class="btn btn-sm btn-outline-warning border-0 bg-warning bg-opacity-10"
+                                       title="Edit">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <button type="button" class="btn btn-sm btn-outline-danger"
-                                        onclick="previewPdf({{ $p->id }}, '{{ $p->nama_premis }}')" title="Preview PDF">
+                                    <button type="button"
+                                        class="btn btn-sm btn-outline-danger border-0 bg-danger bg-opacity-10"
+                                        onclick="previewPdf({{ $p->id }}, '{{ addslashes($p->nama_premis) }}')"
+                                        title="Preview PDF">
                                         <i class="bi bi-file-pdf"></i>
                                     </button>
                                     <form action="{{ route('admin.premis.destroy', $p->id) }}" method="POST"
-                                        onsubmit="return confirm('Padam premis {{ $p->nama_premis }}?')">
+                                        onsubmit="return confirm('Padam premis {{ addslashes($p->nama_premis) }}?')">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Padam">
+                                        <button type="submit"
+                                            class="btn btn-sm btn-outline-danger border-0 bg-danger bg-opacity-10"
+                                            title="Padam">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </form>
@@ -107,51 +278,69 @@
                 </table>
             </div>
 
-            <!-- Pagination -->
-            <div class="d-flex justify-content-end mt-3">
-                {{ $premis->links() }}
+            {{-- Pagination --}}
+            <div class="d-flex justify-content-between align-items-center px-4 py-3 border-top bg-light rounded-bottom-3">
+                <small class="text-muted">
+                    Memaparkan <span class="fw-semibold text-dark">{{ $premis->firstItem() }}</span>
+                    hingga <span class="fw-semibold text-dark">{{ $premis->lastItem() }}</span>
+                    daripada <span class="fw-semibold text-dark">{{ $premis->total() }}</span> rekod
+                </small>
+                <div>
+                    {{ $premis->appends(request()->query())->links() }}
+                </div>
             </div>
 
             @else
-            <div class="text-center py-5 text-muted">
-                <i class="bi bi-bank" style="font-size: 3rem;"></i>
-                <p class="mt-3 mb-3">Tiada rekod premis dijumpai.</p>
-                <a href="{{ route('admin.premis.create') }}" class="btn btn-primary">
-                    <i class="bi bi-plus-circle"></i> Tambah Premis Pertama
-                </a>
+            {{-- Empty State --}}
+            <div class="text-center py-5 px-4">
+                <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3 bg-light"
+                     style="width:72px;height:72px;">
+                    <i class="bi bi-search text-muted fs-2"></i>
+                </div>
+                <h5 class="text-muted fw-semibold">Tiada rekod dijumpai</h5>
+                <p class="text-muted mb-4 small">Sila ubah carian anda atau tambah premis baru.</p>
+                @if(!request()->anyFilled(['search','negeri','status','tarikh_dari','tarikh_hingga']))
+                    <a href="{{ route('admin.premis.create') }}" class="btn btn-primary">
+                        <i class="bi bi-plus-circle me-1"></i> Tambah Premis
+                    </a>
+                @else
+                    <a href="{{ route('admin.premis.index') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Tapisan
+                    </a>
+                @endif
             </div>
             @endif
-
         </div>
     </div>
 
 </div>
 
-<!-- Modal Preview PDF -->
+{{-- PDF Preview Modal --}}
 <div class="modal fade" id="modalPDF" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalPDFLabel">
-                    <i class="bi bi-file-pdf text-danger"></i> Pratonton D.A.3 — <span id="modalPremisNama"></span>
+        <div class="modal-content border-0 shadow-lg rounded-3">
+            <div class="modal-header border-bottom px-4">
+                <h5 class="modal-title fw-semibold d-flex align-items-center gap-2">
+                    <i class="bi bi-file-pdf-fill text-danger"></i>
+                    Pratonton D.A.3 —
+                    <span id="modalPremisNama" class="text-primary"></span>
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body p-0">
-                <iframe id="pdfFrame" src="" width="100%" height="650px" style="border: none;"></iframe>
+            <div class="modal-body p-0" style="background:#f0f0f0;">
+                <iframe id="pdfFrame" src="" width="100%" height="660px" style="border:none;display:block;"></iframe>
             </div>
-            <div class="modal-footer">
-                <a id="pdfDownload" href="#" class="btn btn-success">
+            <div class="modal-footer border-top px-4 bg-light rounded-bottom-3">
+                <a id="pdfDownload" href="#" class="btn btn-danger d-flex align-items-center gap-2">
                     <i class="bi bi-download"></i> Muat Turun PDF
                 </a>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="bi bi-x-circle"></i> Tutup
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    Tutup
                 </button>
             </div>
         </div>
     </div>
 </div>
-
 @endsection
 
 @section('scripts')
