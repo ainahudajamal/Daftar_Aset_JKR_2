@@ -26,14 +26,13 @@ class AdminPremisController extends Controller
 {
     $request->validate([
         'nama_premis'  => 'required|string|max:255',
-        'no_dpa'       => 'nullable|string|unique:premis,no_dpa',
-        'koordinat_x'  => 'nullable|numeric|between:-90,90',
-        'koordinat_y'  => 'nullable|numeric|between:-180,180',
+        'no_dpa'       => 'required|string|unique:premis,no_dpa',
+        'koordinat_x'  => 'nullable|string',
+        'koordinat_y'  => 'nullable|string',
     ]);
 
-    $premis = Premis::create($request->except(['tanah', 'lukisan']));
+    $premis = Premis::create($request->except(['tanah', 'lukisan', '_token']));
 
-    // Simpan premis_tanah
     if ($request->has('tanah')) {
         foreach ($request->tanah as $tanah) {
             if (!empty($tanah['no_lot'])) {
@@ -42,7 +41,6 @@ class AdminPremisController extends Controller
         }
     }
 
-    // Simpan premis_lukisan
     if ($request->has('lukisan')) {
         foreach ($request->lukisan as $lukisan) {
             if (!empty($lukisan['tajuk_lukisan'])) {
@@ -73,7 +71,7 @@ class AdminPremisController extends Controller
 
         $request->validate([
             'nama_premis' => 'required|string|max:255',
-            'no_dpa'      => 'nullable|string|unique:premis,no_dpa,' . $id,
+            'no_dpa'      => 'required|string|unique:premis,no_dpa,' . $id,
         ]);
 
         $premis->update($request->except(['tanah', 'lukisan']));
