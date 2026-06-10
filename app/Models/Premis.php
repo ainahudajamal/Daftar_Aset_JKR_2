@@ -62,4 +62,14 @@ class Premis extends Model
     {
         return $this->hasMany(PremisLukisan::class);
     }
+
+    public function blok()
+    {
+        return $this->hasMany(Blok::class);
+    }
+
+    public function binaanLuar()
+    {
+        return $this->hasMany(BinaanLuar::class);
+    }
 }
