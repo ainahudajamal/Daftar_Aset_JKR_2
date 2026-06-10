@@ -35,6 +35,7 @@ use App\Http\Controllers\Admin\RuangController;
 use App\Http\Controllers\Admin\ArasRuangController;
 use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\Admin\AdminPremisController;
+use App\Http\Controllers\Admin\BlokPremisController;
 
 $landingPage = function () {
     $stats = [
@@ -133,13 +134,14 @@ Route::middleware('auth')->group(function () {
         Route::delete('sistem/{sistem}/subsistems/{subsistem}', [SubsistemController::class, 'destroy'])->name('sistem.subsistems.destroy');
 
         // Blok Management
-        Route::get('blok', [BlokController::class, 'index'])->name('blok.index');
-        Route::get('blok/create', [BlokController::class, 'create'])->name('blok.create');
-        Route::get('blok/export-pdf', [BlokController::class, 'exportPdf'])->name('blok.export-pdf');
-        Route::post('blok', [BlokController::class, 'store'])->name('blok.store');
-        Route::get('blok/{blok}/edit', [BlokController::class, 'edit'])->name('blok.edit');
-        Route::put('blok/{blok}', [BlokController::class, 'update'])->name('blok.update');
-        Route::delete('blok/{blok}', [BlokController::class, 'destroy'])->name('blok.destroy');
+        Route::get('blok', [BlokPremisController::class, 'index'])->name('blok.index');
+        Route::get('blok/create', [BlokPremisController::class, 'create'])->name('blok.create');
+        Route::get('blok/{id}/export-pdf', [BlokPremisController::class, 'exportPdf'])->name('blok.export-pdf');
+        Route::post('blok', [BlokPremisController::class, 'store'])->name('blok.store');
+        Route::get('blok/{id}', [BlokPremisController::class, 'show'])->name('blok.show');
+        Route::get('blok/{id}/edit', [BlokPremisController::class, 'edit'])->name('blok.edit');
+        Route::put('blok/{id}', [BlokPremisController::class, 'update'])->name('blok.update');
+        Route::delete('blok/{id}', [BlokPremisController::class, 'destroy'])->name('blok.destroy');
 
         // Aras & Ruang - Combined Management Page
         Route::get('aras-ruang', [ArasRuangController::class, 'index'])->name('aras-ruang.index');
@@ -172,6 +174,8 @@ Route::middleware('auth')->group(function () {
         Route::post('premis', [AdminPremisController::class, 'store'])->name('premis.store');
         Route::put('premis/{premis}', [AdminPremisController::class, 'update'])->name('premis.update');
         Route::delete('premis/{premis}', [AdminPremisController::class, 'destroy'])->name('premis.destroy');
+
+       
 
         // Audit Log Management
         Route::get('audit-log', [AuditLogController::class, 'index'])->name('audit_log.index');
