@@ -127,9 +127,20 @@
                     <td class="fw-semibold bg-light">Bil. Binaan Luar</td>
                     <td>{{ $premis->bil_binaan_luar ?? '0' }}</td>
                 </tr>
-                <tr>
+               <tr>
                     <td class="fw-semibold bg-light">Catatan</td>
                     <td colspan="3">{{ $premis->catatan ?? '-' }}</td>
+                </tr>
+                <tr>
+                    <td class="fw-semibold bg-light">Gambar Premis</td>
+                    <td colspan="3">
+                        @if($premis->gambar_premis)
+                            <img src="{{ asset('storage/' . $premis->gambar_premis) }}"
+                                alt="Gambar Premis" style="max-height: 200px; border-radius: 6px;">
+                        @else
+                            <span class="text-muted">Tiada gambar</span>
+                        @endif
+                    </td>
                 </tr>
             </table>
 
