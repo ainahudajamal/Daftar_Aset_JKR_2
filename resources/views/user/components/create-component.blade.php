@@ -70,19 +70,23 @@
                                 <div class="row mb-3">
                                     <div class="col-md-6">
                                         <label class="form-label">Nama Premis <span class="text-danger">*</span></label>
-                                        <input type="text"
-                                            class="form-control @error('nama_premis') is-invalid @enderror"
-                                            name="nama_premis" value="{{ old('nama_premis') }}"
-                                            placeholder="Contoh: PARLIMEN MALAYSIA" required>
+                                        <select class="form-select" name="nama_premis" id="selectPremis" required>
+                                            <option value="">-- Pilih Premis --</option>
+                                            @foreach ($premis as $p)
+                                                <option value="{{ $p->nama_premis }}" data-dpa="{{ $p->no_dpa }}"
+                                                    {{ old('nama_premis') == $p->nama_premis ? 'selected' : '' }}>
+                                                    {{ $p->nama_premis }}
+                                                </option>
+                                            @endforeach
+                                        </select>
                                         @error('nama_premis')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Nombor DPA <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control @error('nombor_dpa') is-invalid @enderror"
-                                            name="nombor_dpa" value="{{ old('nombor_dpa') }}"
-                                            placeholder="Contoh: 1610MYS.140144.BD0001" required>
+                                        <input type="text" class="form-control" name="nombor_dpa" id="inputNoDpa"
+                                            value="{{ old('nombor_dpa') }}" readonly>
                                         @error('nombor_dpa')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
@@ -121,11 +125,12 @@
                                                 <div class="input-group">
                                                     <select class="form-select select2-blok" name="kod_blok" id="kod_blok">
                                                         <option value="">-- Pilih atau Taip Kod Blok --</option>
-                                                        @foreach ($kodBloks as $blok)
-                                                            <option value="{{ $blok->kod }}"
-                                                                data-nama="{{ $blok->nama }}"
-                                                                {{ old('kod_blok') == $blok->kod ? 'selected' : '' }}>
-                                                                {{ $blok->kod }}
+                                                        @foreach ($bloks as $blok)
+                                                            <option value="{{ $blok->kod_blok_myspata }}"
+                                                                data-nama="{{ $blok->nama_blok }}"
+                                                                data-premis="{{ $blok->premis_id }}"
+                                                                {{ old('kod_blok') == $blok->kod_blok_myspata ? 'selected' : '' }}>
+                                                                {{ $blok->nama_blok }}
                                                             </option>
                                                         @endforeach
                                                     </select>
@@ -488,8 +493,7 @@
                                 '<span class="new-tag-badge"><i class="bi bi-sparkles"></i> Kod Baru</span>'
                             );
                             $('#nama_blok').val(response.suggestion).prop('readonly', false);
-                            $('#nama-blok-hint').html(
-                                'Nama disarankan. <strong>Akan disimpan automatik</strong>.');
+                           $('#nama-blok-hint').html('Kod dijana automatik.');
                             $('#autofill-indicator-blok').show();
                         }
                     },
@@ -569,6 +573,7 @@
                         });
                     }
                 });
+
             }
             // ========================================
             // KOD ARAS (Blok Section) - Auto Check & Save
@@ -644,6 +649,18 @@
                 $(this).prop('readonly', false);
                 $('#autofill-indicator-aras-binaan').hide();
             });
+            // Auto-fill Nama Ruang bila pilih Kod Ruang
+$('#kod_ruang').on('select2:select change', function() {
+    const selected = $(this).find(':selected');
+    const namaRuang = selected.data('nama') || '';
+    $('#nama_ruang').val(namaRuang);
+});
+
+$('#kod_ruang_binaan').on('select2:select change', function() {
+    const selected = $(this).find(':selected');
+    const namaRuang = selected.data('nama') || '';
+    $('#nama_ruang_binaan').val(namaRuang);
+});
 
             // ========================================
             // HELPER FUNCTIONS
@@ -754,6 +771,11 @@
                     });
                 }
             }
+            // Auto-fill No DPA bila pilih premis
+            $('#selectPremis').on('change', function() {
+                const dpa = $(this).find(':selected').data('dpa') || '';
+                $('#inputNoDpa').val(dpa);
+            });
 
             function initializeSelect2() {
                 $('.select2-blok, .select2-aras, .select2-aras-binaan, .select2-binaan-luar').select2({
