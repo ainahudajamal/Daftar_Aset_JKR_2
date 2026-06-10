@@ -38,9 +38,8 @@ class BlokController extends Controller
             $query->where('is_active', false);
         }
 
-        $bloks = $query->orderBy('kod')->paginate(12);
-
-        return view('admin.blok.index', compact('bloks'));
+        $kodBloks = $query->orderBy('kod')->paginate(12);
+return view('admin.blok.list', compact('kodBloks'));
     }
 
     public function create()
