@@ -23,35 +23,45 @@ class AdminPremisController extends Controller
     }
 
     public function store(Request $request)
-{
-    $request->validate([
-        'nama_premis'  => 'required|string|max:255',
-        'no_dpa'       => 'required|string|unique:premis,no_dpa',
-        'koordinat_x'  => 'nullable|string',
-        'koordinat_y'  => 'nullable|string',
-    ]);
+    {
+        $request->validate([
+            'nama_premis'  => 'required|string|max:255',
+            'no_dpa'       => 'required|string|unique:premis,no_dpa',
+            'koordinat_x'  => 'nullable|string',
+            'koordinat_y'  => 'nullable|string',
+        ]);
 
-    $premis = Premis::create($request->except(['tanah', 'lukisan', '_token']));
+        $data = $request->except(['tanah', 'lukisan', '_token', 'gambar_premis']);
 
-    if ($request->has('tanah')) {
-        foreach ($request->tanah as $tanah) {
-            if (!empty($tanah['no_lot'])) {
-                $premis->tanah()->create($tanah);
+        if ($request->hasFile('gambar_premis')) {
+            $data['gambar_premis'] = $request->file('gambar_premis')->store('gambar_premis', 'public');
+        }
+
+        $premis = Premis::create($data);
+
+        if ($request->has('tanah')) {
+            foreach ($request->tanah as $tanah) {
+                if (!empty($tanah['no_lot'])) {
+                    if (($tanah['status_hakmilik'] ?? '') === 'Lain-lain' && !empty($tanah['status_hakmilik_lain'])) {
+                        $tanah['status_hakmilik'] = $tanah['status_hakmilik_lain'];
+                    }
+                    unset($tanah['status_hakmilik_lain']);
+                    $premis->tanah()->create($tanah);
+                }
             }
         }
-    }
 
-    if ($request->has('lukisan')) {
-        foreach ($request->lukisan as $lukisan) {
-            if (!empty($lukisan['tajuk_lukisan'])) {
-                $premis->lukisan()->create($lukisan);
+        if ($request->has('lukisan')) {
+            foreach ($request->lukisan as $lukisan) {
+                if (!empty($lukisan['tajuk_lukisan'])) {
+                    $premis->lukisan()->create($lukisan);
+                }
             }
         }
-    }
 
-    return redirect()->route('admin.premis.index')
-        ->with('success', 'Premis berjaya didaftarkan.');
-}
+        return redirect()->route('admin.premis.index')
+            ->with('success', 'Premis berjaya didaftarkan.');
+    }
 
     public function show($id)
     {
@@ -74,13 +84,31 @@ class AdminPremisController extends Controller
             'no_dpa'      => 'required|string|unique:premis,no_dpa,' . $id,
         ]);
 
-        $premis->update($request->except(['tanah', 'lukisan']));
+        $data = $request->except(['tanah', 'lukisan', '_token', '_method', 'gambar_premis']);
+
+        if ($request->hasFile('gambar_premis')) {
+            if ($premis->gambar_premis && \Storage::disk('public')->exists($premis->gambar_premis)) {
+                \Storage::disk('public')->delete($premis->gambar_premis);
+            }
+            $data['gambar_premis'] = $request->file('gambar_premis')->store('gambar_premis', 'public');
+        } elseif ($request->input('padam_gambar')) {
+            if ($premis->gambar_premis && \Storage::disk('public')->exists($premis->gambar_premis)) {
+                \Storage::disk('public')->delete($premis->gambar_premis);
+            }
+            $data['gambar_premis'] = null;
+        }
+
+        $premis->update($data);
 
         // Update premis_tanah
         $premis->tanah()->delete();
         if ($request->has('tanah')) {
             foreach ($request->tanah as $tanah) {
                 if (!empty($tanah['no_lot'])) {
+                    if (($tanah['status_hakmilik'] ?? '') === 'Lain-lain' && !empty($tanah['status_hakmilik_lain'])) {
+                        $tanah['status_hakmilik'] = $tanah['status_hakmilik_lain'];
+                    }
+                    unset($tanah['status_hakmilik_lain']);
                     $premis->tanah()->create($tanah);
                 }
             }
