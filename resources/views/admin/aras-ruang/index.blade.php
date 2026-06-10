@@ -9,7 +9,7 @@
     <div class="d-flex justify-content-between align-items-start mb-4">
         <div>
             <h2 class="mb-1 fw-bold">
-                <i class="bi bi-layers-half me-2 text-primary"></i>Konfigurasi Aras dan Ruang
+                <i class="bi bi-layers-half me-2 text-primary"></i>Borang D.A.5
             </h2>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0">
