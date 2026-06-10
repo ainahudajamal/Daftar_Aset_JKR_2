@@ -44,6 +44,7 @@ class Premis extends Model
         'pengesah_nama',
         'pengesah_jawatan',
         'pengesah_tarikh',
+        'gambar_premis',
     ];
 
     protected $casts = [
