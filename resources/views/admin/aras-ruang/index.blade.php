@@ -69,12 +69,20 @@
                         <div class="row g-3">
                             <div class="col-md-4">
                                 <label class="form-label text-muted small fw-semibold">Nama Premis</label>
-                                <select name="nama_premis" id="da5_nama_premis" class="form-select">
-                                    <option value="">-- Pilih Premis / Isi Manual --</option>
-                                    <option value="PARLIMEN MALAYSIA" {{ old('nama_premis', $da5_data['nama_premis'] ?? '') === 'PARLIMEN MALAYSIA' ? 'selected' : '' }}>PARLIMEN MALAYSIA</option>
-                                    <option value="PEJABAT JKR KUALA LUMPUR" {{ old('nama_premis', $da5_data['nama_premis'] ?? '') === 'PEJABAT JKR KUALA LUMPUR' ? 'selected' : '' }}>PEJABAT JKR KUALA LUMPUR</option>
-                                    <option value="HOSPITAL KUALA LUMPUR" {{ old('nama_premis', $da5_data['nama_premis'] ?? '') === 'HOSPITAL KUALA LUMPUR' ? 'selected' : '' }}>HOSPITAL KUALA LUMPUR</option>
+                                <select name="nama_premis_id" id="da5_nama_premis" class="form-select">
+                                    <option value="">-- Pilih Premis --</option>
+                                    <option value="manual" {{ old('nama_premis_id', $da5_data['nama_premis_id'] ?? '') === 'manual' ? 'selected' : '' }}>-- Isi Manual --</option>
+                                    @foreach($premisList as $p)
+                                    <option value="{{ $p->id }}" data-nama="{{ $p->nama_premis }}" {{ old('nama_premis_id', $da5_data['nama_premis_id'] ?? '') == $p->id ? 'selected' : '' }}>
+                                        {{ $p->nama_premis }}
+                                    </option>
+                                    @endforeach
                                 </select>
+                                <input type="hidden" name="nama_premis" id="da5_nama_premis_hidden" value="{{ old('nama_premis', $da5_data['nama_premis'] ?? '') }}">
+                                
+                                <div id="wrapper_nama_premis_manual" class="mt-2 {{ (old('nama_premis_id', $da5_data['nama_premis_id'] ?? '') === 'manual' || empty($da5_data['nama_premis_id']) && !empty($da5_data['nama_premis'])) ? '' : 'd-none' }}">
+                                    <input type="text" name="nama_premis_manual" id="da5_nama_premis_manual" class="form-control" value="{{ old('nama_premis_manual', $da5_data['nama_premis_manual'] ?? ($da5_data['nama_premis'] ?? '')) }}" placeholder="Taip Nama Premis Manual di sini">
+                                </div>
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label text-muted small fw-semibold">No. DPA</label>
@@ -1329,16 +1337,35 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Auto-fill template mappings
+    // Keep a copy of the master blocks from the DOM
+    const masterBlocks = [];
+    if (da5_kod_blok) {
+        da5_kod_blok.querySelectorAll('option').forEach(opt => {
+            if (opt.value !== "") {
+                masterBlocks.push({
+                    value: opt.value,
+                    text: opt.text,
+                    nama: opt.getAttribute('data-nama') || ''
+                });
+            }
+        });
+    }
+
+    function restoreMasterBlocks() {
+        if (!da5_kod_blok) return;
+        da5_kod_blok.innerHTML = '<option value="">-- Pilih Kod Blok --</option>';
+        masterBlocks.forEach(b => {
+            const opt = document.createElement('option');
+            opt.value = b.value;
+            opt.text = b.text;
+            opt.setAttribute('data-nama', b.nama);
+            da5_kod_blok.appendChild(opt);
+        });
+    }
+
+    // Auto-fill template mappings (for demo compatibility)
     const templates = {
         "PARLIMEN MALAYSIA": {
-            no_dpa: "11011 01MYS.14004 4.BD0001",
-            kod_blok: "A",
-            nama_blok: "BLOK A - UTAMA",
-            fungsi_binaan: "DEWAN PERSIDANGAN",
-            jenis_binaan: "",
-            gps_x: "3.1477",
-            gps_y: "101.6939",
             kontraktor_utama: "AZMAN HAMZAH SHAH SDN BHD",
             bidang_kontraktor_utama: "PEMBINAAN BANGUNAN",
             kontraktor_list: [
@@ -1351,36 +1378,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 { nama: "MAJU PERUNDING CIVIL S/B", bidang: "STRUKTUR & AWAL" },
                 { nama: "PERUNDING ELEKTRIK BERSEKUTU", bidang: "ELEKTRIKAL" }
             ],
-            tahun_siap_bina: "2013",
-            tarikh_siap_bina: "2013-05-20",
             fungsi_asal: "DEWAN PERSIDANGAN & PEJABAT",
             jenis_struktur: "KONKRIT BERTULANG & STRUKTUR BESI",
             no_siri_pendaftaran: "JKR/PARLIMEN/2013/001",
             jangka_hayat: "50",
             kapasiti_penghuni: "1000",
-            kos_bina_asal: "250000000",
-            nilai_semasa: "320000000",
-            tarikh_penilaian: "2024-08-15",
-            sumber_pembiayaan: "KERAJAAN PERSEKUTUAN",
-            kod_ptj: "11011",
             penggunaan_tenaga: "120000",
             penggunaan_air: "4500",
-            jenis_milikan: "Pegangan Bebas",
-            aset_warisan: true,
             status_blok: "aktif",
             bil_aras_atas: "4",
             bil_aras_bawah: "1",
-            jumlah_luas_lantai: "12500.50",
-            luas_tapak: "4509.26"
+            jumlah_luas_lantai: "12500.50"
         },
         "PEJABAT JKR KUALA LUMPUR": {
-            no_dpa: "11011 01MYS.14004 4.BD0002",
-            kod_blok: "B",
-            nama_blok: "BLOK B - PEJABAT",
-            fungsi_binaan: "PEJABAT PENTADBIRAN",
-            jenis_binaan: "",
-            gps_x: "3.1539",
-            gps_y: "101.6981",
             kontraktor_utama: "MUHIBBAH ENGINEERING BHD",
             bidang_kontraktor_utama: "PEMBINAAN AM",
             kontraktor_list: [
@@ -1391,36 +1401,19 @@ document.addEventListener('DOMContentLoaded', function () {
             juru_perunding_list: [
                 { nama: "SSP CONSULTING ENGINEERS", bidang: "AWAM & STRUKTUR" }
             ],
-            tahun_siap_bina: "2018",
-            tarikh_siap_bina: "2018-09-12",
             fungsi_asal: "PEJABAT KERAJAAN",
             jenis_struktur: "KONKRIT BERTULANG",
             no_siri_pendaftaran: "JKR/PEJABAT-KL/2018/002",
             jangka_hayat: "40",
             kapasiti_penghuni: "500",
-            kos_bina_asal: "85000000",
-            nilai_semasa: "92000000",
-            tarikh_penilaian: "2023-11-10",
-            sumber_pembiayaan: "KERAJAAN PERSEKUTUAN (JKR)",
-            kod_ptj: "14004",
             penggunaan_tenaga: "85000",
             penggunaan_air: "2800",
-            jenis_milikan: "Pegangan Bebas",
-            aset_warisan: false,
             status_blok: "aktif",
             bil_aras_atas: "6",
             bil_aras_bawah: "0",
-            jumlah_luas_lantai: "8900.00",
-            luas_tapak: "3200.00"
+            jumlah_luas_lantai: "8900.00"
         },
         "HOSPITAL KUALA LUMPUR": {
-            no_dpa: "11011 01MYS.14004 4.BD0003",
-            kod_blok: "C",
-            nama_blok: "BLOK C - KAFETERIA",
-            fungsi_binaan: "KAFETERIA HOSPITAL",
-            jenis_binaan: "",
-            gps_x: "3.1685",
-            gps_y: "101.6985",
             kontraktor_utama: "WCT HOLDINGS BERHAD",
             bidang_kontraktor_utama: "PEMBINAAN KHAS HOSPITAL",
             kontraktor_list: [
@@ -1431,175 +1424,419 @@ document.addEventListener('DOMContentLoaded', function () {
             juru_perunding_list: [
                 { nama: "MEP CONSULTANTS SDN BHD", bidang: "MEKANIKAL & ELEKTRIKAL" }
             ],
-            tahun_siap_bina: "2008",
-            tarikh_siap_bina: "2008-03-15",
             fungsi_asal: "KAFETERIA & PUSAT SAJIAN",
             jenis_struktur: "RANGKA KONKRIT",
             no_siri_pendaftaran: "JKR/HKL-KAFE/2008/003",
             jangka_hayat: "50",
             kapasiti_penghuni: "350",
-            kos_bina_asal: "4500000",
-            nilai_semasa: "6200000",
-            tarikh_penilaian: "2025-02-28",
-            sumber_pembiayaan: "Kementerian Kesihatan Malaysia (KKM)",
-            kod_ptj: "24011",
             penggunaan_tenaga: "45000",
             penggunaan_air: "1500",
-            jenis_milikan: "Pajakan",
-            aset_warisan: false,
             status_blok: "aktif",
             bil_aras_atas: "2",
             bil_aras_bawah: "0",
-            jumlah_luas_lantai: "1500.00",
-            luas_tapak: "850.00"
+            jumlah_luas_lantai: "1500.00"
         }
     };
 
+    function clearAllFields() {
+        document.getElementById('da5_no_dpa').value = '';
+        if (da5_kod_blok) da5_kod_blok.value = '';
+        document.getElementById('da5_nama_blok').value = '';
+        document.getElementById('da5_fungsi_binaan').value = '';
+        document.getElementById('da5_jenis_binaan').value = '';
+        document.getElementById('da5_gps_x').value = '';
+        document.getElementById('da5_gps_y').value = '';
+        document.getElementById('da5_kontraktor_utama').value = '';
+        document.getElementById('da5_bidang_kontraktor_utama').value = '';
+        document.getElementById('da5_juru_perunding_utama').value = '';
+        document.getElementById('da5_bidang_juru_perunding_utama').value = '';
+        document.getElementById('da5_tahun_siap_bina').value = '';
+        document.getElementById('da5_tarikh_siap_bina').value = '';
+        document.getElementById('da5_fungsi_asal').value = '';
+        document.getElementById('da5_jenis_struktur').value = '';
+        document.getElementById('da5_no_siri_pendaftaran').value = '';
+        document.getElementById('da5_jangka_hayat').value = '';
+        document.getElementById('da5_kapasiti_penghuni').value = '';
+        document.getElementById('da5_kos_bina_asal').value = '';
+        document.getElementById('da5_nilai_semasa').value = '';
+        document.getElementById('da5_tarikh_penilaian').value = '';
+        document.getElementById('da5_sumber_pembiayaan').value = '';
+        document.getElementById('da5_kod_ptj').value = '';
+        document.getElementById('da5_penggunaan_tenaga').value = '';
+        document.getElementById('da5_penggunaan_air').value = '';
+        document.getElementById('da5_jenis_milikan').value = '';
+        document.getElementById('da5_aset_warisan').checked = false;
+        document.getElementById('da5_status_blok').value = '';
+        document.getElementById('da5_bil_aras_atas').value = '';
+        document.getElementById('da5_bil_aras_bawah').value = '';
+        document.getElementById('da5_jumlah_luas_lantai').value = '';
+        document.getElementById('da5_luas_tapak').value = '';
+
+        // Reset to 2 empty rows for contractors
+        bodyKontraktorList.innerHTML = `
+            <tr>
+                <td><input type="text" name="kontraktor_list[0][nama]" class="form-control form-control-sm" placeholder="1."></td>
+                <td><input type="text" name="kontraktor_list[0][bidang]" class="form-control form-control-sm"></td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-outline-danger btn-sm btn-padam-row-kontraktor"><i class="bi bi-trash"></i></button>
+                </td>
+            </tr>
+            <tr>
+                <td><input type="text" name="kontraktor_list[1][nama]" class="form-control form-control-sm" placeholder="2."></td>
+                <td><input type="text" name="kontraktor_list[1][bidang]" class="form-control form-control-sm"></td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-outline-danger btn-sm btn-padam-row-kontraktor"><i class="bi bi-trash"></i></button>
+                </td>
+            </tr>
+        `;
+
+        // Reset to 2 empty rows for perundings
+        bodyPerundingList.innerHTML = `
+            <tr>
+                <td><input type="text" name="juru_perunding_list[0][nama]" class="form-control form-control-sm" placeholder="1."></td>
+                <td><input type="text" name="juru_perunding_list[0][bidang]" class="form-control form-control-sm"></td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-outline-danger btn-sm btn-padam-row-perunding"><i class="bi bi-trash"></i></button>
+                </td>
+            </tr>
+            <tr>
+                <td><input type="text" name="juru_perunding_list[1][nama]" class="form-control form-control-sm" placeholder="2."></td>
+                <td><input type="text" name="juru_perunding_list[1][bidang]" class="form-control form-control-sm"></td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-outline-danger btn-sm btn-padam-row-perunding"><i class="bi bi-trash"></i></button>
+                </td>
+            </tr>
+        `;
+    }
+
     if (da5_nama_premis) {
         da5_nama_premis.addEventListener('change', function () {
-            const selected = this.value;
-            if (templates[selected]) {
-                const t = templates[selected];
-                document.getElementById('da5_no_dpa').value = t.no_dpa;
-                document.getElementById('da5_kod_blok').value = t.kod_blok;
-                document.getElementById('da5_nama_blok').value = t.nama_blok;
-                document.getElementById('da5_fungsi_binaan').value = t.fungsi_binaan;
-                document.getElementById('da5_jenis_binaan').value = t.jenis_binaan;
-                document.getElementById('da5_gps_x').value = t.gps_x;
-                document.getElementById('da5_gps_y').value = t.gps_y;
-                document.getElementById('da5_kontraktor_utama').value = t.kontraktor_utama;
-                document.getElementById('da5_bidang_kontraktor_utama').value = t.bidang_kontraktor_utama;
-                document.getElementById('da5_juru_perunding_utama').value = t.juru_perunding_utama;
-                document.getElementById('da5_bidang_juru_perunding_utama').value = t.bidang_juru_perunding_utama;
-                document.getElementById('da5_tahun_siap_bina').value = t.tahun_siap_bina;
-                document.getElementById('da5_tarikh_siap_bina').value = t.tarikh_siap_bina;
-                document.getElementById('da5_fungsi_asal').value = t.fungsi_asal;
-                document.getElementById('da5_jenis_struktur').value = t.jenis_struktur;
-                document.getElementById('da5_no_siri_pendaftaran').value = t.no_siri_pendaftaran;
-                document.getElementById('da5_jangka_hayat').value = t.jangka_hayat;
-                document.getElementById('da5_kapasiti_penghuni').value = t.kapasiti_penghuni;
-                document.getElementById('da5_kos_bina_asal').value = t.kos_bina_asal;
-                document.getElementById('da5_nilai_semasa').value = t.nilai_semasa;
-                document.getElementById('da5_tarikh_penilaian').value = t.tarikh_penilaian;
-                document.getElementById('da5_sumber_pembiayaan').value = t.sumber_pembiayaan;
-                document.getElementById('da5_kod_ptj').value = t.kod_ptj;
-                document.getElementById('da5_penggunaan_tenaga').value = t.penggunaan_tenaga;
-                document.getElementById('da5_penggunaan_air').value = t.penggunaan_air;
-                document.getElementById('da5_jenis_milikan').value = t.jenis_milikan;
-                document.getElementById('da5_aset_warisan').checked = t.aset_warisan;
-                document.getElementById('da5_status_blok').value = t.status_blok;
-                document.getElementById('da5_bil_aras_atas').value = t.bil_aras_atas;
-                document.getElementById('da5_bil_aras_bawah').value = t.bil_aras_bawah;
-                document.getElementById('da5_jumlah_luas_lantai').value = t.jumlah_luas_lantai;
-                document.getElementById('da5_luas_tapak').value = t.luas_tapak;
+            const selectedVal = this.value;
+            const hiddenInput = document.getElementById('da5_nama_premis_hidden');
+            const manualWrapper = document.getElementById('wrapper_nama_premis_manual');
+            const manualInput = document.getElementById('da5_nama_premis_manual');
 
-                // Populate dynamic contractors
-                bodyKontraktorList.innerHTML = '';
-                t.kontraktor_list.forEach((item, idx) => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td><input type="text" name="kontraktor_list[${idx}][nama]" class="form-control form-control-sm" value="${item.nama}" placeholder="${idx + 1}."></td>
-                        <td><input type="text" name="kontraktor_list[${idx}][bidang]" class="form-control form-control-sm" value="${item.bidang}"></td>
-                        <td class="text-center">
-                            <button type="button" class="btn btn-outline-danger btn-sm btn-padam-row-kontraktor"><i class="bi bi-trash"></i></button>
-                        </td>
-                    `;
-                    bodyKontraktorList.appendChild(tr);
-                });
-
-                // Populate dynamic perundings
-                bodyPerundingList.innerHTML = '';
-                t.juru_perunding_list.forEach((item, idx) => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td><input type="text" name="juru_perunding_list[${idx}][nama]" class="form-control form-control-sm" value="${item.nama}" placeholder="${idx + 1}."></td>
-                        <td><input type="text" name="juru_perunding_list[${idx}][bidang]" class="form-control form-control-sm" value="${item.bidang}"></td>
-                        <td class="text-center">
-                            <button type="button" class="btn btn-outline-danger btn-sm btn-padam-row-perunding"><i class="bi bi-trash"></i></button>
-                        </td>
-                    `;
-                    bodyPerundingList.appendChild(tr);
-                });
+            if (selectedVal === "manual") {
+                manualWrapper.classList.remove('d-none');
+                hiddenInput.value = manualInput.value;
+                clearAllFields();
+                restoreMasterBlocks();
+            } else if (selectedVal === "") {
+                manualWrapper.classList.add('d-none');
+                hiddenInput.value = "";
+                clearAllFields();
+                restoreMasterBlocks();
             } else {
-                // Clear all inputs if empty option selected
-                document.getElementById('da5_no_dpa').value = '';
-                document.getElementById('da5_kod_blok').value = '';
-                document.getElementById('da5_nama_blok').value = '';
-                document.getElementById('da5_fungsi_binaan').value = '';
-                document.getElementById('da5_jenis_binaan').value = '';
-                document.getElementById('da5_gps_x').value = '';
-                document.getElementById('da5_gps_y').value = '';
-                document.getElementById('da5_kontraktor_utama').value = '';
-                document.getElementById('da5_bidang_kontraktor_utama').value = '';
-                document.getElementById('da5_juru_perunding_utama').value = '';
-                document.getElementById('da5_bidang_juru_perunding_utama').value = '';
-                document.getElementById('da5_tahun_siap_bina').value = '';
-                document.getElementById('da5_tarikh_siap_bina').value = '';
-                document.getElementById('da5_fungsi_asal').value = '';
-                document.getElementById('da5_jenis_struktur').value = '';
-                document.getElementById('da5_no_siri_pendaftaran').value = '';
-                document.getElementById('da5_jangka_hayat').value = '';
-                document.getElementById('da5_kapasiti_penghuni').value = '';
-                document.getElementById('da5_kos_bina_asal').value = '';
-                document.getElementById('da5_nilai_semasa').value = '';
-                document.getElementById('da5_tarikh_penilaian').value = '';
-                document.getElementById('da5_sumber_pembiayaan').value = '';
-                document.getElementById('da5_kod_ptj').value = '';
-                document.getElementById('da5_penggunaan_tenaga').value = '';
-                document.getElementById('da5_penggunaan_air').value = '';
-                document.getElementById('da5_jenis_milikan').value = '';
-                document.getElementById('da5_aset_warisan').checked = false;
-                document.getElementById('da5_status_blok').value = '';
-                document.getElementById('da5_bil_aras_atas').value = '';
-                document.getElementById('da5_bil_aras_bawah').value = '';
-                document.getElementById('da5_jumlah_luas_lantai').value = '';
-                document.getElementById('da5_luas_tapak').value = '';
+                manualWrapper.classList.add('d-none');
+                const selectedOption = this.options[this.selectedIndex];
+                const premisName = selectedOption.getAttribute('data-nama');
+                hiddenInput.value = premisName;
 
-                // Reset to 2 empty rows for contractors
-                bodyKontraktorList.innerHTML = `
-                    <tr>
-                        <td><input type="text" name="kontraktor_list[0][nama]" class="form-control form-control-sm" placeholder="1."></td>
-                        <td><input type="text" name="kontraktor_list[0][bidang]" class="form-control form-control-sm"></td>
-                        <td class="text-center">
-                            <button type="button" class="btn btn-outline-danger btn-sm btn-padam-row-kontraktor"><i class="bi bi-trash"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><input type="text" name="kontraktor_list[1][nama]" class="form-control form-control-sm" placeholder="2."></td>
-                        <td><input type="text" name="kontraktor_list[1][bidang]" class="form-control form-control-sm"></td>
-                        <td class="text-center">
-                            <button type="button" class="btn btn-outline-danger btn-sm btn-padam-row-kontraktor"><i class="bi bi-trash"></i></button>
-                        </td>
-                    </tr>
-                `;
+                // Fetch data from database
+                fetch(`/admin/aras-ruang/premis/${selectedVal}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            alert(data.error);
+                            return;
+                        }
 
-                // Reset to 2 empty rows for perundings
-                bodyPerundingList.innerHTML = `
-                    <tr>
-                        <td><input type="text" name="juru_perunding_list[0][nama]" class="form-control form-control-sm" placeholder="1."></td>
-                        <td><input type="text" name="juru_perunding_list[0][bidang]" class="form-control form-control-sm"></td>
-                        <td class="text-center">
-                            <button type="button" class="btn btn-outline-danger btn-sm btn-padam-row-perunding"><i class="bi bi-trash"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><input type="text" name="juru_perunding_list[1][nama]" class="form-control form-control-sm" placeholder="2."></td>
-                        <td><input type="text" name="juru_perunding_list[1][bidang]" class="form-control form-control-sm"></td>
-                        <td class="text-center">
-                            <button type="button" class="btn btn-outline-danger btn-sm btn-padam-row-perunding"><i class="bi bi-trash"></i></button>
-                        </td>
-                    </tr>
-                `;
+                        // Populate D.A.3 premise fields
+                        document.getElementById('da5_no_dpa').value = data.no_dpa || '';
+                        document.getElementById('da5_gps_x').value = data.koordinat_x || '';
+                        document.getElementById('da5_gps_y').value = data.koordinat_y || '';
+                        document.getElementById('da5_kos_bina_asal').value = data.kos_siap_bina_asal || '';
+                        document.getElementById('da5_nilai_semasa').value = data.nilai_semasa || '';
+                        document.getElementById('da5_sumber_pembiayaan').value = data.sumber_pembiayaan || '';
+                        document.getElementById('da5_kod_ptj').value = data.kod_ptj || '';
+                        document.getElementById('da5_aset_warisan').checked = !!data.aset_warisan;
+
+                        if (data.status_premis) {
+                            document.getElementById('da5_status_blok').value = data.status_premis.toLowerCase() === 'aktif' ? 'aktif' : 'tidak_aktif';
+                        } else {
+                            document.getElementById('da5_status_blok').value = '';
+                        }
+
+                        // Handle ownership / milikan based on first tanah record
+                        if (data.tanah && data.tanah.length > 0) {
+                            const firstTanah = data.tanah[0];
+                            const hakmilik = (firstTanah.jenis_hakmilik || firstTanah.status_hakmilik || '').toLowerCase();
+                            if (hakmilik.includes('pajak')) {
+                                document.getElementById('da5_jenis_milikan').value = 'Pajakan';
+                            } else if (hakmilik.includes('bebas') || hakmilik.includes('kekal')) {
+                                document.getElementById('da5_jenis_milikan').value = 'Pegangan Bebas';
+                            } else {
+                                document.getElementById('da5_jenis_milikan').value = '';
+                            }
+                        } else {
+                            document.getElementById('da5_jenis_milikan').value = '';
+                        }
+
+                        // Parse and set tarikh/tahun siap bina
+                        if (data.tarikh_siap_bina) {
+                            const dateStr = data.tarikh_siap_bina.substring(0, 10);
+                            document.getElementById('da5_tarikh_siap_bina').value = dateStr;
+                            const yearStr = dateStr.substring(0, 4);
+                            document.getElementById('da5_tahun_siap_bina').value = yearStr;
+                        } else {
+                            document.getElementById('da5_tarikh_siap_bina').value = '';
+                            document.getElementById('da5_tahun_siap_bina').value = '';
+                        }
+
+                        // Parse and set tarikh penilaian
+                        if (data.tarikh_penilaian) {
+                            document.getElementById('da5_tarikh_penilaian').value = data.tarikh_penilaian.substring(0, 10);
+                        } else {
+                            document.getElementById('da5_tarikh_penilaian').value = '';
+                        }
+
+                        // Merge mock lists for pre-seeded premises, otherwise clear
+                        const normalizedName = premisName.toUpperCase();
+                        if (templates[normalizedName]) {
+                            const t = templates[normalizedName];
+                            // Populate remaining template details
+                            document.getElementById('da5_kontraktor_utama').value = t.kontraktor_utama || '';
+                            document.getElementById('da5_bidang_kontraktor_utama').value = t.bidang_kontraktor_utama || '';
+                            document.getElementById('da5_juru_perunding_utama').value = t.juru_perunding_utama || '';
+                            document.getElementById('da5_bidang_juru_perunding_utama').value = t.bidang_juru_perunding_utama || '';
+                            document.getElementById('da5_fungsi_asal').value = t.fungsi_asal || '';
+                            document.getElementById('da5_jenis_struktur').value = t.jenis_struktur || '';
+                            document.getElementById('da5_no_siri_pendaftaran').value = t.no_siri_pendaftaran || '';
+                            document.getElementById('da5_jangka_hayat').value = t.jangka_hayat || '';
+                            document.getElementById('da5_kapasiti_penghuni').value = t.kapasiti_penghuni || '';
+                            document.getElementById('da5_penggunaan_tenaga').value = t.penggunaan_tenaga || '';
+                            document.getElementById('da5_penggunaan_air').value = t.penggunaan_air || '';
+                            document.getElementById('da5_bil_aras_atas').value = t.bil_aras_atas || '';
+                            document.getElementById('da5_bil_aras_bawah').value = t.bil_aras_bawah || '';
+                            document.getElementById('da5_jumlah_luas_lantai').value = t.jumlah_luas_lantai || '';
+
+                            // Populate dynamic contractors
+                            bodyKontraktorList.innerHTML = '';
+                            (t.kontraktor_list || []).forEach((item, idx) => {
+                                const tr = document.createElement('tr');
+                                tr.innerHTML = `
+                                    <td><input type="text" name="kontraktor_list[${idx}][nama]" class="form-control form-control-sm" value="${item.nama}" placeholder="${idx + 1}."></td>
+                                    <td><input type="text" name="kontraktor_list[${idx}][bidang]" class="form-control form-control-sm" value="${item.bidang}"></td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-outline-danger btn-sm btn-padam-row-kontraktor"><i class="bi bi-trash"></i></button>
+                                    </td>
+                                `;
+                                bodyKontraktorList.appendChild(tr);
+                            });
+
+                            // Populate dynamic perundings
+                            bodyPerundingList.innerHTML = '';
+                            (t.juru_perunding_list || []).forEach((item, idx) => {
+                                const tr = document.createElement('tr');
+                                tr.innerHTML = `
+                                    <td><input type="text" name="juru_perunding_list[${idx}][nama]" class="form-control form-control-sm" value="${item.nama}" placeholder="${idx + 1}."></td>
+                                    <td><input type="text" name="juru_perunding_list[${idx}][bidang]" class="form-control form-control-sm" value="${item.bidang}"></td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-outline-danger btn-sm btn-padam-row-perunding"><i class="bi bi-trash"></i></button>
+                                    </td>
+                                `;
+                                bodyPerundingList.appendChild(tr);
+                            });
+                        } else {
+                            // Clear demo details for new premises
+                            document.getElementById('da5_kontraktor_utama').value = '';
+                            document.getElementById('da5_bidang_kontraktor_utama').value = '';
+                            document.getElementById('da5_juru_perunding_utama').value = '';
+                            document.getElementById('da5_bidang_juru_perunding_utama').value = '';
+                            document.getElementById('da5_fungsi_asal').value = '';
+                            document.getElementById('da5_jenis_struktur').value = '';
+                            document.getElementById('da5_no_siri_pendaftaran').value = '';
+                            document.getElementById('da5_jangka_hayat').value = '';
+                            document.getElementById('da5_kapasiti_penghuni').value = '';
+                            document.getElementById('da5_penggunaan_tenaga').value = '';
+                            document.getElementById('da5_penggunaan_air').value = '';
+                            document.getElementById('da5_bil_aras_atas').value = '';
+                            document.getElementById('da5_bil_aras_bawah').value = '';
+                            document.getElementById('da5_jumlah_luas_lantai').value = '';
+
+                            // Reset contractor/consultant rows
+                            bodyKontraktorList.innerHTML = `
+                                <tr>
+                                    <td><input type="text" name="kontraktor_list[0][nama]" class="form-control form-control-sm" placeholder="1."></td>
+                                    <td><input type="text" name="kontraktor_list[0][bidang]" class="form-control form-control-sm"></td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-outline-danger btn-sm btn-padam-row-kontraktor"><i class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="text" name="kontraktor_list[1][nama]" class="form-control form-control-sm" placeholder="2."></td>
+                                    <td><input type="text" name="kontraktor_list[1][bidang]" class="form-control form-control-sm"></td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-outline-danger btn-sm btn-padam-row-kontraktor"><i class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                            `;
+                            bodyPerundingList.innerHTML = `
+                                <tr>
+                                    <td><input type="text" name="juru_perunding_list[0][nama]" class="form-control form-control-sm" placeholder="1."></td>
+                                    <td><input type="text" name="juru_perunding_list[0][bidang]" class="form-control form-control-sm"></td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-outline-danger btn-sm btn-padam-row-perunding"><i class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="text" name="juru_perunding_list[1][nama]" class="form-control form-control-sm" placeholder="2."></td>
+                                    <td><input type="text" name="juru_perunding_list[1][bidang]" class="form-control form-control-sm"></td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-outline-danger btn-sm btn-padam-row-perunding"><i class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                            `;
+                        }
+
+                        // Rebuild block dropdown options dynamically
+                        if (da5_kod_blok) {
+                            da5_kod_blok.innerHTML = '<option value="">-- Pilih Kod Blok --</option>';
+
+                            // Add blocks
+                            if (data.blok && data.blok.length > 0) {
+                                data.blok.forEach(b => {
+                                    const kod = b.kod_blok_myspata || b.bil || 'Blok';
+                                    const opt = document.createElement('option');
+                                    opt.value = kod;
+                                    opt.text = `${kod} - ${b.nama_blok}`;
+                                    opt.setAttribute('data-nama', b.nama_blok);
+                                    opt.setAttribute('data-type', 'blok');
+                                    opt.setAttribute('data-fungsi', b.fungsi_binaan || '');
+                                    opt.setAttribute('data-luas', b.luas_tapak || '');
+                                    da5_kod_blok.appendChild(opt);
+                                });
+                            }
+
+                            // Add binaan luar
+                            if (data.binaan_luar && data.binaan_luar.length > 0) {
+                                data.binaan_luar.forEach(bl => {
+                                    const kod = bl.kod_binaan_luar_myspata || bl.bil || 'BL';
+                                    const opt = document.createElement('option');
+                                    opt.value = kod;
+                                    opt.text = `${kod} - ${bl.nama_binaan_luar}`;
+                                    opt.setAttribute('data-nama', bl.nama_binaan_luar);
+                                    opt.setAttribute('data-type', 'binaan_luar');
+                                    opt.setAttribute('data-jenis', bl.jenis_binaan_luar || '');
+                                    opt.setAttribute('data-luas', bl.luas_tapak || '');
+                                    da5_kod_blok.appendChild(opt);
+                                });
+                            }
+
+                            // If no blocks or binaan luar found, restore the master blocks
+                            if ((!data.blok || data.blok.length === 0) && (!data.binaan_luar || data.binaan_luar.length === 0)) {
+                                restoreMasterBlocks();
+                            }
+                        }
+
+                        // Clear block/binaan luar inputs initially
+                        document.getElementById('da5_nama_blok').value = '';
+                        document.getElementById('da5_fungsi_binaan').value = '';
+                        document.getElementById('da5_jenis_binaan').value = '';
+                        document.getElementById('da5_luas_tapak').value = '';
+                    })
+                    .catch(err => {
+                        console.error('Error fetching premise details:', err);
+                    });
             }
         });
     }
 
-    // Auto-fill nama_blok from selected kod_blok
+    // Handle manual premise text input change
+    const da5_nama_premis_manual = document.getElementById('da5_nama_premis_manual');
+    if (da5_nama_premis_manual) {
+        da5_nama_premis_manual.addEventListener('input', function () {
+            document.getElementById('da5_nama_premis_hidden').value = this.value;
+        });
+    }
+
+    // On page load, check if a database premise is selected and fetch its blocks
+    if (da5_nama_premis && da5_nama_premis.value && da5_nama_premis.value !== "manual") {
+        const selectedBlockVal = "{{ old('kod_blok', $da5_data['kod_blok'] ?? '') }}";
+        fetch(`/admin/aras-ruang/premis/${da5_nama_premis.value}`)
+            .then(response => response.json())
+            .then(data => {
+                if (da5_kod_blok) {
+                    da5_kod_blok.innerHTML = '<option value="">-- Pilih Kod Blok --</option>';
+
+                    // Add blocks
+                    if (data.blok && data.blok.length > 0) {
+                        data.blok.forEach(b => {
+                            const kod = b.kod_blok_myspata || b.bil || 'Blok';
+                            const opt = document.createElement('option');
+                            opt.value = kod;
+                            opt.text = `${kod} - ${b.nama_blok}`;
+                            opt.setAttribute('data-nama', b.nama_blok);
+                            opt.setAttribute('data-type', 'blok');
+                            opt.setAttribute('data-fungsi', b.fungsi_binaan || '');
+                            opt.setAttribute('data-luas', b.luas_tapak || '');
+                            if (kod === selectedBlockVal) {
+                                opt.selected = true;
+                            }
+                            da5_kod_blok.appendChild(opt);
+                        });
+                    }
+
+                    // Add binaan luar
+                    if (data.binaan_luar && data.binaan_luar.length > 0) {
+                        data.binaan_luar.forEach(bl => {
+                            const kod = bl.kod_binaan_luar_myspata || bl.bil || 'BL';
+                            const opt = document.createElement('option');
+                            opt.value = kod;
+                            opt.text = `${kod} - ${bl.nama_binaan_luar}`;
+                            opt.setAttribute('data-nama', bl.nama_binaan_luar);
+                            opt.setAttribute('data-type', 'binaan_luar');
+                            opt.setAttribute('data-jenis', bl.jenis_binaan_luar || '');
+                            opt.setAttribute('data-luas', bl.luas_tapak || '');
+                            if (kod === selectedBlockVal) {
+                                opt.selected = true;
+                            }
+                            da5_kod_blok.appendChild(opt);
+                        });
+                    }
+
+                    // If no blocks/binaan luar found, restore the master blocks
+                    if ((!data.blok || data.blok.length === 0) && (!data.binaan_luar || data.binaan_luar.length === 0)) {
+                        restoreMasterBlocks();
+                        da5_kod_blok.value = selectedBlockVal;
+                    }
+                }
+            })
+            .catch(err => console.error('Error initializing blocks on load:', err));
+    }
+
+    // Auto-fill nama_blok and other attributes from selected kod_blok
     if (da5_kod_blok) {
         da5_kod_blok.addEventListener('change', function () {
             const selectedOption = this.options[this.selectedIndex];
+            if (!selectedOption || this.value === "") {
+                document.getElementById('da5_nama_blok').value = '';
+                document.getElementById('da5_fungsi_binaan').value = '';
+                document.getElementById('da5_jenis_binaan').value = '';
+                document.getElementById('da5_luas_tapak').value = '';
+                return;
+            }
+
             const namaBlok = selectedOption.getAttribute('data-nama') || '';
+            const type = selectedOption.getAttribute('data-type') || '';
+            const luas = selectedOption.getAttribute('data-luas') || '';
+
             document.getElementById('da5_nama_blok').value = namaBlok;
+            document.getElementById('da5_luas_tapak').value = luas;
+
+            if (type === 'blok') {
+                const fungsi = selectedOption.getAttribute('data-fungsi') || '';
+                document.getElementById('da5_fungsi_binaan').value = fungsi;
+                document.getElementById('da5_jenis_binaan').value = '';
+            } else if (type === 'binaan_luar') {
+                const jenis = selectedOption.getAttribute('data-jenis') || '';
+                document.getElementById('da5_fungsi_binaan').value = '';
+                document.getElementById('da5_jenis_binaan').value = jenis || namaBlok;
+            } else {
+                // For master block codes
+                document.getElementById('da5_fungsi_binaan').value = '';
+                document.getElementById('da5_jenis_binaan').value = '';
+            }
         });
     }
 

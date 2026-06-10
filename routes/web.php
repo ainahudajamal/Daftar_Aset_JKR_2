@@ -148,6 +148,7 @@ Route::middleware('auth')->group(function () {
         Route::get('aras-ruang/export-pdf', [ArasRuangController::class, 'exportPdf'])->name('aras-ruang.export-pdf');
         Route::post('aras-ruang/save-form', [ArasRuangController::class, 'saveFormData'])->name('aras-ruang.save-form');
         Route::post('aras-ruang/clear-form', [ArasRuangController::class, 'clearFormData'])->name('aras-ruang.clear-form');
+        Route::get('aras-ruang/premis/{id}', [ArasRuangController::class, 'getPremisDetails'])->name('aras-ruang.get-premis-details');
 
         // Aras Management (individual CRUD - kept for backward compatibility)
         Route::get('aras', [ArasController::class, 'index'])->name('aras.index');

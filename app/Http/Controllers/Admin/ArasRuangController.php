@@ -9,6 +9,8 @@ use App\Models\KodRuang;
 use Illuminate\Http\Request;
 use App\Models\AuditLog;
 use Mpdf\Mpdf;
+use App\Models\Premis;
+use App\Models\Blok;
 
 class ArasRuangController extends Controller
 {
@@ -71,6 +73,7 @@ class ArasRuangController extends Controller
         $bloks   = KodBlok::where('is_active', true)->orderBy('kod')->get();
         $arasAll = KodAras::with('blok')->where('is_active', true)->orderBy('kod')->get();
         $da5_data = session('da5_data', []);
+        $premisList = Premis::orderBy('nama_premis')->get();
 
         return view('admin.aras-ruang.index', compact(
             'arasPaginated',
@@ -78,7 +81,8 @@ class ArasRuangController extends Controller
             'bloks',
             'arasAll',
             'activeTab',
-            'da5_data'
+            'da5_data',
+            'premisList'
         ));
     }
 
@@ -188,7 +192,16 @@ class ArasRuangController extends Controller
 
     public function saveFormData(Request $request)
     {
-        session(['da5_data' => $request->except('_token')]);
+        $data = $request->except('_token');
+        if ($request->nama_premis_id === 'manual') {
+            $data['nama_premis'] = $request->nama_premis_manual;
+        } elseif ($request->nama_premis_id) {
+            $premis = Premis::find($request->nama_premis_id);
+            if ($premis) {
+                $data['nama_premis'] = $premis->nama_premis;
+            }
+        }
+        session(['da5_data' => $data]);
         return redirect()->back()->with('success', 'Maklumat D.A.5 berjaya disimpan.');
     }
 
@@ -196,5 +209,17 @@ class ArasRuangController extends Controller
     {
         session()->forget('da5_data');
         return redirect()->back()->with('success', 'Maklumat D.A.5 berjaya dipadam.');
+    }
+
+    /**
+     * Dapatkan maklumat premis berserta blok dan binaan luar untuk AJAX D.A.5
+     */
+    public function getPremisDetails($id)
+    {
+        $premis = Premis::with(['blok', 'binaanLuar', 'tanah'])->find($id);
+        if (!$premis) {
+            return response()->json(['error' => 'Premis tidak ditemui'], 404);
+        }
+        return response()->json($premis);
     }
 }
