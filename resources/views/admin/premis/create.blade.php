@@ -353,35 +353,39 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
-                                        <table class="table table-bordered">
+                                        <table class="table table-bordered align-middle" style="min-width:1100px;">
                                             <thead class="table-dark">
                                                 <tr>
-                                                    <th>Bil</th>
-                                                    <th>No. Lot</th>
-                                                    <th>Status Hak Milik Tanah</th>
-                                                    <th>Keluasan Tanah</th>
-                                                    <th>No. Hakmilik</th>
-                                                    <th>Jenis Hakmilik</th>
-                                                    <th>Kegunaan Tanah</th>
-                                                    <th>Harga Perolehan (RM)</th>
-                                                    <th>Harga Semasa (RM)</th>
-                                                    <th>Tindakan</th>
+                                                    <th style="width:40px;">Bil</th>
+                                                    <th style="min-width:90px;">No. Lot</th>
+                                                    <th style="min-width:170px;">Status Hak Milik Tanah</th>
+                                                    <th style="min-width:120px;">Keluasan Tanah</th>
+                                                    <th style="min-width:110px;">No. Hakmilik</th>
+                                                    <th style="min-width:120px;">Jenis Hakmilik</th>
+                                                    <th style="min-width:120px;">Kegunaan Tanah</th>
+                                                    <th style="min-width:130px;">Harga Perolehan (RM)</th>
+                                                    <th style="min-width:120px;">Harga Semasa (RM)</th>
+                                                    <th style="width:60px;">Tindakan</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="tanah-body">
                                                 <tr>
-                                                    <td>1</td>
+                                                    <td class="text-center">1</td>
                                                     <td><input type="text" name="tanah[0][no_lot]"
                                                             class="form-control form-control-sm"></td>
                                                     <td>
                                                         <select name="tanah[0][status_hakmilik]"
-                                                            class="form-select form-select-sm">
+                                                            class="form-select form-select-sm status-hakmilik-select"
+                                                            onchange="toggleLainLain(this)">
                                                             <option value="">-- Pilih --</option>
                                                             <option>Hakmilik</option>
                                                             <option>Rizab</option>
                                                             <option>Strata</option>
                                                             <option>Lain-lain</option>
                                                         </select>
+                                                        <input type="text" name="tanah[0][status_hakmilik_lain]"
+                                                            class="form-control form-control-sm mt-1 d-none"
+                                                            placeholder="Nyatakan...">
                                                     </td>
                                                     <td><input type="text" name="tanah[0][keluasan_tanah]"
                                                             class="form-control form-control-sm"></td>
@@ -401,7 +405,7 @@
                                                             class="form-control form-control-sm" step="0.01"></td>
                                                     <td><input type="number" name="tanah[0][harga_semasa]"
                                                             class="form-control form-control-sm" step="0.01"></td>
-                                                    <td>
+                                                    <td class="text-center">
                                                         <button type="button" class="btn btn-sm btn-danger"
                                                             onclick="removeRow(this)">
                                                             <i class="bi bi-trash"></i>
@@ -423,20 +427,20 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
-                                        <table class="table table-bordered">
+                                        <table class="table table-bordered align-middle" style="min-width:700px;">
                                             <thead class="table-dark">
                                                 <tr>
-                                                    <th>Bil</th>
-                                                    <th>Bidang</th>
-                                                    <th>Tajuk Lukisan</th>
-                                                    <th>No. Rujukan</th>
-                                                    <th>Catatan</th>
-                                                    <th>Tindakan</th>
+                                                    <th style="width:40px;">Bil</th>
+                                                    <th style="min-width:130px;">Bidang</th>
+                                                    <th style="min-width:180px;">Tajuk Lukisan</th>
+                                                    <th style="min-width:140px;">No. Rujukan</th>
+                                                    <th style="min-width:180px;">Catatan</th>
+                                                    <th style="width:60px;">Tindakan</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="lukisan-body">
                                                 <tr>
-                                                    <td>1</td>
+                                                    <td class="text-center">1</td>
                                                     <td><input type="text" name="lukisan[0][bidang]"
                                                             class="form-control form-control-sm"></td>
                                                     <td><input type="text" name="lukisan[0][tajuk_lukisan]"
@@ -445,7 +449,7 @@
                                                             class="form-control form-control-sm"></td>
                                                     <td><input type="text" name="lukisan[0][catatan]"
                                                             class="form-control form-control-sm"></td>
-                                                    <td>
+                                                    <td class="text-center">
                                                         <button type="button" class="btn btn-sm btn-danger"
                                                             onclick="removeRow(this)">
                                                             <i class="bi bi-trash"></i>
@@ -503,16 +507,17 @@
             const tbody = document.getElementById('tanah-body');
             const row = `
         <tr>
-            <td>${tanahCount + 1}</td>
+            <td class="text-center">${tanahCount + 1}</td>
             <td><input type="text" name="tanah[${tanahCount}][no_lot]" class="form-control form-control-sm"></td>
             <td>
-                <select name="tanah[${tanahCount}][status_hakmilik]" class="form-select form-select-sm">
+                <select name="tanah[${tanahCount}][status_hakmilik]" class="form-select form-select-sm status-hakmilik-select" onchange="toggleLainLain(this)">
                     <option value="">-- Pilih --</option>
                     <option>Hakmilik</option>
                     <option>Rizab</option>
                     <option>Strata</option>
                     <option>Lain-lain</option>
                 </select>
+                <input type="text" name="tanah[${tanahCount}][status_hakmilik_lain]" class="form-control form-control-sm mt-1 d-none" placeholder="Nyatakan...">
             </td>
             <td><input type="text" name="tanah[${tanahCount}][keluasan_tanah]" class="form-control form-control-sm"></td>
             <td><input type="text" name="tanah[${tanahCount}][no_hakmilik]" class="form-control form-control-sm"></td>
@@ -526,7 +531,7 @@
             <td><input type="text" name="tanah[${tanahCount}][kegunaan_tanah]" class="form-control form-control-sm"></td>
             <td><input type="number" name="tanah[${tanahCount}][harga_perolehan]" class="form-control form-control-sm" step="0.01"></td>
             <td><input type="number" name="tanah[${tanahCount}][harga_semasa]" class="form-control form-control-sm" step="0.01"></td>
-            <td><button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)"><i class="bi bi-trash"></i></button></td>
+            <td class="text-center"><button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)"><i class="bi bi-trash"></i></button></td>
         </tr>`;
             tbody.insertAdjacentHTML('beforeend', row);
             tanahCount++;
@@ -570,5 +575,17 @@
                 }
             });
         });
+
+        function toggleLainLain(select) {
+            const input = select.nextElementSibling;
+            if (select.value === 'Lain-lain') {
+                input.classList.remove('d-none');
+                input.required = true;
+            } else {
+                input.classList.add('d-none');
+                input.required = false;
+                input.value = '';
+            }
+        }
     </script>
 @endsection
