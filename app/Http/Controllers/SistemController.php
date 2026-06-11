@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Sistem;
 use Illuminate\Http\Request;
+use App\Models\AuditLog;
 
 class SistemController extends Controller
 {
@@ -12,6 +13,13 @@ class SistemController extends Controller
      */
     public function index(Request $request)
     {
+        AuditLog::create([
+            'user_id'      => auth()->id(),
+            'component_id' => null,
+            'title'        => 'Lihat Konfigurasi Sistem',
+            'description'  => 'Admin melihat senarai konfigurasi sistem',
+        ]);
+
         $query = Sistem::withCount('subsistems');
 
         // Search
@@ -62,7 +70,14 @@ class SistemController extends Controller
         // Handle checkbox - will be true if checked, false if unchecked
         $validated['is_active'] = $request->has('is_active');
 
-        Sistem::create($validated);
+        $sistem = Sistem::create($validated);
+
+        AuditLog::create([
+            'user_id'      => auth()->id(),
+            'component_id' => null,
+            'title'        => 'Tambah Sistem',
+            'description'  => 'Sistem baru ditambah',
+        ]);
 
         return redirect()->route('admin.sistem.index')
             ->with('success', 'Sistem berjaya ditambah!');
@@ -96,6 +111,13 @@ class SistemController extends Controller
 
         $sistem->update($validated);
 
+        AuditLog::create([
+            'user_id'      => auth()->id(),
+            'component_id' => null,
+            'title'        => 'Kemaskini Sistem',
+            'description'  => 'Sistem dikemaskini',
+        ]);
+
         return redirect()->route('admin.sistem.index')
             ->with('success', 'Sistem berjaya dikemaskini!');
     }
@@ -110,6 +132,13 @@ class SistemController extends Controller
             return back()->with('error', 'Sistem tidak boleh dipadam kerana masih mempunyai subsistem!');
         }
 
+        AuditLog::create([
+            'user_id'      => auth()->id(),
+            'component_id' => null,
+            'title'        => 'Padam Sistem',
+            'description'  => 'Sistem dipadam',
+        ]);
+
         $sistem->delete();
 
         return redirect()->route('admin.sistem.index')
@@ -121,6 +150,13 @@ class SistemController extends Controller
      */
     public function subsistems(Sistem $sistem)
     {
+        AuditLog::create([
+            'user_id'      => auth()->id(),
+            'component_id' => null,
+            'title'        => 'Lihat Senarai Subsistem',
+            'description'  => 'Lihat subsistem ' . $sistem->nama,
+        ]);
+
         $subsistems = $sistem->subsistems()->paginate(15);
 
         return view('admin.sistem.subsystems', compact('sistem', 'subsistems'));
