@@ -622,7 +622,7 @@
                         <a href="{{ route('admin.premis.index') }}"
                             class="nav-link {{ request()->routeIs('admin.premis.*') ? 'active' : '' }}"
                             data-title="Premis">
-                            <i class="bi bi-bank"></i>
+                           <i class="bi bi-file-earmark-text"></i>
                             <span class="nav-link-text">Borang D.A.3</span>
                         </a>
                     </div>
@@ -640,7 +640,7 @@
                             class="nav-link {{ request()->routeIs('admin.aras-ruang.*') || request()->routeIs('admin.aras.*') || request()->routeIs('admin.ruang.*') ? 'active' : '' }}"
                             data-title="Aras dan Ruang">
                             <i class="bi bi-layers-half"></i>
-                            <span class="nav-link-text">Konfigurasi Aras dan Ruang</span>
+                            <span class="nav-link-text">Borang D.A.5</span>
                         </a>
                     </div>
 
