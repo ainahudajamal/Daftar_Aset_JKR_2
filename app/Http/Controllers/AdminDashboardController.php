@@ -10,6 +10,7 @@ use App\Models\Sistem;
 use App\Models\Subsistem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\AuditLog;
 
 class AdminDashboardController extends Controller
 {
@@ -18,6 +19,13 @@ class AdminDashboardController extends Controller
      */
     public function index()
     {
+        AuditLog::create([
+            'user_id'      => auth()->id(),
+            'component_id' => null,
+            'title'        => 'Lihat Dashboard',
+            'description'  => 'Lihat dashboard admin',
+        ]);
+
         // Get statistics
         $stats = [
             'total_users' => User::count(),
@@ -63,6 +71,13 @@ class AdminDashboardController extends Controller
      */
     public function userActivity()
     {
+        AuditLog::create([
+            'user_id'      => auth()->id(),
+            'component_id' => null,
+            'title'        => 'Lihat Aktiviti Pengguna',
+            'description'  => 'Melihat aktiviti pengguna',
+        ]);
+
         // ✅ UBAH INI - Get detailed component count per user menggunakan relationship
         $users = User::withCount([
                 'components',
@@ -97,6 +112,13 @@ class AdminDashboardController extends Controller
      */
     public function systemStats()
     {
+        AuditLog::create([
+            'user_id'      => auth()->id(),
+            'component_id' => null,
+            'title'        => 'Lihat Statistik Sistem',
+            'description'  => 'Melihat statistik sistem',
+        ]);
+
         // ✅ UBAH INI - Component statistics by user menggunakan relationship
         $componentsByUser = User::withCount('components')
             ->orderBy('components_count', 'desc')
