@@ -89,7 +89,7 @@
    SIDEBAR HEADER (Logo & Toggle)
 ======================================== */
         .sidebar-header {
-            padding: 1.25rem 1rem;
+            padding: 0.5rem 1rem;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             align-items: center;
@@ -498,6 +498,38 @@
             display: block;
         }
 
+        /* Sidebar Logo Styles */
+        .sidebar-logo-img {
+            max-height: 85px;
+            max-width: 175px;
+            object-fit: contain;
+            transition: all 0.3s ease;
+            margin-top: -18px;
+            margin-bottom: -18px;
+            margin-left: -5px;
+        }
+
+        .collapsed-logo-icon {
+            display: none;
+            font-size: 1.4rem;
+            color: white;
+            margin: 0 auto;
+        }
+
+        .sidebar.collapsed .sidebar-logo-img {
+            display: none !important;
+        }
+
+        .sidebar.collapsed .collapsed-logo-icon {
+            display: block !important;
+        }
+
+        .sidebar.collapsed .collapsed-logo-icon i {
+            opacity: 1 !important;
+            width: auto !important;
+            display: inline-block !important;
+        }
+
         /* ========================================
    END OF STYLESHEET
 ======================================== */
@@ -516,13 +548,13 @@
                 {{-- ✅ Dynamic link based on role --}}
                 @if (auth()->user()->isAdmin())
                     <a href="{{ route('admin.dashboard') }}" class="sidebar-brand">
-                        <i class="bi bi-building"></i>
-                        <span class="sidebar-brand-text">SISTEM DAFTAR <br>ASET</span>
+                        <img src="{{ asset('assets/logo-card.png') }}" alt="ASPIRA Logo" class="sidebar-logo-img">
+                        <span class="collapsed-logo-icon"><i class="bi bi-building"></i></span>
                     </a>
                 @else
                     <a href="{{ route('dashboard') }}" class="sidebar-brand">
-                        <i class="bi bi-building"></i>
-                        <span class="sidebar-brand-text">SISTEM DAFTAR <br>ASET</span>
+                        <img src="{{ asset('assets/logo-card.png') }}" alt="ASPIRA Logo" class="sidebar-logo-img">
+                        <span class="collapsed-logo-icon"><i class="bi bi-building"></i></span>
                     </a>
                 @endif
                 <button class="toggle-sidebar" id="toggleSidebar">
