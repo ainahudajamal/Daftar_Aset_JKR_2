@@ -134,6 +134,11 @@
             display: none;
         }
 
+        /* ✅ Hide logo bila sidebar collapse */
+        .sidebar.collapsed .sidebar-brand-logo {
+            display: none !important;
+        }
+
         /* Toggle Button */
         .toggle-sidebar {
             background: rgba(255, 255, 255, 0.1);
@@ -515,14 +520,12 @@
             <div class="sidebar-header">
                 {{-- ✅ Dynamic link based on role --}}
                 @if (auth()->user()->isAdmin())
-                    <a href="{{ route('admin.dashboard') }}" class="sidebar-brand">
-                        <i class="bi bi-building"></i>
-                        <span class="sidebar-brand-text">SISTEM DAFTAR <br>ASET</span>
+                    <a href="{{ route('admin.dashboard') }}" class="sidebar-brand" style="display: flex; align-items: center; justify-content: center; flex: 1; height: 80px; overflow: hidden; margin-right: 10px;">
+                        <img src="{{ asset('images/logo.png') }}" alt="ASPIRA Logo" class="sidebar-brand-logo" style="width: 100%; height: 100%; object-fit: contain; mix-blend-mode: lighten; transform: scale(2.25);">
                     </a>
                 @else
-                    <a href="{{ route('dashboard') }}" class="sidebar-brand">
-                        <i class="bi bi-building"></i>
-                        <span class="sidebar-brand-text">SISTEM DAFTAR <br>ASET</span>
+                    <a href="{{ route('dashboard') }}" class="sidebar-brand" style="display: flex; align-items: center; justify-content: center; flex: 1; height: 80px; overflow: hidden; margin-right: 10px;">
+                        <img src="{{ asset('images/logo.png') }}" alt="ASPIRA Logo" class="sidebar-brand-logo" style="width: 100%; height: 100%; object-fit: contain; mix-blend-mode: lighten; transform: scale(2.25);">
                     </a>
                 @endif
                 <button class="toggle-sidebar" id="toggleSidebar">
@@ -614,7 +617,7 @@
                             class="nav-link {{ request()->routeIs('admin.sistem.*') ? 'active' : '' }}"
                             data-title="Sistem">
                             <i class="bi bi-gear"></i>
-                            <span class="nav-link-text">Konfigurasi Sistem</span>
+                            <span class="nav-link-text">Pendaftaran Sistem</span>
                         </a>
                     </div>
 
@@ -649,7 +652,7 @@
                             class="nav-link {{ request()->routeIs('admin.components.*') ? 'active' : '' }}"
                             data-title="Komponen">
                             <i class="bi bi-building"></i>
-                            <span class="nav-link-text">Konfigurasi Komponen</span>
+                            <span class="nav-link-text">Pendaftaran Komponen</span>
                             @if (\App\Models\Component::onlyTrashed()->count() > 0)
                                 <span class="badge bg-danger ms-auto">
                                     {{ \App\Models\Component::onlyTrashed()->count() }}

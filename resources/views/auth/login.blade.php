@@ -426,6 +426,7 @@
     </style>
 </head>
 <body>
+<<<<<<< Updated upstream
     <div class="split-layout">
         <!-- Left Side: Branding (Dynamic resizing) -->
         <div class="branding-side" style="background-image: url('{{ asset('assets/hero-bg.jpg') }}');">
@@ -434,6 +435,16 @@
                 <div class="system-badge">
                     Sistem Rasmi ASPIRA
                 </div>
+=======
+    <div class="login-container">
+        <div class="login-card">
+            <!-- Header -->
+            <div class="login-header" style="background: linear-gradient(135deg, #0f172a, #1e293b); padding: 30px 20px;">
+                <div class="mb-2">
+                    <img src="{{ asset('images/logo.png') }}" alt="ASPIRA Logo" style="max-width: 200px; height: auto; border-radius: 8px;">
+                </div>
+                <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 5px;">Sistem Daftar Aset JKR</p>
+>>>>>>> Stashed changes
             </div>
 
             <!-- Centered content: Logo + System Name -->

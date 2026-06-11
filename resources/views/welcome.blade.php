@@ -451,10 +451,10 @@
     <main class="page">
         <header class="topbar">
             <div class="brand">
-                <div class="brand-mark">A</div>
-                <div class="brand-copy">
-                    <span>{{ config('app.name', 'Sistem Daftar Aset JKR') }}</span>
-                    <small>Frontend, backend, and database are live</small>
+                <img src="{{ asset('images/logo.png') }}" alt="ASPIRA Logo" style="max-height: 48px; border-radius: 8px; mix-blend-mode: multiply;">
+                <div class="brand-copy" style="margin-left: 8px;">
+                    <span style="font-weight: 700; font-family: 'Space Grotesk', sans-serif;">ASPIRA</span>
+                    <small>Sistem Daftar Aset JKR</small>
                 </div>
             </div>
 
