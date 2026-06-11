@@ -8,7 +8,7 @@
     <!-- Page Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="mb-1"><i class="bi bi-speedometer2"></i> Pengurusan Komponen</h2>
+            <h2 class="mb-1"><i class="bi bi-speedometer2"></i> Pendaftaran Komponen</h2>
             <p class="text-muted mb-0">Selamat datang, {{ Auth::user()->name }}!</p>
         </div>
         <div>

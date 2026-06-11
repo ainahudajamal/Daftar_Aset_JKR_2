@@ -1,7 +1,7 @@
 {{-- resources/views/admin/components/index.blade.php --}}
 @extends('layouts.app')
 
-@section('title', 'Pengurusan Komponen - Admin')
+@section('title', 'Pendaftaran Komponen - Admin')
 
 @section('content')
 <style>
@@ -139,7 +139,7 @@
 <div class="mb-4">
     <div class="d-flex justify-content-between align-items-center">
         <div>
-            <h1 class="page-title">Pengurusan Komponen</h1>
+            <h1 class="page-title">Pendaftaran Komponen</h1>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
