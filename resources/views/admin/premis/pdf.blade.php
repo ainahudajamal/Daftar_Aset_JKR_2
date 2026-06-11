@@ -292,7 +292,7 @@
                             <td class="label">Aset Warisan</td>
                             <td class="colon">:</td>
                             <td>
-                                <span class="small-box">{!! $premis->aset_warisan ? '&#10004;' : '' !!}</span>
+                                <span class="small-box" style="text-align: center; line-height: 12px; font-weight: bold; font-size: 12px;">{{ $premis->aset_warisan ? '/' : '' }}</span>
                                 <span class="note" style="margin-left: 5px;">(tandakan jika Ya)</span>
                             </td>
                         </tr>
