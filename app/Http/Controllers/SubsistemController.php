@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Sistem;
 use App\Models\Subsistem;
 use Illuminate\Http\Request;
+use App\Models\AuditLog;
 
 class SubsistemController extends Controller
 {
@@ -34,7 +35,14 @@ class SubsistemController extends Controller
         $validated['sistem_id'] = $sistem->id;
         $validated['is_active'] = $request->has('is_active');
 
-        Subsistem::create($validated);
+        $subsistem = Subsistem::create($validated);
+
+        AuditLog::create([
+            'user_id'      => auth()->id(),
+            'component_id' => null,
+            'title'        => 'Tambah Subsistem',
+            'description'  => 'Subsistem baru ditambah',
+        ]);
 
         return redirect()->route('admin.sistem.subsistems', $sistem)
             ->with('success', 'Subsistem berjaya ditambah!');
@@ -67,6 +75,13 @@ class SubsistemController extends Controller
 
         $subsistem->update($validated);
 
+        AuditLog::create([
+            'user_id'      => auth()->id(),
+            'component_id' => null,
+            'title'        => 'Kemaskini Subsistem',
+            'description'  => 'Subsistem dikemaskini',
+        ]);
+
         return redirect()->route('admin.sistem.subsistems', $sistem)
             ->with('success', 'Subsistem berjaya dikemaskini!');
     }
@@ -76,6 +91,13 @@ class SubsistemController extends Controller
      */
     public function destroy(Sistem $sistem, Subsistem $subsistem)
     {
+        AuditLog::create([
+            'user_id'      => auth()->id(),
+            'component_id' => null,
+            'title'        => 'Padam Subsistem',
+            'description'  => 'Subsistem dipadam',
+        ]);
+
         $subsistem->delete();
 
         return redirect()->route('admin.sistem.subsistems', $sistem)
