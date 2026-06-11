@@ -10,6 +10,7 @@ use App\Models\Subsistem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Models\AuditLog;
 
 class UserDashboardController extends Controller
 {
@@ -19,6 +20,13 @@ class UserDashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
+
+        AuditLog::create([
+            'user_id'      => $user->id,
+            'component_id' => null,
+            'title'        => 'Lihat Dashboard',
+            'description'  => 'Lihat dashboard',
+        ]);
 
         // Get statistics for current user only
         $stats = [
@@ -66,6 +74,13 @@ class UserDashboardController extends Controller
     {
         $user = Auth::user();
 
+        AuditLog::create([
+            'user_id'      => $user->id,
+            'component_id' => null,
+            'title'        => 'Lihat Aktiviti Saya',
+            'description'  => 'Melihat aktiviti sendiri',
+        ]);
+
         // Get detailed component breakdown for current user
         $activity = [
             'components' => Component::where('user_id', $user->id)
@@ -99,6 +114,13 @@ class UserDashboardController extends Controller
     public function myStats()
     {
         $user = Auth::user();
+
+        AuditLog::create([
+            'user_id'      => $user->id,
+            'component_id' => null,
+            'title'        => 'Lihat Statistik Saya',
+            'description'  => 'Melihat statistik sendiri',
+        ]);
 
         // Components by sistem
         $componentsBySistem = Sistem::withCount([
