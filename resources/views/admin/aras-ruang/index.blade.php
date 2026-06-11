@@ -460,7 +460,7 @@
                     {{-- Filter Form --}}
                     <form action="{{ route('admin.aras-ruang.index') }}" method="GET" class="row g-3 mb-4" id="arasFilterForm">
                         <input type="hidden" name="tab" value="aras">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label class="form-label text-muted small fw-semibold">CARI ARAS</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-end-0">
@@ -490,13 +490,16 @@
                                 <option value="inactive" {{ request('aras_status') === 'inactive' ? 'selected' : '' }}>Tidak Aktif</option>
                             </select>
                         </div>
-                        <div class="col-md-3 d-flex align-items-end gap-2">
-                            <button type="submit" class="btn btn-primary flex-fill">
+                        <div class="col-md-4 d-flex align-items-end gap-2">
+                            <button type="submit" class="btn btn-primary">
                                 <i class="bi bi-search me-1"></i> Cari
                             </button>
-                            <a href="{{ route('admin.aras-ruang.index') }}" class="btn btn-outline-secondary flex-fill">
+                            <a href="{{ route('admin.aras-ruang.index') }}" class="btn btn-outline-secondary">
                                 <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
                             </a>
+                            <button type="button" class="btn btn-primary ms-auto" data-bs-toggle="modal" data-bs-target="#modalTambahAras">
+                                <i class="bi bi-plus-circle me-1"></i> Tambah Aras
+                            </button>
                         </div>
                     </form>
 
@@ -597,7 +600,7 @@
                     {{-- Filter Form --}}
                     <form action="{{ route('admin.aras-ruang.index') }}" method="GET" class="row g-3 mb-4" id="ruangFilterForm">
                         <input type="hidden" name="tab" value="ruang">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label class="form-label text-muted small fw-semibold">CARI RUANG</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-end-0">
@@ -627,13 +630,16 @@
                                 <option value="inactive" {{ request('ruang_status') === 'inactive' ? 'selected' : '' }}>Tidak Aktif</option>
                             </select>
                         </div>
-                        <div class="col-md-3 d-flex align-items-end gap-2">
-                            <button type="submit" class="btn btn-success flex-fill">
+                        <div class="col-md-4 d-flex align-items-end gap-2">
+                            <button type="submit" class="btn btn-success">
                                 <i class="bi bi-search me-1"></i> Cari
                             </button>
-                            <a href="{{ route('admin.aras-ruang.index') }}?tab=ruang" class="btn btn-outline-secondary flex-fill">
+                            <a href="{{ route('admin.aras-ruang.index') }}?tab=ruang" class="btn btn-outline-secondary">
                                 <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
                             </a>
+                            <button type="button" class="btn btn-success ms-auto" data-bs-toggle="modal" data-bs-target="#modalTambahRuang">
+                                <i class="bi bi-plus-circle me-1"></i> Tambah Ruang
+                            </button>
                         </div>
                     </form>
 
@@ -682,8 +688,22 @@
                                         @endif
                                     </td>
                                     <td class="text-center">
+                                        @php
+                                            $lk = $ruang->latestKemasan;
+                                        @endphp
                                         <button type="button" class="btn btn-sm btn-outline-warning me-1"
-                                            onclick="editRuang({{ $ruang->id }}, '{{ addslashes($ruang->aras_id) }}', '{{ addslashes($ruang->kod) }}', '{{ addslashes($ruang->nama) }}', {{ $ruang->is_active ? 'true' : 'false' }})"
+                                            data-ruang-id="{{ $ruang->id }}"
+                                            data-aras-id="{{ $ruang->aras_id }}"
+                                            data-kod="{{ $ruang->kod }}"
+                                            data-kod-sub-ruang="{{ $ruang->kod_sub_ruang }}"
+                                            data-nama="{{ $ruang->nama }}"
+                                            data-luas="{{ $ruang->luas }}"
+                                            data-tinggi="{{ $ruang->tinggi }}"
+                                            data-fungsi-ruang="{{ $ruang->fungsi_ruang }}"
+                                            data-ada-kemasan="{{ $ruang->ada_kemasan ?? 'tiada' }}"
+                                            data-is-active="{{ $ruang->is_active ? '1' : '0' }}"
+                                            data-kemasan="{{ $lk ? json_encode(['blok'=>$lk->blok,'aras'=>$lk->aras,'nama_aras'=>$lk->nama_aras,'kod_ruang'=>$lk->kod_ruang,'kemasan_lantai'=>$lk->kemasan_lantai,'luas_lantai'=>$lk->luas_lantai,'kemasan_dinding'=>$lk->kemasan_dinding,'luas_dinding'=>$lk->luas_dinding,'kemasan_siling'=>$lk->kemasan_siling,'luas_siling'=>$lk->luas_siling]) : '' }}"
+                                            onclick="editRuangFromBtn(this)"
                                             title="Edit">
                                             <i class="bi bi-pencil-fill"></i>
                                         </button>
@@ -933,7 +953,7 @@
      MODAL: TAMBAH RUANG
 ================================================================ --}}
 <div class="modal fade" id="modalTambahRuang" tabindex="-1" aria-labelledby="modalTambahRuangLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content border-0 shadow">
             <div class="modal-header bg-success text-white">
                 <h5 class="modal-title fw-bold" id="modalTambahRuangLabel">
@@ -967,15 +987,20 @@
 
                         <table class="table table-bordered table-sm mb-0" style="font-size:0.9rem;">
                             <tbody>
+                                {{-- ARAS --}}
                                 <tr>
-                                    <td class="bg-light fw-semibold align-middle" style="width:35%;">
+                                    <td class="bg-light fw-semibold align-middle" style="width:32%;">
                                         Aras <span class="text-danger">*</span>
                                     </td>
                                     <td>
-                                        <select name="aras_id" class="form-select form-select-sm @error('aras_id') is-invalid @enderror" required>
+                                        <select name="aras_id" id="tambah_ruang_aras_id" class="form-select form-select-sm @error('aras_id') is-invalid @enderror" required>
                                             <option value="">— Pilih Aras —</option>
                                             @foreach($arasAll as $arasItem)
-                                            <option value="{{ $arasItem->id }}" {{ old('aras_id') == $arasItem->id ? 'selected' : '' }}>
+                                            <option value="{{ $arasItem->id }}"
+                                                data-blok-kod="{{ $arasItem->blok ? $arasItem->blok->kod : '' }}"
+                                                data-aras-kod="{{ $arasItem->kod }}"
+                                                data-nama="{{ $arasItem->nama }}"
+                                                {{ old('aras_id') == $arasItem->id ? 'selected' : '' }}>
                                                 {{ $arasItem->kod }} — {{ $arasItem->nama }}
                                                 @if($arasItem->blok) (Blok: {{ $arasItem->blok->kod }})@endif
                                             </option>
@@ -984,18 +1009,29 @@
                                         @error('aras_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </td>
                                 </tr>
+                                {{-- KOD RUANG --}}
                                 <tr>
                                     <td class="bg-light fw-semibold align-middle">
                                         Kod Ruang <span class="text-danger">*</span>
                                     </td>
                                     <td>
-                                        <input type="text" name="kod" class="form-control form-control-sm @error('kod') is-invalid @enderror"
+                                        <input type="text" name="kod" id="tambah_ruang_kod" class="form-control form-control-sm @error('kod') is-invalid @enderror"
                                             value="{{ old('kod') }}" required placeholder="Contoh: R01, R02"
                                             style="text-transform:uppercase; font-family: monospace; font-size:1rem;">
                                         <small class="text-muted">Format: R01, R02, BIL, JK</small>
                                         @error('kod')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </td>
                                 </tr>
+                                {{-- KOD SUB RUANG --}}
+                                <tr>
+                                    <td class="bg-light fw-semibold align-middle">Kod Sub Ruang</td>
+                                    <td>
+                                        <input type="text" name="kod_sub_ruang" class="form-control form-control-sm"
+                                            value="{{ old('kod_sub_ruang') }}" placeholder="Contoh: SR01"
+                                            style="text-transform:uppercase; font-family: monospace; font-size:1rem;">
+                                    </td>
+                                </tr>
+                                {{-- NAMA RUANG --}}
                                 <tr>
                                     <td class="bg-light fw-semibold align-middle">
                                         Nama Ruang <span class="text-danger">*</span>
@@ -1006,6 +1042,127 @@
                                         @error('nama')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </td>
                                 </tr>
+                                {{-- UKURAN RUANG --}}
+                                <tr>
+                                    <td class="bg-light fw-semibold align-middle">Ukuran Ruang</td>
+                                    <td>
+                                        <div class="row g-2">
+                                            <div class="col-6">
+                                                <label class="form-label text-muted small mb-1">Luas (m²)</label>
+                                                <input type="number" name="luas" class="form-control form-control-sm"
+                                                    value="{{ old('luas') }}" placeholder="0.00" step="0.01" min="0">
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label text-muted small mb-1">Tinggi (m)</label>
+                                                <input type="number" name="tinggi" class="form-control form-control-sm"
+                                                    value="{{ old('tinggi') }}" placeholder="0.00" step="0.01" min="0">
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {{-- FUNGSI RUANG --}}
+                                <tr>
+                                    <td class="bg-light fw-semibold align-middle">Fungsi Ruang</td>
+                                    <td>
+                                        <input type="text" name="fungsi_ruang" class="form-control form-control-sm"
+                                            value="{{ old('fungsi_ruang') }}" placeholder="Contoh: Bilik Pejabat, Dewan">
+                                    </td>
+                                </tr>
+                                {{-- KEMASAN --}}
+                                <tr>
+                                    <td class="bg-light fw-semibold align-middle">Kemasan</td>
+                                    <td>
+                                        <select name="ada_kemasan" id="tambah_ada_kemasan" class="form-select form-select-sm">
+                                            <option value="tiada" {{ old('ada_kemasan','tiada') === 'tiada' ? 'selected' : '' }}>TIADA</option>
+                                            <option value="ada" {{ old('ada_kemasan') === 'ada' ? 'selected' : '' }}>ADA</option>
+                                        </select>
+                                    </td>
+                                </tr>
+
+                                {{-- ===== KEMASAN SECTION (shown when ADA) ===== --}}
+                                <tr class="tambah-kemasan-row" id="tambah_kemasan_header_row" style="display:none;">
+                                    <td colspan="2" class="bg-success-subtle text-success fw-bold py-2 px-3">
+                                        <i class="bi bi-grid-3x3-gap me-1"></i> Butiran Kemasan
+                                    </td>
+                                </tr>
+                                <tr class="tambah-kemasan-row" style="display:none;">
+                                    <td class="bg-light fw-semibold align-middle">Blok</td>
+                                    <td>
+                                        <input type="text" name="kemasan_blok" id="tambah_kemasan_blok" class="form-control form-control-sm bg-light"
+                                            placeholder="Auto-isi dari Aras" readonly>
+                                    </td>
+                                </tr>
+                                <tr class="tambah-kemasan-row" style="display:none;">
+                                    <td class="bg-light fw-semibold align-middle">Aras</td>
+                                    <td>
+                                        <div class="row g-2">
+                                            <div class="col-6">
+                                                <label class="form-label text-muted small mb-1">Kod Aras</label>
+                                                <input type="text" name="kemasan_aras" id="tambah_kemasan_aras" class="form-control form-control-sm bg-light" readonly placeholder="Auto-isi">
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label text-muted small mb-1">Nama Aras</label>
+                                                <input type="text" name="kemasan_nama_aras" id="tambah_kemasan_nama_aras" class="form-control form-control-sm bg-light" readonly placeholder="Auto-isi">
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="tambah-kemasan-row" style="display:none;">
+                                    <td class="bg-light fw-semibold align-middle">Kod Ruang</td>
+                                    <td>
+                                        <input type="text" name="kemasan_kod_ruang" id="tambah_kemasan_kod_ruang" class="form-control form-control-sm bg-light" readonly placeholder="Auto-isi dari Kod Ruang">
+                                    </td>
+                                </tr>
+                                <tr class="tambah-kemasan-row" style="display:none;">
+                                    <td class="bg-light fw-semibold align-middle">Kemasan Lantai</td>
+                                    <td>
+                                        <div class="row g-2">
+                                            <div class="col-7">
+                                                <input type="text" name="kemasan_lantai" class="form-control form-control-sm" placeholder="Contoh: Jubin Seramik">
+                                            </div>
+                                            <div class="col-5">
+                                                <div class="input-group input-group-sm">
+                                                    <input type="number" name="kemasan_luas_lantai" class="form-control form-control-sm" placeholder="0.00" step="0.01" min="0">
+                                                    <span class="input-group-text">m²</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="tambah-kemasan-row" style="display:none;">
+                                    <td class="bg-light fw-semibold align-middle">Kemasan Dinding</td>
+                                    <td>
+                                        <div class="row g-2">
+                                            <div class="col-7">
+                                                <input type="text" name="kemasan_dinding" class="form-control form-control-sm" placeholder="Contoh: Cat Emulsi">
+                                            </div>
+                                            <div class="col-5">
+                                                <div class="input-group input-group-sm">
+                                                    <input type="number" name="kemasan_luas_dinding" class="form-control form-control-sm" placeholder="0.00" step="0.01" min="0">
+                                                    <span class="input-group-text">m²</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="tambah-kemasan-row" style="display:none;">
+                                    <td class="bg-light fw-semibold align-middle">Kemasan Siling</td>
+                                    <td>
+                                        <div class="row g-2">
+                                            <div class="col-7">
+                                                <input type="text" name="kemasan_siling" class="form-control form-control-sm" placeholder="Contoh: Papan Gipsum">
+                                            </div>
+                                            <div class="col-5">
+                                                <div class="input-group input-group-sm">
+                                                    <input type="number" name="kemasan_luas_siling" class="form-control form-control-sm" placeholder="0.00" step="0.01" min="0">
+                                                    <span class="input-group-text">m²</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                {{-- STATUS --}}
                                 <tr>
                                     <td class="bg-light fw-semibold align-middle">Status</td>
                                     <td>
@@ -1037,7 +1194,7 @@
      MODAL: EDIT RUANG
 ================================================================ --}}
 <div class="modal fade" id="modalEditRuang" tabindex="-1" aria-labelledby="modalEditRuangLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content border-0 shadow">
             <div class="modal-header bg-warning">
                 <h5 class="modal-title fw-bold text-dark" id="modalEditRuangLabel">
@@ -1068,15 +1225,19 @@
                         </div>
                         <table class="table table-bordered table-sm mb-0" style="font-size:0.9rem;">
                             <tbody>
+                                {{-- ARAS --}}
                                 <tr>
-                                    <td class="bg-light fw-semibold align-middle" style="width:35%;">
+                                    <td class="bg-light fw-semibold align-middle" style="width:32%;">
                                         Aras <span class="text-danger">*</span>
                                     </td>
                                     <td>
                                         <select name="aras_id" id="edit_ruang_aras_id" class="form-select form-select-sm" required>
                                             <option value="">— Pilih Aras —</option>
                                             @foreach($arasAll as $arasItem)
-                                            <option value="{{ $arasItem->id }}">
+                                            <option value="{{ $arasItem->id }}"
+                                                data-blok-kod="{{ $arasItem->blok ? $arasItem->blok->kod : '' }}"
+                                                data-aras-kod="{{ $arasItem->kod }}"
+                                                data-nama="{{ $arasItem->nama }}">
                                                 {{ $arasItem->kod }} — {{ $arasItem->nama }}
                                                 @if($arasItem->blok) (Blok: {{ $arasItem->blok->kod }})@endif
                                             </option>
@@ -1084,6 +1245,7 @@
                                         </select>
                                     </td>
                                 </tr>
+                                {{-- KOD RUANG --}}
                                 <tr>
                                     <td class="bg-light fw-semibold align-middle">
                                         Kod Ruang <span class="text-danger">*</span>
@@ -1095,6 +1257,16 @@
                                         <small class="text-muted">Format: R01, R02, BIL, JK</small>
                                     </td>
                                 </tr>
+                                {{-- KOD SUB RUANG --}}
+                                <tr>
+                                    <td class="bg-light fw-semibold align-middle">Kod Sub Ruang</td>
+                                    <td>
+                                        <input type="text" name="kod_sub_ruang" id="edit_ruang_kod_sub_ruang" class="form-control form-control-sm"
+                                            placeholder="Contoh: SR01"
+                                            style="text-transform:uppercase; font-family: monospace; font-size:1rem;">
+                                    </td>
+                                </tr>
+                                {{-- NAMA RUANG --}}
                                 <tr>
                                     <td class="bg-light fw-semibold align-middle">
                                         Nama Ruang <span class="text-danger">*</span>
@@ -1104,6 +1276,125 @@
                                             required placeholder="Contoh: Bilik Mesyuarat">
                                     </td>
                                 </tr>
+                                {{-- UKURAN RUANG --}}
+                                <tr>
+                                    <td class="bg-light fw-semibold align-middle">Ukuran Ruang</td>
+                                    <td>
+                                        <div class="row g-2">
+                                            <div class="col-6">
+                                                <label class="form-label text-muted small mb-1">Luas (m²)</label>
+                                                <input type="number" name="luas" id="edit_ruang_luas" class="form-control form-control-sm" placeholder="0.00" step="0.01" min="0">
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label text-muted small mb-1">Tinggi (m)</label>
+                                                <input type="number" name="tinggi" id="edit_ruang_tinggi" class="form-control form-control-sm" placeholder="0.00" step="0.01" min="0">
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {{-- FUNGSI RUANG --}}
+                                <tr>
+                                    <td class="bg-light fw-semibold align-middle">Fungsi Ruang</td>
+                                    <td>
+                                        <input type="text" name="fungsi_ruang" id="edit_ruang_fungsi_ruang" class="form-control form-control-sm"
+                                            placeholder="Contoh: Bilik Pejabat, Dewan">
+                                    </td>
+                                </tr>
+                                {{-- KEMASAN --}}
+                                <tr>
+                                    <td class="bg-light fw-semibold align-middle">Kemasan</td>
+                                    <td>
+                                        <select name="ada_kemasan" id="edit_ada_kemasan" class="form-select form-select-sm">
+                                            <option value="tiada">TIADA</option>
+                                            <option value="ada">ADA</option>
+                                        </select>
+                                    </td>
+                                </tr>
+
+                                {{-- ===== KEMASAN SECTION (shown when ADA) ===== --}}
+                                <tr class="edit-kemasan-row" id="edit_kemasan_header_row" style="display:none;">
+                                    <td colspan="2" class="bg-warning-subtle text-warning-emphasis fw-bold py-2 px-3">
+                                        <i class="bi bi-grid-3x3-gap me-1"></i> Butiran Kemasan
+                                        <small class="fw-normal text-muted ms-2">(rekod baru akan ditambah untuk sejarah)</small>
+                                    </td>
+                                </tr>
+                                <tr class="edit-kemasan-row" style="display:none;">
+                                    <td class="bg-light fw-semibold align-middle">Blok</td>
+                                    <td>
+                                        <input type="text" name="kemasan_blok" id="edit_kemasan_blok" class="form-control form-control-sm bg-light" readonly placeholder="Auto-isi dari Aras">
+                                    </td>
+                                </tr>
+                                <tr class="edit-kemasan-row" style="display:none;">
+                                    <td class="bg-light fw-semibold align-middle">Aras</td>
+                                    <td>
+                                        <div class="row g-2">
+                                            <div class="col-6">
+                                                <label class="form-label text-muted small mb-1">Kod Aras</label>
+                                                <input type="text" name="kemasan_aras" id="edit_kemasan_aras" class="form-control form-control-sm bg-light" readonly placeholder="Auto-isi">
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label text-muted small mb-1">Nama Aras</label>
+                                                <input type="text" name="kemasan_nama_aras" id="edit_kemasan_nama_aras" class="form-control form-control-sm bg-light" readonly placeholder="Auto-isi">
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="edit-kemasan-row" style="display:none;">
+                                    <td class="bg-light fw-semibold align-middle">Kod Ruang</td>
+                                    <td>
+                                        <input type="text" name="kemasan_kod_ruang" id="edit_kemasan_kod_ruang" class="form-control form-control-sm bg-light" readonly placeholder="Auto-isi dari Kod Ruang">
+                                    </td>
+                                </tr>
+                                <tr class="edit-kemasan-row" style="display:none;">
+                                    <td class="bg-light fw-semibold align-middle">Kemasan Lantai</td>
+                                    <td>
+                                        <div class="row g-2">
+                                            <div class="col-7">
+                                                <input type="text" name="kemasan_lantai" id="edit_kemasan_lantai" class="form-control form-control-sm" placeholder="Contoh: Jubin Seramik">
+                                            </div>
+                                            <div class="col-5">
+                                                <div class="input-group input-group-sm">
+                                                    <input type="number" name="kemasan_luas_lantai" id="edit_kemasan_luas_lantai" class="form-control form-control-sm" placeholder="0.00" step="0.01" min="0">
+                                                    <span class="input-group-text">m²</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="edit-kemasan-row" style="display:none;">
+                                    <td class="bg-light fw-semibold align-middle">Kemasan Dinding</td>
+                                    <td>
+                                        <div class="row g-2">
+                                            <div class="col-7">
+                                                <input type="text" name="kemasan_dinding" id="edit_kemasan_dinding" class="form-control form-control-sm" placeholder="Contoh: Cat Emulsi">
+                                            </div>
+                                            <div class="col-5">
+                                                <div class="input-group input-group-sm">
+                                                    <input type="number" name="kemasan_luas_dinding" id="edit_kemasan_luas_dinding" class="form-control form-control-sm" placeholder="0.00" step="0.01" min="0">
+                                                    <span class="input-group-text">m²</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="edit-kemasan-row" style="display:none;">
+                                    <td class="bg-light fw-semibold align-middle">Kemasan Siling</td>
+                                    <td>
+                                        <div class="row g-2">
+                                            <div class="col-7">
+                                                <input type="text" name="kemasan_siling" id="edit_kemasan_siling" class="form-control form-control-sm" placeholder="Contoh: Papan Gipsum">
+                                            </div>
+                                            <div class="col-5">
+                                                <div class="input-group input-group-sm">
+                                                    <input type="number" name="kemasan_luas_siling" id="edit_kemasan_luas_siling" class="form-control form-control-sm" placeholder="0.00" step="0.01" min="0">
+                                                    <span class="input-group-text">m²</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                {{-- STATUS --}}
                                 <tr>
                                     <td class="bg-light fw-semibold align-middle">Status</td>
                                     <td>
@@ -1205,16 +1496,108 @@ function deleteAras(id, nama) {
     }
 }
 
-// ===== EDIT RUANG =====
-function editRuang(id, arasId, kod, nama, isActive) {
+// ===== EDIT RUANG (reads from data attributes on the button) =====
+function editRuangFromBtn(btn) {
+    const id          = btn.dataset.ruangId;
+    const arasId      = btn.dataset.arasId;
+    const kod         = btn.dataset.kod;
+    const kodSubRuang = btn.dataset.kodSubRuang || '';
+    const nama        = btn.dataset.nama;
+    const luas        = btn.dataset.luas || '';
+    const tinggi      = btn.dataset.tinggi || '';
+    const fungsiRuang = btn.dataset.fungsiRuang || '';
+    const adaKemasan  = btn.dataset.adaKemasan || 'tiada';
+    const isActive    = btn.dataset.isActive === '1';
+    const kemasanRaw  = btn.dataset.kemasan;
+
+    // Set form action
     document.getElementById('formEditRuang').action = '/admin/ruang/' + id;
-    document.getElementById('edit_ruang_aras_id').value = arasId;
-    document.getElementById('edit_ruang_kod').value = kod;
-    document.getElementById('edit_ruang_nama').value = nama;
-    document.getElementById('edit_ruang_is_active').checked = isActive;
+
+    // Set basic fields
+    document.getElementById('edit_ruang_aras_id').value       = arasId;
+    document.getElementById('edit_ruang_kod').value           = kod;
+    document.getElementById('edit_ruang_kod_sub_ruang').value = kodSubRuang;
+    document.getElementById('edit_ruang_nama').value          = nama;
+    document.getElementById('edit_ruang_luas').value          = luas;
+    document.getElementById('edit_ruang_tinggi').value        = tinggi;
+    document.getElementById('edit_ruang_fungsi_ruang').value  = fungsiRuang;
+    document.getElementById('edit_ruang_is_active').checked   = isActive;
+
+    // Set kemasan select
+    const kemasanSelect = document.getElementById('edit_ada_kemasan');
+    kemasanSelect.value = adaKemasan;
+    toggleEditKemasan(adaKemasan === 'ada');
+
+    // Pre-fill kemasan data from latest record
+    if (adaKemasan === 'ada' && kemasanRaw) {
+        try {
+            const k = JSON.parse(kemasanRaw);
+            document.getElementById('edit_kemasan_blok').value       = k.blok || '';
+            document.getElementById('edit_kemasan_aras').value       = k.aras || '';
+            document.getElementById('edit_kemasan_nama_aras').value  = k.nama_aras || '';
+            document.getElementById('edit_kemasan_kod_ruang').value  = k.kod_ruang || '';
+            document.getElementById('edit_kemasan_lantai').value     = k.kemasan_lantai || '';
+            document.getElementById('edit_kemasan_luas_lantai').value= k.luas_lantai || '';
+            document.getElementById('edit_kemasan_dinding').value    = k.kemasan_dinding || '';
+            document.getElementById('edit_kemasan_luas_dinding').value= k.luas_dinding || '';
+            document.getElementById('edit_kemasan_siling').value     = k.kemasan_siling || '';
+            document.getElementById('edit_kemasan_luas_siling').value= k.luas_siling || '';
+        } catch(e) {}
+    } else if (adaKemasan !== 'ada') {
+        // Reset kemasan fields if TIADA
+        ['edit_kemasan_blok','edit_kemasan_aras','edit_kemasan_nama_aras','edit_kemasan_kod_ruang',
+         'edit_kemasan_lantai','edit_kemasan_luas_lantai','edit_kemasan_dinding','edit_kemasan_luas_dinding',
+         'edit_kemasan_siling','edit_kemasan_luas_siling'].forEach(function(fid) {
+            const el = document.getElementById(fid);
+            if (el) el.value = '';
+        });
+    }
+
+    // Auto-fill kemasan Blok/Aras/Nama Aras from the currently selected Aras
+    syncEditKemasanFromAras();
+    // Also sync Kod Ruang
+    document.getElementById('edit_kemasan_kod_ruang').value = kod;
 
     var modal = new bootstrap.Modal(document.getElementById('modalEditRuang'));
     modal.show();
+}
+
+// Show/hide Kemasan rows in Edit modal
+function toggleEditKemasan(show) {
+    document.querySelectorAll('.edit-kemasan-row').forEach(function(row) {
+        row.style.display = show ? '' : 'none';
+    });
+}
+
+// Show/hide Kemasan rows in Tambah modal
+function toggleTambahKemasan(show) {
+    document.querySelectorAll('.tambah-kemasan-row').forEach(function(row) {
+        row.style.display = show ? '' : 'none';
+    });
+}
+
+// Sync Kemasan Blok/Aras/Nama Aras from the Edit Aras dropdown
+function syncEditKemasanFromAras() {
+    const sel = document.getElementById('edit_ruang_aras_id');
+    if (!sel) return;
+    const opt = sel.options[sel.selectedIndex];
+    if (opt && opt.value) {
+        document.getElementById('edit_kemasan_blok').value      = opt.dataset.blokKod || '';
+        document.getElementById('edit_kemasan_aras').value      = opt.dataset.arasKod || '';
+        document.getElementById('edit_kemasan_nama_aras').value = opt.dataset.nama || '';
+    }
+}
+
+// Sync Kemasan Blok/Aras/Nama Aras from the Tambah Aras dropdown
+function syncTambahKemasanFromAras() {
+    const sel = document.getElementById('tambah_ruang_aras_id');
+    if (!sel) return;
+    const opt = sel.options[sel.selectedIndex];
+    if (opt && opt.value) {
+        document.getElementById('tambah_kemasan_blok').value      = opt.dataset.blokKod || '';
+        document.getElementById('tambah_kemasan_aras').value      = opt.dataset.arasKod || '';
+        document.getElementById('tambah_kemasan_nama_aras').value = opt.dataset.nama || '';
+    }
 }
 
 // ===== DELETE RUANG =====
@@ -1251,6 +1634,61 @@ document.querySelectorAll('input[name="kod"]').forEach(function(el) {
         this.value = this.value.toUpperCase();
     });
 });
+
+// ===== KEMASAN TOGGLE LISTENERS =====
+document.addEventListener('DOMContentLoaded', function() {
+    // Tambah modal – Kemasan select
+    var tambahKemasan = document.getElementById('tambah_ada_kemasan');
+    if (tambahKemasan) {
+        tambahKemasan.addEventListener('change', function() {
+            toggleTambahKemasan(this.value === 'ada');
+        });
+        // Run on page load if old value was 'ada'
+        toggleTambahKemasan(tambahKemasan.value === 'ada');
+    }
+
+    // Edit modal – Kemasan select
+    var editKemasan = document.getElementById('edit_ada_kemasan');
+    if (editKemasan) {
+        editKemasan.addEventListener('change', function() {
+            toggleEditKemasan(this.value === 'ada');
+            if (this.value === 'ada') syncEditKemasanFromAras();
+        });
+    }
+
+    // Tambah modal – Aras changed → auto-fill Kemasan fields
+    var tambahArasEl = document.getElementById('tambah_ruang_aras_id');
+    if (tambahArasEl) {
+        tambahArasEl.addEventListener('change', syncTambahKemasanFromAras);
+    }
+
+    // Edit modal – Aras changed → auto-fill Kemasan fields
+    var editArasEl = document.getElementById('edit_ruang_aras_id');
+    if (editArasEl) {
+        editArasEl.addEventListener('change', function() {
+            syncEditKemasanFromAras();
+        });
+    }
+
+    // Tambah modal – Kod Ruang input → auto-fill Kemasan Kod Ruang
+    var tambahKodEl = document.getElementById('tambah_ruang_kod');
+    if (tambahKodEl) {
+        tambahKodEl.addEventListener('input', function() {
+            var km = document.getElementById('tambah_kemasan_kod_ruang');
+            if (km) km.value = this.value.toUpperCase();
+        });
+    }
+
+    // Edit modal – Kod Ruang input → auto-fill Kemasan Kod Ruang
+    var editKodEl = document.getElementById('edit_ruang_kod');
+    if (editKodEl) {
+        editKodEl.addEventListener('input', function() {
+            var km = document.getElementById('edit_kemasan_kod_ruang');
+            if (km) km.value = this.value.toUpperCase();
+        });
+    }
+});
+
 
 // ===== D.A.5 FORM JAVASCRIPT LOGIC =====
 document.addEventListener('DOMContentLoaded', function () {

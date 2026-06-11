@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\KodAras;
 use App\Models\KodBlok;
 use App\Models\KodRuang;
+use App\Models\KemasanRuang;
 use Illuminate\Http\Request;
 use App\Models\AuditLog;
 use Mpdf\Mpdf;
@@ -50,7 +51,7 @@ class ArasRuangController extends Controller
         $arasPaginated = $arasQuery->orderBy('kod')->paginate(10, ['*'], 'aras_page');
 
         // ===== RUANG QUERY =====
-        $ruangQuery = KodRuang::with(['aras.blok']);
+        $ruangQuery = KodRuang::with(['aras.blok', 'latestKemasan']);
 
         if ($request->ruang_search) {
             $ruangQuery->where(function ($q) use ($request) {

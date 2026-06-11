@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
 use App\Models\KodAras;
+use App\Models\KemasanRuang;
 
 class KodRuang extends Model
 {
@@ -25,7 +26,12 @@ class KodRuang extends Model
      */
     protected $fillable = [
         'kod',
+        'kod_sub_ruang',
         'nama',
+        'luas',
+        'tinggi',
+        'fungsi_ruang',
+        'ada_kemasan',
         'kategori',
         'is_active',
         'status',
@@ -125,5 +131,17 @@ class KodRuang extends Model
     public function aras()
     {
         return $this->belongsTo(KodAras::class, 'aras_id');
+    }
+
+    // Relationship dengan KemasanRuang (multiple records allowed)
+    public function kemasan()
+    {
+        return $this->hasMany(KemasanRuang::class, 'ruang_id')->orderBy('created_at', 'asc');
+    }
+
+    // Get the latest kemasan record
+    public function latestKemasan()
+    {
+        return $this->hasOne(KemasanRuang::class, 'ruang_id')->latestOfMany();
     }
 }
