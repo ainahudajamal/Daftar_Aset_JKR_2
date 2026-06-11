@@ -125,13 +125,13 @@
                     </div>
 
                     <div class="col-12 col-md-4">
-                        <label for="tarikh_dari" class="form-label text-muted small fw-semibold mb-1">Mula Didaftar (Dari)</label>
+                        <label for="tarikh_dari" class="form-label text-muted small fw-semibold mb-1">Dari</label>
                         <input type="date" class="form-control" id="tarikh_dari" name="tarikh_dari"
                                value="{{ request('tarikh_dari') }}">
                     </div>
 
                     <div class="col-12 col-md-4">
-                        <label for="tarikh_hingga" class="form-label text-muted small fw-semibold mb-1">Mula Didaftar (Hingga)</label>
+                        <label for="tarikh_hingga" class="form-label text-muted small fw-semibold mb-1">Hingga</label>
                         <input type="date" class="form-control" id="tarikh_hingga" name="tarikh_hingga"
                                value="{{ request('tarikh_hingga') }}">
                     </div>
