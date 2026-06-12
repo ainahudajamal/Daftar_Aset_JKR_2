@@ -9,7 +9,7 @@
     <div class="d-flex justify-content-between align-items-start mb-4 pt-2">
         <div>
             <h2 class="mb-1 fw-bold text-dark">
-                <i class="bi bi-bank2 me-2 text-primary"></i>Borang D.A.3
+                <i class="bi bi-bank2 me-2" style="color: var(--primary-color) !important;"></i>Borang D.A.3
             </h2>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0">
@@ -22,7 +22,7 @@
                 </ol>
             </nav>
         </div>
-        <a href="{{ route('admin.premis.create') }}" class="btn btn-primary d-flex align-items-center gap-2 shadow-sm">
+        <a href="{{ route('admin.premis.create') }}" class="btn text-white d-flex align-items-center gap-2 shadow-sm" style="background-color: var(--primary-color); border-color: var(--primary-color);">
             <i class="bi bi-plus-circle-fill"></i>
             <span>Tambah Premis</span>
         </a>
@@ -40,45 +40,45 @@
     {{-- Stats Cards --}}
     <div class="row g-3 mb-4">
         <div class="col-6 col-md-4 col-xl">
-            <div class="card border-0 rounded-3 h-100" style="background: #0d6efd1a;">
+            <div class="card border-0 rounded-3 h-100" style="background: rgba(37, 99, 235, 0.1);">
                 <div class="card-body d-flex align-items-center gap-3 p-3">
                     <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
-                         style="width:44px;height:44px;background:#0d6efd33;">
-                        <i class="bi bi-buildings fs-5 text-primary"></i>
+                         style="width:44px;height:44px;background: rgba(37, 99, 235, 0.2);">
+                        <i class="bi bi-buildings fs-5" style="color: var(--primary-color) !important;"></i>
                     </div>
                     <div>
-                        <div class="text-primary fw-semibold" style="font-size:0.75rem;letter-spacing:.04em;">JUMLAH PREMIS</div>
-                        <div class="fw-bold fs-4 text-primary lh-1 mt-1">{{ $totalPremis ?? 0 }}</div>
+                        <div class="fw-semibold" style="font-size:0.75rem;letter-spacing:.04em; color: var(--primary-color) !important;">JUMLAH PREMIS</div>
+                        <div class="fw-bold fs-4 lh-1 mt-1" style="color: var(--primary-color) !important;">{{ $totalPremis ?? 0 }}</div>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="col-6 col-md-4 col-xl">
-            <div class="card border-0 rounded-3 h-100" style="background:#1982210d;">
+            <div class="card border-0 rounded-3 h-100" style="background: rgba(16, 185, 129, 0.1);">
                 <div class="card-body d-flex align-items-center gap-3 p-3">
                     <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
-                         style="width:44px;height:44px;background:#19822126;">
-                        <i class="bi bi-check2-circle fs-5 text-success"></i>
+                         style="width:44px;height:44px;background: rgba(16, 185, 129, 0.2);">
+                        <i class="bi bi-check2-circle fs-5" style="color: var(--success-color) !important;"></i>
                     </div>
                     <div>
-                        <div class="text-success fw-semibold" style="font-size:0.75rem;letter-spacing:.04em;">PREMIS AKTIF</div>
-                        <div class="fw-bold fs-4 text-success lh-1 mt-1">{{ $aktifPremis ?? 0 }}</div>
+                        <div class="fw-semibold" style="font-size:0.75rem;letter-spacing:.04em; color: var(--success-color) !important;">PREMIS AKTIF</div>
+                        <div class="fw-bold fs-4 lh-1 mt-1" style="color: var(--success-color) !important;">{{ $aktifPremis ?? 0 }}</div>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="col-6 col-md-4 col-xl">
-            <div class="card border-0 rounded-3 h-100" style="background:#6c757d1a;">
+            <div class="card border-0 rounded-3 h-100" style="background: rgba(30, 41, 59, 0.1);">
                 <div class="card-body d-flex align-items-center gap-3 p-3">
                     <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
-                         style="width:44px;height:44px;background:#6c757d33;">
-                        <i class="bi bi-x-circle fs-5 text-secondary"></i>
+                         style="width:44px;height:44px;background: rgba(30, 41, 59, 0.2);">
+                        <i class="bi bi-x-circle fs-5" style="color: var(--dark-color) !important;"></i>
                     </div>
                     <div>
-                        <div class="text-secondary fw-semibold" style="font-size:0.75rem;letter-spacing:.04em;">TIDAK AKTIF</div>
-                        <div class="fw-bold fs-4 text-secondary lh-1 mt-1">{{ $tidakAktifPremis ?? 0 }}</div>
+                        <div class="fw-semibold" style="font-size:0.75rem;letter-spacing:.04em; color: var(--dark-color) !important;">TIDAK AKTIF</div>
+                        <div class="fw-bold fs-4 lh-1 mt-1" style="color: var(--dark-color) !important;">{{ $tidakAktifPremis ?? 0 }}</div>
                     </div>
                 </div>
             </div>
@@ -158,10 +158,10 @@
     <div class="card border-0 shadow-sm rounded-3">
         <div class="card-header bg-white border-bottom py-3 px-4 d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center gap-2">
-                <i class="bi bi-list-ul text-primary"></i>
+                <i class="bi bi-list-ul" style="color: var(--primary-color) !important;"></i>
                 <span class="fw-semibold text-dark">Senarai Premis</span>
                 @if($premis->total() > 0)
-                    <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 ms-1">
+                    <span class="badge ms-1" style="background-color: rgba(37, 99, 235, 0.1) !important; color: var(--primary-color) !important; border: 1px solid rgba(37, 99, 235, 0.25) !important;">
                         {{ $premis->total() }} rekod
                     </span>
                 @endif
@@ -172,8 +172,8 @@
             @if($premis->count() > 0)
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0" style="min-width:800px;">
-                    <thead>
-                        <tr class="table-dark">
+                    <thead class="table-dark">
+                        <tr>
                             <th class="ps-4 py-3" style="width:50px;">Bil</th>
                             <th class="py-3" style="width:130px;">No. DPA</th>
                             <th class="py-3">Nama Premis</th>
@@ -300,7 +300,7 @@
                 <h5 class="text-muted fw-semibold">Tiada rekod dijumpai</h5>
                 <p class="text-muted mb-4 small">Sila ubah carian anda atau tambah premis baru.</p>
                 @if(!request()->anyFilled(['search','negeri','status','tarikh_dari','tarikh_hingga']))
-                    <a href="{{ route('admin.premis.create') }}" class="btn btn-primary">
+                    <a href="{{ route('admin.premis.create') }}" class="btn text-white" style="background-color: var(--primary-color); border-color: var(--primary-color);">
                         <i class="bi bi-plus-circle me-1"></i> Tambah Premis
                     </a>
                 @else
