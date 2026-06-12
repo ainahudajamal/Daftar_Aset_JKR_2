@@ -6,6 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'Sistem Daftar Aset JKR') }}</title>
+    <link rel="shortcut icon" type="image/png" href="{{ asset('assets/favicon.png') }}">
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700|space-grotesk:500,700" rel="stylesheet" />
