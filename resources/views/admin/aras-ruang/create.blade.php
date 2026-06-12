@@ -50,7 +50,7 @@
             </span>
         </div>
         <div id="collapseFormDA5" class="collapse show">
-            <form action="{{ route('admin.aras-ruang.store') }}" method="POST" id="formDA5">
+            <form action="{{ route('admin.aras-ruang.store') }}" method="POST" id="formDA5" enctype="multipart/form-data">
                 @csrf
                 <div class="card-body bg-light border-top">
 
@@ -380,6 +380,80 @@
                                 </div>
                             </div>
                         </div>
+
+                        {{-- Image Upload Section --}}
+                        <div class="mt-3 pt-3 border-top">
+                            <label class="form-label text-dark fw-bold mb-1"><i class="bi bi-image me-1"></i>Gambar Blok/Binaan Luar</label>
+                            <span class="text-muted small d-block mb-3">Sila muat naik gambar blok/binaan luar (maksimum 5MB setiap satu). Pastikan gambar diambil pada sudut hadapan dan sudut belakang.</span>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="gambar_hadapan" class="form-label text-muted small fw-semibold">Gambar Sudut Hadapan</label>
+                                    <input type="file" name="gambar_hadapan" id="gambar_hadapan" class="form-control" accept="image/*">
+                                    <div class="form-text small text-muted">Format yang dibenarkan: JPG, JPEG, PNG, GIF. Maksimum 5MB.</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="gambar_belakang" class="form-label text-muted small fw-semibold">Gambar Sudut Belakang</label>
+                                    <input type="file" name="gambar_belakang" id="gambar_belakang" class="form-control" accept="image/*">
+                                    <div class="form-text small text-muted">Format yang dibenarkan: JPG, JPEG, PNG, GIF. Maksimum 5MB.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    {{-- ── 5. SENARAI LUKISAN SIAP BINA ── --}}
+                    <div class="mb-2">
+                        <h6 class="fw-bold text-dark mb-3"><i class="bi bi-pencil-square me-1"></i>5. Senarai Lukisan Siap Bina</h6>
+                        <span class="text-muted small d-block mb-3">Sila isi senarai lukisan siap bina (as-built drawings) bagi blok/binaan luar ini jika berkenaan.</span>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-sm align-middle" id="tableLukisanList">
+                                <thead class="table-secondary">
+                                    <tr>
+                                        <th style="width: 50px;" class="text-center">Bil</th>
+                                        <th style="width: 200px;">Bidang</th>
+                                        <th>Tajuk Lukisan</th>
+                                        <th style="width: 250px;">No. Rujukan</th>
+                                        <th style="width: 250px;">Catatan</th>
+                                        <th style="width: 45px;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bodyLukisanList">
+                                    @php
+                                        $lukisan = old('lukisan_list', []);
+                                    @endphp
+                                    @forelse($lukisan as $idx => $l)
+                                    <tr>
+                                        <td class="text-center row-number-lukisan">{{ $idx + 1 }}</td>
+                                        <td><input type="text" name="lukisan_list[{{ $idx }}][bidang]" class="form-control form-control-sm" value="{{ $l['bidang'] ?? '' }}"></td>
+                                        <td><input type="text" name="lukisan_list[{{ $idx }}][tajuk]" class="form-control form-control-sm" value="{{ $l['tajuk'] ?? '' }}"></td>
+                                        <td><input type="text" name="lukisan_list[{{ $idx }}][no_rujukan]" class="form-control form-control-sm" value="{{ $l['no_rujukan'] ?? '' }}"></td>
+                                        <td><input type="text" name="lukisan_list[{{ $idx }}][catatan]" class="form-control form-control-sm" value="{{ $l['catatan'] ?? '' }}"></td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-outline-danger btn-sm btn-padam-row-lukisan"><i class="bi bi-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    @empty
+                                    <tr>
+                                        <td class="text-center row-number-lukisan">1</td>
+                                        <td><input type="text" name="lukisan_list[0][bidang]" class="form-control form-control-sm" placeholder="Contoh: Seni Bina / Struktur"></td>
+                                        <td><input type="text" name="lukisan_list[0][tajuk]" class="form-control form-control-sm" placeholder="Contoh: Lukisan Pelan Tapak"></td>
+                                        <td><input type="text" name="lukisan_list[0][no_rujukan]" class="form-control form-control-sm"></td>
+                                        <td><input type="text" name="lukisan_list[0][catatan]" class="form-control form-control-sm"></td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-outline-danger btn-sm btn-padam-row-lukisan"><i class="bi bi-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                        <button type="button" class="btn btn-outline-success btn-sm mb-3" id="btnTambahRowLukisan">
+                            <i class="bi bi-plus-lg"></i> Tambah Baris Lukisan
+                        </button>
+                    </div>
                                  {{-- Form Actions Footer --}}
                 <div class="card-footer bg-white border-top py-3 d-flex justify-content-between align-items-center">
                     <div>
@@ -1751,6 +1825,56 @@ document.addEventListener('DOMContentLoaded', function () {
             if (e.target.closest('.btn-padam-row-perunding')) {
                 e.target.closest('tr').remove();
                 reindexPerunding();
+            }
+        });
+    }
+
+    // Dynamic Row addition for Lukisan
+    const bodyLukisanList = document.getElementById('bodyLukisanList');
+    const btnTambahRowLukisan = document.getElementById('btnTambahRowLukisan');
+
+    function reindexLukisan() {
+        if (!bodyLukisanList) return;
+        const rows = bodyLukisanList.querySelectorAll('tr');
+        rows.forEach((row, index) => {
+            const numCell = row.querySelector('.row-number-lukisan');
+            if (numCell) numCell.textContent = index + 1;
+
+            const bidangInput = row.querySelector('input[name*="[bidang]"]');
+            const tajukInput = row.querySelector('input[name*="[tajuk]"]');
+            const refInput = row.querySelector('input[name*="[no_rujukan]"]');
+            const catatanInput = row.querySelector('input[name*="[catatan]"]');
+
+            if (bidangInput) bidangInput.name = `lukisan_list[${index}][bidang]`;
+            if (tajukInput) tajukInput.name = `lukisan_list[${index}][tajuk]`;
+            if (refInput) refInput.name = `lukisan_list[${index}][no_rujukan]`;
+            if (catatanInput) catatanInput.name = `lukisan_list[${index}][catatan]`;
+        });
+    }
+
+    if (btnTambahRowLukisan) {
+        btnTambahRowLukisan.addEventListener('click', function () {
+            const idx = bodyLukisanList.querySelectorAll('tr').length;
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td class="text-center row-number-lukisan">${idx + 1}</td>
+                <td><input type="text" name="lukisan_list[${idx}][bidang]" class="form-control form-control-sm"></td>
+                <td><input type="text" name="lukisan_list[${idx}][tajuk]" class="form-control form-control-sm"></td>
+                <td><input type="text" name="lukisan_list[${idx}][no_rujukan]" class="form-control form-control-sm"></td>
+                <td><input type="text" name="lukisan_list[${idx}][catatan]" class="form-control form-control-sm"></td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-outline-danger btn-sm btn-padam-row-lukisan"><i class="bi bi-trash"></i></button>
+                </td>
+            `;
+            bodyLukisanList.appendChild(tr);
+        });
+    }
+
+    if (bodyLukisanList) {
+        bodyLukisanList.addEventListener('click', function (e) {
+            if (e.target.closest('.btn-padam-row-lukisan')) {
+                e.target.closest('tr').remove();
+                reindexLukisan();
             }
         });
     }

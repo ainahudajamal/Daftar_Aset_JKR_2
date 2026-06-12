@@ -617,13 +617,19 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
     </tr>
   </thead>
   <tbody>
+    @php
+      $lukisanList = $da5_data['lukisan_list'] ?? [];
+    @endphp
     @for ($i = 0; $i < 9; $i++)
+    @php
+      $l = $lukisanList[$i] ?? null;
+    @endphp
     <tr>
-      <td style="height:32px;"></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td style="height:32px;" class="center">{{ $i + 1 }}</td>
+      <td style="padding-left: 5px; font-weight: bold;">{{ $l['bidang'] ?? '' }}</td>
+      <td style="padding-left: 5px; font-weight: bold;">{{ $l['tajuk'] ?? '' }}</td>
+      <td style="padding-left: 5px; font-weight: bold;">{{ $l['no_rujukan'] ?? '' }}</td>
+      <td style="padding-left: 5px; font-weight: bold;">{{ $l['catatan'] ?? '' }}</td>
     </tr>
     @endfor
   </tbody>
@@ -641,6 +647,58 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
     </td>
   </tr>
 </table>
+
+
+@if(!empty($gambarHadapanPath) || !empty($gambarBelakangPath))
+<pagebreak orientation="portrait" sheet-size="A4" />
+
+<div class="h-wrap"><span class="h-badge">helaian 2a</span></div>
+<div style="text-align:right; font-weight:bold; font-size:13px; margin-bottom:3px;">D.A. 5 (JKR.PATA.F6/12 rev 1)</div>
+<div style="text-align:center; font-weight:bold; text-decoration:underline; font-size:15px; margin-bottom:20px; text-transform:uppercase;">GAMBAR BLOK / BINAAN LUAR</div>
+
+<table class="dt" style="width:100%; border-collapse:collapse; margin-top:20px; table-layout:fixed;">
+  <colgroup>
+    <col style="width:50%;">
+    <col style="width:50%;">
+  </colgroup>
+  <tbody>
+    <tr>
+      <td style="text-align:center; padding:15px; border:1px solid #000; vertical-align:top; height:500px;">
+        <div style="font-weight:bold; font-size:12px; margin-bottom:15px; text-decoration:underline;">PANDANGAN SUDUT HADAPAN</div>
+        @if(!empty($gambarHadapanPath))
+          <div style="margin-top:20px; text-align:center;">
+            <img src="{{ $gambarHadapanPath }}" style="max-width:95%; max-height:430px; border:1px solid #000; padding:3px;">
+          </div>
+        @else
+          <div style="margin-top:150px; color:#666; font-style:italic; font-size:12px;">Tiada Gambar Hadapan Dimuat Naik</div>
+        @endif
+      </td>
+      <td style="text-align:center; padding:15px; border:1px solid #000; vertical-align:top; height:500px;">
+        <div style="font-weight:bold; font-size:12px; margin-bottom:15px; text-decoration:underline;">PANDANGAN SUDUT BELAKANG</div>
+        @if(!empty($gambarBelakangPath))
+          <div style="margin-top:20px; text-align:center;">
+            <img src="{{ $gambarBelakangPath }}" style="max-width:95%; max-height:430px; border:1px solid #000; padding:3px;">
+          </div>
+        @else
+          <div style="margin-top:150px; color:#666; font-style:italic; font-size:12px;">Tiada Gambar Belakang Dimuat Naik</div>
+        @endif
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="ft" style="margin-top:20px;">
+  <tr>
+    <td></td>
+    <td style="text-align:right; font-size:10px; white-space:nowrap; width:auto;">
+      Muka surat
+      <span style="display:inline-block; border-bottom:1px solid #000; width:28px; height:14px; vertical-align:bottom;">&nbsp;</span>
+      dari
+      <span style="display:inline-block; border-bottom:1px solid #000; width:28px; height:14px; vertical-align:bottom;">&nbsp;</span>
+    </td>
+  </tr>
+</table>
+@endif
 
 
 {{-- ================================================================

@@ -44,12 +44,16 @@ class Da5Record extends Model
         'bil_aras_bawah',
         'status_blok',
         'jumlah_luas_lantai',
-        'luas_tapak'
+        'luas_tapak',
+        'gambar_hadapan',
+        'gambar_belakang',
+        'lukisan_list'
     ];
 
     protected $casts = [
         'kontraktor_list' => 'array',
         'juru_perunding_list' => 'array',
+        'lukisan_list' => 'array',
         'aset_warisan' => 'boolean',
         'tarikh_siap_bina' => 'date',
         'tarikh_penilaian' => 'date',

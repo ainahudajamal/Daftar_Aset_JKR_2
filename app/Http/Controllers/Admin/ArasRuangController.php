@@ -144,6 +144,8 @@ class ArasRuangController extends Controller
             'no_dpa' => 'nullable|string',
             'kod_blok' => 'nullable|string',
             'nama_blok' => 'nullable|string',
+            'gambar_hadapan' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+            'gambar_belakang' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
         ]);
 
         $data = $request->except('_token');
@@ -160,6 +162,19 @@ class ArasRuangController extends Controller
 
         // Set default values for checkboxes if not present
         $data['aset_warisan'] = $request->has('aset_warisan') ? 1 : 0;
+
+        // Store images
+        if ($request->hasFile('gambar_hadapan')) {
+            $data['gambar_hadapan'] = $request->file('gambar_hadapan')->store('gambar_da5', 'public');
+        }
+        if ($request->hasFile('gambar_belakang')) {
+            $data['gambar_belakang'] = $request->file('gambar_belakang')->store('gambar_da5', 'public');
+        }
+
+        // Explicitly handle dynamic lists
+        $data['kontraktor_list'] = $request->input('kontraktor_list', []);
+        $data['juru_perunding_list'] = $request->input('juru_perunding_list', []);
+        $data['lukisan_list'] = $request->input('lukisan_list', []);
 
         $record = Da5Record::create($data);
 
@@ -247,6 +262,8 @@ class ArasRuangController extends Controller
             'no_dpa' => 'nullable|string',
             'kod_blok' => 'nullable|string',
             'nama_blok' => 'nullable|string',
+            'gambar_hadapan' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+            'gambar_belakang' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
         ]);
 
         $data = $request->except(['_token', '_method']);
@@ -263,10 +280,36 @@ class ArasRuangController extends Controller
 
         // Set checkboxes
         $data['aset_warisan'] = $request->has('aset_warisan') ? 1 : 0;
+
+        // Image replacement/deletion logic
+        if ($request->hasFile('gambar_hadapan')) {
+            if ($record->gambar_hadapan && \Storage::disk('public')->exists($record->gambar_hadapan)) {
+                \Storage::disk('public')->delete($record->gambar_hadapan);
+            }
+            $data['gambar_hadapan'] = $request->file('gambar_hadapan')->store('gambar_da5', 'public');
+        } elseif ($request->input('padam_gambar_hadapan')) {
+            if ($record->gambar_hadapan && \Storage::disk('public')->exists($record->gambar_hadapan)) {
+                \Storage::disk('public')->delete($record->gambar_hadapan);
+            }
+            $data['gambar_hadapan'] = null;
+        }
+
+        if ($request->hasFile('gambar_belakang')) {
+            if ($record->gambar_belakang && \Storage::disk('public')->exists($record->gambar_belakang)) {
+                \Storage::disk('public')->delete($record->gambar_belakang);
+            }
+            $data['gambar_belakang'] = $request->file('gambar_belakang')->store('gambar_da5', 'public');
+        } elseif ($request->input('padam_gambar_belakang')) {
+            if ($record->gambar_belakang && \Storage::disk('public')->exists($record->gambar_belakang)) {
+                \Storage::disk('public')->delete($record->gambar_belakang);
+            }
+            $data['gambar_belakang'] = null;
+        }
         
         // Explicitly handle contractor and perunding lists if empty to avoid DB issues
         $data['kontraktor_list'] = $request->input('kontraktor_list', []);
         $data['juru_perunding_list'] = $request->input('juru_perunding_list', []);
+        $data['lukisan_list'] = $request->input('lukisan_list', []);
 
         $record->update($data);
 
@@ -294,6 +337,14 @@ class ArasRuangController extends Controller
             'title'        => 'Padam Borang D.A.5',
             'description'  => 'Padam D.A.5 ID: ' . $record->id . ', Premis: ' . ($record->nama_premis ?? 'Manual'),
         ]);
+
+        // Clean up images from storage
+        if ($record->gambar_hadapan && \Storage::disk('public')->exists($record->gambar_hadapan)) {
+            \Storage::disk('public')->delete($record->gambar_hadapan);
+        }
+        if ($record->gambar_belakang && \Storage::disk('public')->exists($record->gambar_belakang)) {
+            \Storage::disk('public')->delete($record->gambar_belakang);
+        }
 
         $record->delete();
 
@@ -340,6 +391,29 @@ class ArasRuangController extends Controller
             $da5_data['tarikh_penilaian'] = $record->tarikh_penilaian->format('Y-m-d');
         }
 
+        // Resolve absolute local storage paths for front and back images for mPDF
+        $gambarHadapanPath = null;
+        if ($record->gambar_hadapan) {
+            $storagePath = storage_path('app/public/' . $record->gambar_hadapan);
+            $publicPath = public_path('storage/' . $record->gambar_hadapan);
+            if (file_exists($storagePath)) {
+                $gambarHadapanPath = $storagePath;
+            } elseif (file_exists($publicPath)) {
+                $gambarHadapanPath = $publicPath;
+            }
+        }
+
+        $gambarBelakangPath = null;
+        if ($record->gambar_belakang) {
+            $storagePath = storage_path('app/public/' . $record->gambar_belakang);
+            $publicPath = public_path('storage/' . $record->gambar_belakang);
+            if (file_exists($storagePath)) {
+                $gambarBelakangPath = $storagePath;
+            } elseif (file_exists($publicPath)) {
+                $gambarBelakangPath = $publicPath;
+            }
+        }
+
         // Generate PDF using mPDF
         $mpdf = new Mpdf([
             'format'        => 'A4',
@@ -358,7 +432,9 @@ class ArasRuangController extends Controller
             'filterArasStatus',
             'filterRuangAras',
             'filterRuangStatus',
-            'da5_data'
+            'da5_data',
+            'gambarHadapanPath',
+            'gambarBelakangPath'
         ))->render();
 
         $mpdf->WriteHTML($html);
