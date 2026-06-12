@@ -635,6 +635,32 @@
 
     </div>
 
+    @php
+        $imagePath = null;
+        if ($premis->gambar_premis) {
+            $storagePath = storage_path('app/public/' . $premis->gambar_premis);
+            $publicPath = public_path('storage/' . $premis->gambar_premis);
+            if (file_exists($storagePath)) {
+                $imagePath = $storagePath;
+            } elseif (file_exists($publicPath)) {
+                $imagePath = $publicPath;
+            }
+        }
+    @endphp
+
+    @if($imagePath)
+        <div class="page-break"></div>
+        <div class="page">
+            <div class="page-number">helaian 3</div>
+            <div style="clear: both;"></div>
+            <div class="top-title">D.A.3 (JKR.PATA.F6/8a rev.2)</div>
+            <div class="main-title">GAMBAR PREMIS</div>
+            <div style="text-align: center; margin-top: 30px;">
+                <img src="{{ $imagePath }}" style="max-width: 100%; max-height: 600px; border: 1px solid black; padding: 5px;">
+            </div>
+        </div>
+    @endif
+
 </body>
 
 </html>

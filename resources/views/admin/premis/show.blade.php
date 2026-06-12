@@ -33,7 +33,7 @@
 
     <!-- Helaian 1 -->
     <div class="card border-0 shadow-sm mb-4">
-        <div class="card-header bg-primary text-white">
+        <div class="card-header text-white" style="background-color: var(--primary-color) !important;">
             <h5 class="mb-0">D.A.3 — KAD PENDAFTARAN ASET TAK ALIH (Premis Hak Milik)</h5>
             <small>Helaian 1</small>
         </div>
@@ -144,57 +144,13 @@
                 </tr>
             </table>
 
-            <!-- Tandatangan -->
-            <div class="row mt-4">
-                <div class="col-md-6">
-                    <div class="card border">
-                        <div class="card-header bg-light fw-semibold">Pengumpul Data</div>
-                        <div class="card-body">
-                            <table class="table table-sm mb-0">
-                                <tr>
-                                    <td width="40%">Nama</td>
-                                    <td>{{ $premis->pengumpul_nama ?? '-' }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Jawatan</td>
-                                    <td>{{ $premis->pengumpul_jawatan ?? '-' }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Tarikh</td>
-                                    <td>{{ $premis->pengumpul_tarikh ?? '-' }}</td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card border">
-                        <div class="card-header bg-light fw-semibold">Pengesah Data</div>
-                        <div class="card-body">
-                            <table class="table table-sm mb-0">
-                                <tr>
-                                    <td width="40%">Nama</td>
-                                    <td>{{ $premis->pengesah_nama ?? '-' }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Jawatan</td>
-                                    <td>{{ $premis->pengesah_jawatan ?? '-' }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Tarikh</td>
-                                    <td>{{ $premis->pengesah_tarikh ?? '-' }}</td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
         </div>
     </div>
 
     <!-- Helaian 2 - Maklumat Tanah -->
     <div class="card border-0 shadow-sm mb-4">
-        <div class="card-header bg-secondary text-white">
+        <div class="card-header text-white" style="background-color: var(--dark-color) !important;">
             <h5 class="mb-0">Maklumat Tanah</h5>
             <small>Helaian 2</small>
         </div>
@@ -240,7 +196,7 @@
 
     <!-- Senarai Lukisan Siap Bina -->
     <div class="card border-0 shadow-sm mb-4">
-        <div class="card-header bg-dark text-white">
+        <div class="card-header text-white" style="background-color: #4a5568 !important;">
             <h5 class="mb-0">Senarai Lukisan Siap Bina</h5>
         </div>
         <div class="card-body">

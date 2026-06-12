@@ -11,6 +11,16 @@
         .tab-content>.active {
             display: block;
         }
+
+        .nav-tabs .nav-link.active {
+            color: var(--primary-color) !important;
+            border-color: #dee2e6 #dee2e6 #fff !important;
+            font-weight: 600;
+        }
+
+        .nav-tabs .nav-link {
+            color: #6c757d;
+        }
     </style>
 @endsection
 
@@ -19,15 +29,22 @@
         <div class="row justify-content-center">
             <div class="col-md-10">
                 <!-- Header -->
-                <div class="mb-4">
-                    <h2 class="mb-1"><i class="bi bi-plus-circle"></i> Tambah Premis Baru</h2>
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb mb-0">
-                            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                            <li class="breadcrumb-item"><a href="{{ route('admin.premis.index') }}">Premis</a></li>
-                            <li class="breadcrumb-item active">Tambah</li>
-                        </ol>
-                    </nav>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="mb-1"><i class="bi bi-plus-circle"></i> Tambah Premis Baru</h2>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb mb-0">
+                                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('admin.premis.index') }}">Premis</a></li>
+                                <li class="breadcrumb-item active">Tambah</li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <div>
+                        <a href="{{ route('admin.premis.index') }}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Kembali
+                        </a>
+                    </div>
                 </div>
 
                 @if ($errors->any())
@@ -62,7 +79,7 @@
                         <!-- ==================== HELAIAN 1 ==================== -->
                         <div class="tab-pane fade show active" id="helaian1">
                             <div class="card border-0 shadow-sm mb-4">
-                                <div class="card-header bg-primary text-white">
+                                <div class="card-header text-white" style="background-color: var(--primary-color) !important;">
                                     <h5 class="mb-0">KAD PENDAFTARAN ASET TAK ALIH (Premis Hak Milik)</h5>
                                 </div>
                                 <div class="card-body">
@@ -140,14 +157,12 @@
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label fw-semibold">Negeri</label>
-                                            <select name="negeri" class="form-select">
-                                                <option value="">-- Pilih Negeri --</option>
+                                            <input type="text" name="negeri" list="senarai-negeri" class="form-control" placeholder="Taip atau pilih negeri..." value="{{ old('negeri') }}">
+                                            <datalist id="senarai-negeri">
                                                 @foreach (['Johor', 'Kedah', 'Kelantan', 'Melaka', 'Negeri Sembilan', 'Pahang', 'Perak', 'Perlis', 'Pulau Pinang', 'Sabah', 'Sarawak', 'Selangor', 'Terengganu', 'W.P. Kuala Lumpur', 'W.P. Labuan', 'W.P. Putrajaya'] as $negeri)
-                                                    <option value="{{ $negeri }}"
-                                                        {{ old('negeri') == $negeri ? 'selected' : '' }}>
-                                                        {{ $negeri }}</option>
+                                                    <option value="{{ $negeri }}"></option>
                                                 @endforeach
-                                            </select>
+                                            </datalist>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label fw-semibold">Jumlah Keluasan Premis</label>
@@ -271,71 +286,10 @@
                                         </div>
                                     </div>
 
-                                    <hr>
 
-                                    <div class="row g-3">
-                                        <div class="col-md-6">
-                                            <div class="card border">
-                                                <div class="card-header bg-light fw-semibold text-center">PENGUMPUL DATA
-                                                </div>
-                                                <div class="card-body">
-                                                    <div class="mb-3">
-                                                        <label class="form-label">Tandatangan</label>
-                                                        <div
-                                                            style="height: 80px; border: 1px solid #dee2e6; border-radius: 6px;">
-                                                        </div>
-                                                    </div>
-                                                    <div class="mb-2">
-                                                        <label class="form-label">Nama</label>
-                                                        <input type="text" name="pengumpul_nama" class="form-control"
-                                                            value="{{ old('pengumpul_nama') }}">
-                                                    </div>
-                                                    <div class="mb-2">
-                                                        <label class="form-label">Jawatan</label>
-                                                        <input type="text" name="pengumpul_jawatan"
-                                                            class="form-control" value="{{ old('pengumpul_jawatan') }}">
-                                                    </div>
-                                                    <div class="mb-2">
-                                                        <label class="form-label">Tarikh</label>
-                                                        <input type="date" name="pengumpul_tarikh"
-                                                            class="form-control" value="{{ old('pengumpul_tarikh') }}">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="card border">
-                                                <div class="card-header bg-light fw-semibold text-center">PENGESAH DATA
-                                                </div>
-                                                <div class="card-body">
-                                                    <div class="mb-3">
-                                                        <label class="form-label">Tandatangan</label>
-                                                        <div
-                                                            style="height: 80px; border: 1px solid #dee2e6; border-radius: 6px;">
-                                                        </div>
-                                                    </div>
-                                                    <div class="mb-2">
-                                                        <label class="form-label">Nama</label>
-                                                        <input type="text" name="pengesah_nama" class="form-control"
-                                                            value="{{ old('pengesah_nama') }}">
-                                                    </div>
-                                                    <div class="mb-2">
-                                                        <label class="form-label">Jawatan</label>
-                                                        <input type="text" name="pengesah_jawatan"
-                                                            class="form-control" value="{{ old('pengesah_jawatan') }}">
-                                                    </div>
-                                                    <div class="mb-2">
-                                                        <label class="form-label">Tarikh</label>
-                                                        <input type="date" name="pengesah_tarikh" class="form-control"
-                                                            value="{{ old('pengesah_tarikh') }}">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
 
                                     <div class="d-flex justify-content-end mt-4">
-                                        <button type="button" class="btn btn-primary" onclick="nextTab()">
+                                        <button type="button" class="btn text-white" style="background-color: var(--primary-color); border-color: var(--primary-color);" onclick="nextTab()">
                                             Seterusnya <i class="bi bi-arrow-right"></i>
                                         </button>
                                     </div>
@@ -348,7 +302,7 @@
                         <div class="tab-pane fade" id="helaian2">
 
                             <div class="card border-0 shadow-sm mb-4">
-                                <div class="card-header bg-secondary text-white">
+                                <div class="card-header text-white" style="background-color: var(--dark-color) !important;">
                                     <h5 class="mb-0">Maklumat Tanah (jika ada)</h5>
                                 </div>
                                 <div class="card-body">
@@ -415,14 +369,14 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <button type="button" class="btn btn-sm btn-success mt-2" onclick="addTanahRow()">
+                                    <button type="button" class="btn btn-sm text-white mt-2" style="background-color: var(--success-color); border-color: var(--success-color);" onclick="addTanahRow()">
                                         <i class="bi bi-plus-circle"></i> Tambah Baris
                                     </button>
                                 </div>
                             </div>
 
                             <div class="card border-0 shadow-sm mb-4">
-                                <div class="card-header bg-dark text-white">
+                                <div class="card-header text-white" style="background-color: #4a5568 !important;">
                                     <h5 class="mb-0">Senarai Lukisan Siap Bina</h5>
                                 </div>
                                 <div class="card-body">
@@ -459,7 +413,7 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <button type="button" class="btn btn-sm btn-success mt-2" onclick="addLukisanRow()">
+                                    <button type="button" class="btn btn-sm text-white mt-2" style="background-color: var(--success-color); border-color: var(--success-color);" onclick="addLukisanRow()">
                                         <i class="bi bi-plus-circle"></i> Tambah Baris
                                     </button>
                                 </div>
@@ -470,7 +424,7 @@
                                     <i class="bi bi-arrow-left"></i> Sebelumnya
                                 </button>
                                 <div class="d-flex gap-2">
-                                    <button type="submit" class="btn btn-primary">
+                                    <button type="submit" class="btn text-white" style="background-color: var(--primary-color); border-color: var(--primary-color);">
                                         <i class="bi bi-check-circle"></i> Simpan Premis
                                     </button>
                                     <a href="{{ route('admin.premis.index') }}" class="btn btn-secondary">
