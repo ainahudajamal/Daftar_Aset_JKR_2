@@ -95,7 +95,7 @@
         <div class="card-body p-4">
             <form action="{{ route('admin.premis.index') }}" method="GET">
                 <div class="row g-3">
-                    <div class="col-12 col-md-6 col-lg-4">
+                    <div class="col-12 col-md-4">
                         <label for="search" class="form-label text-muted small fw-semibold mb-1">Carian</label>
                         <div class="input-group">
                             <span class="input-group-text bg-white"><i class="bi bi-search text-muted small"></i></span>
@@ -105,7 +105,17 @@
                         </div>
                     </div>
 
-                    <div class="col-12 col-md-6 col-lg-2">
+                    <div class="col-12 col-md-4">
+                        <label for="premis_id" class="form-label text-muted small fw-semibold mb-1">Pilihan Premis</label>
+                        <select class="form-select" id="premis_id" name="premis_id">
+                            <option value="">Semua Premis</option>
+                            @foreach(\App\Models\Premis::orderBy('nama_premis')->get() as $p)
+                                <option value="{{ $p->id }}" {{ request('premis_id') == $p->id ? 'selected' : '' }}>{{ $p->nama_premis }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-md-4">
                         <label for="negeri" class="form-label text-muted small fw-semibold mb-1">Negeri</label>
                         <select class="form-select" id="negeri" name="negeri">
                             <option value="">Semua Negeri</option>
@@ -115,7 +125,7 @@
                         </select>
                     </div>
 
-                    <div class="col-12 col-md-4 col-lg-2">
+                    <div class="col-12 col-md-4">
                         <label for="status" class="form-label text-muted small fw-semibold mb-1">Status</label>
                         <select class="form-select" id="status" name="status">
                             <option value="">Semua</option>
@@ -124,13 +134,13 @@
                         </select>
                     </div>
 
-                    <div class="col-12 col-md-4 col-lg-2">
+                    <div class="col-12 col-md-4">
                         <label for="tarikh_dari" class="form-label text-muted small fw-semibold mb-1">Dari</label>
                         <input type="date" class="form-control" id="tarikh_dari" name="tarikh_dari"
                                value="{{ request('tarikh_dari') }}">
                     </div>
 
-                    <div class="col-12 col-md-4 col-lg-2">
+                    <div class="col-12 col-md-4">
                         <label for="tarikh_hingga" class="form-label text-muted small fw-semibold mb-1">Hingga</label>
                         <input type="date" class="form-control" id="tarikh_hingga" name="tarikh_hingga"
                                value="{{ request('tarikh_hingga') }}">
@@ -141,7 +151,7 @@
                     <button type="submit" class="btn btn-dark px-4">
                         <i class="bi bi-funnel me-1"></i> Tapis
                     </button>
-                    @if(request()->anyFilled(['search','negeri','status','tarikh_dari','tarikh_hingga']))
+                    @if(request()->anyFilled(['search','premis_id','negeri','status','tarikh_dari','tarikh_hingga']))
                         <a href="{{ route('admin.premis.index') }}" class="btn btn-outline-secondary">
                             <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
                         </a>
@@ -299,7 +309,7 @@
                 </div>
                 <h5 class="text-muted fw-semibold">Tiada rekod dijumpai</h5>
                 <p class="text-muted mb-4 small">Sila ubah carian anda atau tambah premis baru.</p>
-                @if(!request()->anyFilled(['search','negeri','status','tarikh_dari','tarikh_hingga']))
+                @if(!request()->anyFilled(['search','premis_id','negeri','status','tarikh_dari','tarikh_hingga']))
                     <a href="{{ route('admin.premis.create') }}" class="btn text-white" style="background-color: var(--primary-color); border-color: var(--primary-color);">
                         <i class="bi bi-plus-circle me-1"></i> Tambah Premis
                     </a>
