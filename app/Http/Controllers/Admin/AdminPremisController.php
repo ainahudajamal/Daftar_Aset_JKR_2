@@ -25,6 +25,11 @@ class AdminPremisController extends Controller
             });
         });
 
+        // 1.5 Filter Pilihan Premis
+        $query->when($request->filled('premis_id'), function ($q) use ($request) {
+            $q->where('id', $request->premis_id);
+        });
+
         // 2. Filter Negeri
         $query->when($request->filled('negeri'), function ($q) use ($request) {
             $q->where('negeri', $request->negeri);
