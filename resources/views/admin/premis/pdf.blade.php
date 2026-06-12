@@ -123,7 +123,7 @@
         .table-bordered th,
         .table-bordered td {
             border: 1px solid black;
-            padding: 6px;
+            padding: 10px 8px;
             text-align: center;
             vertical-align: middle;
             font-size: 10px;
@@ -579,19 +579,9 @@
                         <td>{{ $tanah->harga_semasa }}</td>
                     </tr>
                 @empty
-                    @for ($i = 0; $i < 3; $i++)
-                        <tr>
-                            <td height="25">&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                        </tr>
-                    @endfor
+                    <tr>
+                        <td colspan="9" style="text-align:center; font-style:italic; padding: 10px;">Tiada maklumat tanah.</td>
+                    </tr>
                 @endforelse
             </tbody>
         </table>
@@ -620,15 +610,9 @@
                         <td>{{ $lukisan->catatan }}</td>
                     </tr>
                 @empty
-                    @for ($i = 0; $i < 5; $i++)
-                        <tr>
-                            <td height="25">&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                        </tr>
-                    @endfor
+                    <tr>
+                        <td colspan="5" style="text-align:center; font-style:italic; padding: 10px;">Tiada rekod lukisan siap bina.</td>
+                    </tr>
                 @endforelse
             </tbody>
         </table>
