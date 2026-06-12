@@ -9,7 +9,7 @@
     <div class="d-flex justify-content-between align-items-start mb-4 pt-2">
         <div>
             <h2 class="mb-1 fw-bold text-dark">
-                <i class="bi bi-bank2 me-2" style="color: var(--primary-color) !important;"></i>Borang D.A.3
+                <i class="bi bi-file-earmark-text me-2" style="color: var(--primary-color) !important;"></i>Borang D.A.3
             </h2>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0">
@@ -39,7 +39,7 @@
 
     {{-- Stats Cards --}}
     <div class="row g-3 mb-4">
-        <div class="col-6 col-md-4 col-xl">
+        <div class="col-12 col-md-4">
             <div class="card border-0 rounded-3 h-100" style="background: rgba(37, 99, 235, 0.1);">
                 <div class="card-body d-flex align-items-center gap-3 p-3">
                     <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
@@ -54,7 +54,7 @@
             </div>
         </div>
 
-        <div class="col-6 col-md-4 col-xl">
+        <div class="col-12 col-md-4">
             <div class="card border-0 rounded-3 h-100" style="background: rgba(16, 185, 129, 0.1);">
                 <div class="card-body d-flex align-items-center gap-3 p-3">
                     <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
@@ -69,7 +69,7 @@
             </div>
         </div>
 
-        <div class="col-6 col-md-4 col-xl">
+        <div class="col-12 col-md-4">
             <div class="card border-0 rounded-3 h-100" style="background: rgba(30, 41, 59, 0.1);">
                 <div class="card-body d-flex align-items-center gap-3 p-3">
                     <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
@@ -95,7 +95,7 @@
         <div class="card-body p-4">
             <form action="{{ route('admin.premis.index') }}" method="GET">
                 <div class="row g-3">
-                    <div class="col-12 col-md-4">
+                    <div class="col-12 col-md-6 col-lg-4">
                         <label for="search" class="form-label text-muted small fw-semibold mb-1">Carian</label>
                         <div class="input-group">
                             <span class="input-group-text bg-white"><i class="bi bi-search text-muted small"></i></span>
@@ -105,17 +105,17 @@
                         </div>
                     </div>
 
-                    <div class="col-12 col-md-4">
+                    <div class="col-12 col-md-6 col-lg-2">
                         <label for="negeri" class="form-label text-muted small fw-semibold mb-1">Negeri</label>
                         <select class="form-select" id="negeri" name="negeri">
                             <option value="">Semua Negeri</option>
-                            @foreach(['Johor','Kedah','Kelantan','Melaka','Negeri Sembilan','Pahang','Perak','Perlis','Pulau Pinang','Sabah','Sarawak','Selangor','Terengganu','W.P. Kuala Lumpur','W.P. Labuan','W.P. Putrajaya'] as $n)
+                            @foreach(\App\Models\Premis::whereNotNull('negeri')->where('negeri', '!=', '')->distinct()->orderBy('negeri')->pluck('negeri') as $n)
                                 <option value="{{ $n }}" {{ request('negeri') == $n ? 'selected' : '' }}>{{ $n }}</option>
                             @endforeach
                         </select>
                     </div>
 
-                    <div class="col-12 col-md-4">
+                    <div class="col-12 col-md-4 col-lg-2">
                         <label for="status" class="form-label text-muted small fw-semibold mb-1">Status</label>
                         <select class="form-select" id="status" name="status">
                             <option value="">Semua</option>
@@ -124,13 +124,13 @@
                         </select>
                     </div>
 
-                    <div class="col-12 col-md-4">
+                    <div class="col-12 col-md-4 col-lg-2">
                         <label for="tarikh_dari" class="form-label text-muted small fw-semibold mb-1">Dari</label>
                         <input type="date" class="form-control" id="tarikh_dari" name="tarikh_dari"
                                value="{{ request('tarikh_dari') }}">
                     </div>
 
-                    <div class="col-12 col-md-4">
+                    <div class="col-12 col-md-4 col-lg-2">
                         <label for="tarikh_hingga" class="form-label text-muted small fw-semibold mb-1">Hingga</label>
                         <input type="date" class="form-control" id="tarikh_hingga" name="tarikh_hingga"
                                value="{{ request('tarikh_hingga') }}">

@@ -157,7 +157,7 @@
                                         <label class="form-label fw-semibold">Negeri</label>
                                         <input type="text" name="negeri" list="senarai-negeri" class="form-control" placeholder="Taip atau pilih negeri..." value="{{ old('negeri', $premis->negeri) }}">
                                         <datalist id="senarai-negeri">
-                                            @foreach(['Johor','Kedah','Kelantan','Melaka','Negeri Sembilan','Pahang','Perak','Perlis','Pulau Pinang','Sabah','Sarawak','Selangor','Terengganu','W.P. Kuala Lumpur','W.P. Labuan','W.P. Putrajaya'] as $negeri)
+                                            @foreach(['Johor','Kedah','Kelantan','Melaka','Negeri Sembilan','Pahang','Perak','Perlis','Pulau Pinang','Sabah','Sarawak','Selangor','Terengganu','Wilayah Persekutuan Kuala Lumpur','Wilayah Persekutuan Labuan','Wilayah Persekutuan Putrajaya'] as $negeri)
                                             <option value="{{ $negeri }}"></option>
                                             @endforeach
                                         </datalist>

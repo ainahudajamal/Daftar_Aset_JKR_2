@@ -94,22 +94,9 @@
                         <label for="negeri" class="form-label text-muted small fw-semibold mb-1">Negeri</label>
                         <select class="form-select" id="negeri" name="negeri">
                             <option value="">Semua Negeri</option>
-                            <option value="Johor" {{ request('negeri') == 'Johor' ? 'selected' : '' }}>Johor</option>
-                            <option value="Kedah" {{ request('negeri') == 'Kedah' ? 'selected' : '' }}>Kedah</option>
-                            <option value="Kelantan" {{ request('negeri') == 'Kelantan' ? 'selected' : '' }}>Kelantan</option>
-                            <option value="Melaka" {{ request('negeri') == 'Melaka' ? 'selected' : '' }}>Melaka</option>
-                            <option value="Negeri Sembilan" {{ request('negeri') == 'Negeri Sembilan' ? 'selected' : '' }}>Negeri Sembilan</option>
-                            <option value="Pahang" {{ request('negeri') == 'Pahang' ? 'selected' : '' }}>Pahang</option>
-                            <option value="Perak" {{ request('negeri') == 'Perak' ? 'selected' : '' }}>Perak</option>
-                            <option value="Perlis" {{ request('negeri') == 'Perlis' ? 'selected' : '' }}>Perlis</option>
-                            <option value="Pulau Pinang" {{ request('negeri') == 'Pulau Pinang' ? 'selected' : '' }}>Pulau Pinang</option>
-                            <option value="Sabah" {{ request('negeri') == 'Sabah' ? 'selected' : '' }}>Sabah</option>
-                            <option value="Sarawak" {{ request('negeri') == 'Sarawak' ? 'selected' : '' }}>Sarawak</option>
-                            <option value="Selangor" {{ request('negeri') == 'Selangor' ? 'selected' : '' }}>Selangor</option>
-                            <option value="Terengganu" {{ request('negeri') == 'Terengganu' ? 'selected' : '' }}>Terengganu</option>
-                            <option value="W.P. Kuala Lumpur" {{ request('negeri') == 'W.P. Kuala Lumpur' ? 'selected' : '' }}>W.P. Kuala Lumpur</option>
-                            <option value="W.P. Labuan" {{ request('negeri') == 'W.P. Labuan' ? 'selected' : '' }}>W.P. Labuan</option>
-                            <option value="W.P. Putrajaya" {{ request('negeri') == 'W.P. Putrajaya' ? 'selected' : '' }}>W.P. Putrajaya</option>
+                            @foreach(\App\Models\Premis::whereNotNull('negeri')->where('negeri', '!=', '')->distinct()->orderBy('negeri')->pluck('negeri') as $n)
+                                <option value="{{ $n }}" {{ request('negeri') == $n ? 'selected' : '' }}>{{ $n }}</option>
+                            @endforeach
                         </select>
                     </div>
 
