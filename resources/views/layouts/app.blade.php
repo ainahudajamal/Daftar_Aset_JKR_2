@@ -89,7 +89,8 @@
    SIDEBAR HEADER (Logo & Toggle)
 ======================================== */
         .sidebar-header {
-            padding: 0.5rem 1rem;
+            height: 80px;
+            padding: 0 1rem;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             align-items: center;
@@ -104,9 +105,12 @@
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            white-space: nowrap;
+            justify-content: center;
+            flex: 1;
+            height: 80px;
             overflow: hidden;
+            margin-right: 10px;
+            white-space: nowrap;
         }
 
         .sidebar-brand i {
@@ -499,14 +503,14 @@
         }
 
         /* Sidebar Logo Styles */
-        .sidebar-logo-img {
-            max-height: 85px;
-            max-width: 175px;
+        .sidebar-logo-img,
+        .sidebar-brand-logo {
+            width: 100%;
+            height: 100%;
             object-fit: contain;
+            mix-blend-mode: lighten;
+            transform: scale(1.5);
             transition: all 0.3s ease;
-            margin-top: -18px;
-            margin-bottom: -18px;
-            margin-left: -5px;
         }
 
         .collapsed-logo-icon {
@@ -528,6 +532,16 @@
             opacity: 1 !important;
             width: auto !important;
             display: inline-block !important;
+        }
+
+        /* Collapsed Sidebar Header/Brand adjustments */
+        .sidebar.collapsed .sidebar-brand {
+            display: none !important;
+        }
+
+        .sidebar.collapsed .sidebar-header {
+            justify-content: center;
+            padding: 0 0.5rem;
         }
 
         /* ========================================
@@ -690,12 +704,6 @@
                         </a>
                         
                     </div>
-                    
-
-                    
-
-                    <div class="nav-divider"></div>
-                    
 
                     <div class="nav-divider"></div>
                     <div class="nav-item">
@@ -719,13 +727,6 @@
 
                 @endif
             </nav>
-
-            class="nav-link {{ request()->routeIs('admin.audit_log.*') ? 'active' : '' }}"
-            data-title="Audit Log">
-            <i class="bi bi-journal-text"></i>
-            <span class="nav-link-text">Audit Log</span>
-            </a>
-            </div>
 
             <!-- ✅ LOGOUT BUTTON -->
             <div class="sidebar-footer">
