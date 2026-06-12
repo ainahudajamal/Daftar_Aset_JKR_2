@@ -252,6 +252,90 @@ class ArasRuangController extends Controller
     }
 
     /**
+     * Display the specified D.A.5 record in read-only mode.
+     */
+    public function show($id, Request $request)
+    {
+        $record = Da5Record::findOrFail($id);
+        
+        // Tab logic for Aras and Ruang
+        $activeTab = $request->get('tab', 'aras');
+
+        // ===== ARAS QUERY =====
+        $arasQuery = KodAras::with('blok');
+        
+        // Default to this record's block if no filter is applied
+        $matchingBlok = KodBlok::where('kod', $record->kod_blok)->first();
+        if ($matchingBlok && !$request->filled('aras_blok_id')) {
+            $arasQuery->where('blok_id', $matchingBlok->id);
+            $request->merge(['aras_blok_id' => $matchingBlok->id]);
+        }
+
+        if ($request->aras_search) {
+            $arasQuery->where(function ($q) use ($request) {
+                $q->where('kod', 'like', '%' . $request->aras_search . '%')
+                  ->orWhere('nama', 'like', '%' . $request->aras_search . '%');
+            });
+        }
+        if ($request->aras_blok_id) {
+            $arasQuery->where('blok_id', $request->aras_blok_id);
+        }
+        if ($request->aras_status === 'active') {
+            $arasQuery->where('is_active', true);
+        } elseif ($request->aras_status === 'inactive') {
+            $arasQuery->where('is_active', false);
+        }
+        $arasPaginated = $arasQuery->orderBy('kod')->paginate(10, ['*'], 'aras_page');
+
+        // ===== RUANG QUERY =====
+        $ruangQuery = KodRuang::with(['aras.blok', 'latestKemasan']);
+
+        if ($matchingBlok && !$request->filled('ruang_aras_id') && !$request->filled('ruang_search')) {
+            $ruangQuery->whereHas('aras', function($q) use ($matchingBlok) {
+                $q->where('blok_id', $matchingBlok->id);
+            });
+        }
+
+        if ($request->ruang_search) {
+            $ruangQuery->where(function ($q) use ($request) {
+                $q->where('kod', 'like', '%' . $request->ruang_search . '%')
+                  ->orWhere('nama', 'like', '%' . $request->ruang_search . '%');
+            });
+        }
+        if ($request->ruang_aras_id) {
+            $ruangQuery->where('aras_id', $request->ruang_aras_id);
+        }
+        if ($request->ruang_status === 'active') {
+            $ruangQuery->where('is_active', true);
+        } elseif ($request->ruang_status === 'inactive') {
+            $ruangQuery->where('is_active', false);
+        }
+        $ruangsPaginated = $ruangQuery->orderBy('kod')->paginate(10, ['*'], 'ruang_page');
+
+        // Shared data for Aras and Ruang
+        $bloks   = KodBlok::where('is_active', true)->orderBy('kod')->get();
+        $arasAll = KodAras::with('blok')->where('is_active', true)->orderBy('kod')->get();
+        $premisList = Premis::orderBy('nama_premis')->get();
+
+        AuditLog::create([
+            'user_id'      => auth()->id(),
+            'component_id' => null,
+            'title'        => 'Lihat Butiran Borang D.A.5',
+            'description'  => 'Admin melihat butiran Borang D.A.5 untuk Premis: ' . ($record->nama_premis ?? 'Manual'),
+        ]);
+
+        return view('admin.aras-ruang.show', compact(
+            'record',
+            'arasPaginated',
+            'ruangsPaginated',
+            'bloks',
+            'arasAll',
+            'activeTab',
+            'premisList'
+        ));
+    }
+
+    /**
      * Update the specified D.A.5 record.
      */
     public function update(Request $request, $id)

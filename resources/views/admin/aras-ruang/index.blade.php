@@ -225,9 +225,9 @@
 
                             <td class="pe-4">
                                 <div class="d-flex justify-content-center gap-1">
-                                    <a href="{{ route('admin.aras-ruang.edit', $item->id) }}"
+                                    <a href="{{ route('admin.aras-ruang.show', $item->id) }}"
                                        class="btn btn-sm btn-outline-primary border-0 bg-primary bg-opacity-10"
-                                       title="Urus">
+                                       title="Lihat">
                                         <i class="bi bi-eye"></i>
                                     </a>
                                     <a href="{{ route('admin.aras-ruang.edit', $item->id) }}"

@@ -148,6 +148,7 @@ Route::middleware('auth')->group(function () {
         Route::get('aras-ruang/create', [ArasRuangController::class, 'create'])->name('aras-ruang.create');
         Route::post('aras-ruang/store', [ArasRuangController::class, 'store'])->name('aras-ruang.store');
         Route::get('aras-ruang/{id}/edit', [ArasRuangController::class, 'edit'])->name('aras-ruang.edit');
+        Route::get('aras-ruang/{id}', [ArasRuangController::class, 'show'])->name('aras-ruang.show');
         Route::put('aras-ruang/{id}', [ArasRuangController::class, 'update'])->name('aras-ruang.update');
         Route::delete('aras-ruang/{id}', [ArasRuangController::class, 'destroy'])->name('aras-ruang.destroy');
         Route::get('aras-ruang/{id}/export-pdf', [ArasRuangController::class, 'exportPdf'])->name('aras-ruang.export-pdf');
