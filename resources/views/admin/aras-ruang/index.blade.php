@@ -135,9 +135,6 @@
                         <a href="{{ route('admin.aras-ruang.index') }}" class="btn btn-outline-secondary">
                             <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
                         </a>
-                        <span class="text-muted small ms-1">
-                            <i class="bi bi-info-circle me-1"></i>Tapisan aktif
-                        </span>
                     @endif
                 </div>
             </form>

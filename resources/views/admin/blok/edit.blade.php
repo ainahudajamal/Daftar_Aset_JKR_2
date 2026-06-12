@@ -7,15 +7,24 @@
     <div class="row justify-content-center">
         <div class="col-md-10">
 
-            <div class="mb-4">
-                <h2 class="mb-1"><i class="bi bi-pencil-square"></i> Edit Blok / Binaan Luar</h2>
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.blok.index') }}">Konfigurasi Blok</a></li>
-                        <li class="breadcrumb-item active">Edit</li>
-                    </ol>
-                </nav>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="mb-1 fw-bold text-dark">
+                        <i class="bi bi-pencil-square me-2" style="color: var(--primary-color) !important;"></i>Edit Blok / Binaan Luar
+                    </h2>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0">
+                            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('admin.blok.index') }}">Borang D.A.4</a></li>
+                            <li class="breadcrumb-item active">Edit</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div>
+                    <a href="{{ route('admin.blok.index') }}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Kembali
+                    </a>
+                </div>
             </div>
 
             @if($errors->any())
@@ -34,7 +43,7 @@
 
                 <!-- Maklumat Premis -->
                 <div class="card border-0 shadow-sm mb-4">
-                    <div class="card-header text-white py-2" style="background-color:#4a5568;">
+                    <div class="card-header text-white py-2" style="background-color: var(--primary-color) !important;">
                         <h6 class="mb-0"><i class="bi bi-geo-alt-fill me-2"></i>Maklumat Premis</h6>
                     </div>
                     <div class="card-body pt-3">
@@ -67,7 +76,7 @@
 
                 <!-- Bahagian A — Blok -->
                 <div class="card border-0 shadow-sm mb-3">
-                    <div class="card-header py-2" style="background-color:#0d6efd;">
+                    <div class="card-header py-2 text-white" style="background-color: var(--dark-color) !important;">
                         <div class="form-check d-flex align-items-center gap-2 mb-0">
                             <input class="form-check-input mt-0 flex-shrink-0" type="checkbox"
                                 name="ada_blok" id="chkBlok" value="1"
@@ -81,12 +90,12 @@
                     </div>
                     <div id="seksyenBlok" class="{{ $premis->blok->count() > 0 ? '' : 'd-none' }}">
                         <div class="card-body">
-                            <button type="button" class="btn btn-success btn-sm mb-3" id="btnTambahBlok">
+                            <button type="button" class="btn text-white btn-sm mb-3" id="btnTambahBlok" style="background-color: var(--success-color); border-color: var(--success-color);">
                                 <i class="bi bi-plus-lg"></i> Tambah Blok
                             </button>
                             <div class="table-responsive">
                                 <table class="table table-bordered align-middle mb-2" id="tableBlok">
-                                    <thead class="table-light">
+                                    <thead class="table-dark">
                                         <tr>
                                             <th style="width:50px;">Bil</th>
                                             <th>Nama Blok <span class="text-danger">*</span></th>
@@ -146,7 +155,7 @@
 
                 <!-- Bahagian B — Binaan Luar -->
                 <div class="card border-0 shadow-sm mb-4">
-                    <div class="card-header py-2" style="background-color:#198754;">
+                    <div class="card-header py-2 text-white" style="background-color: #4a5568 !important;">
                         <div class="form-check d-flex align-items-center gap-2 mb-0">
                             <input class="form-check-input mt-0 flex-shrink-0" type="checkbox"
                                 name="ada_binaan_luar" id="chkBinaan" value="1"
@@ -160,12 +169,12 @@
                     </div>
                     <div id="seksyenBinaan" class="{{ $premis->binaanLuar->count() > 0 ? '' : 'd-none' }}">
                         <div class="card-body">
-                            <button type="button" class="btn btn-success btn-sm mb-3" id="btnTambahBinaan">
+                            <button type="button" class="btn text-white btn-sm mb-3" id="btnTambahBinaan" style="background-color: var(--success-color); border-color: var(--success-color);">
                                 <i class="bi bi-plus-lg"></i> Tambah Binaan Luar
                             </button>
                             <div class="table-responsive">
                                 <table class="table table-bordered align-middle mb-2" id="tableBinaan">
-                                    <thead class="table-light">
+                                    <thead class="table-dark">
                                         <tr>
                                             <th style="width:50px;">Bil</th>
                                             <th>Nama Binaan Luar <span class="text-danger">*</span></th>
@@ -224,8 +233,8 @@
                 </div>
 
                 <div class="d-flex gap-2 mb-5">
-                    <button type="submit" class="btn btn-primary px-4">
-                        <i class="bi bi-floppy"></i> Kemaskini
+                    <button type="submit" class="btn text-white px-4" style="background-color: var(--primary-color); border-color: var(--primary-color);">
+                        <i class="bi bi-check-circle"></i> Kemaskini
                     </button>
                     <a href="{{ route('admin.blok.index') }}" class="btn btn-secondary px-4">
                         <i class="bi bi-x-circle"></i> Batal
@@ -242,11 +251,22 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
-    // Auto-fill No. DPA
-    document.getElementById('selectPremis').addEventListener('change', function () {
-        const dpa = this.options[this.selectedIndex].getAttribute('data-dpa') || '';
-        document.getElementById('inputNoDpa').value = dpa;
-    });
+    // Initialize Select2 on the premise dropdown
+    const selectPremis = $('#selectPremis');
+    if (selectPremis.length) {
+        selectPremis.select2({
+            theme: 'bootstrap-5',
+            placeholder: '-- Pilih Premis --',
+            allowClear: true
+        });
+
+        // Auto-fill No. DPA
+        selectPremis.on('change', function () {
+            const selectedOpt = this.options[this.selectedIndex];
+            const dpa = selectedOpt ? selectedOpt.getAttribute('data-dpa') || '' : '';
+            document.getElementById('inputNoDpa').value = dpa;
+        });
+    }
 
     // Toggle checkbox
     function bindToggle(checkboxId, seksyenId) {

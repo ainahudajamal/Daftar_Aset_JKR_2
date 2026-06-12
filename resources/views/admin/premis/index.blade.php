@@ -155,9 +155,6 @@
                         <a href="{{ route('admin.premis.index') }}" class="btn btn-outline-secondary">
                             <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
                         </a>
-                        <span class="text-muted small ms-1">
-                            <i class="bi bi-info-circle me-1"></i>Tapisan aktif
-                        </span>
                     @endif
                 </div>
             </form>
@@ -355,6 +352,14 @@
 
 @section('scripts')
 <script>
+$(document).ready(function() {
+    $('#premis_id').select2({
+        theme: 'bootstrap-5',
+        placeholder: 'Semua Premis',
+        allowClear: true
+    });
+});
+
 function previewPdf(id, nama) {
     const url = `/admin/premis/${id}/export-pdf`;
     document.getElementById('pdfFrame').src = url;
