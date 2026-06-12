@@ -51,7 +51,7 @@
         .table-bordered th,
         .table-bordered td {
             border: 1px solid #000;
-            padding: 6px;
+            padding: 10px 8px;
             vertical-align: middle;
         }
         .table-bordered th {
@@ -132,27 +132,10 @@
                 <td style="text-align:center;">{{ $blok->kod_blok_myspata }}</td>
             </tr>
             @empty
-            @for($i = 0; $i < 17; $i++)
             <tr>
-                <td height="30">&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
+                <td colspan="5" style="text-align:center; font-style:italic; padding: 10px;">Tiada rekod blok bangunan.</td>
             </tr>
-            @endfor
             @endforelse
-            @if($premis->blok->count() > 0 && $premis->blok->count() < 17)
-            @for($i = $premis->blok->count(); $i < 17; $i++)
-            <tr>
-                <td height="30">&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-            </tr>
-            @endfor
-            @endif
         </table>
     </div>
 
@@ -223,27 +206,10 @@
                 <td style="text-align:center;">{{ $binaan->kod_binaan_luar_myspata }}</td>
             </tr>
             @empty
-            @for($i = 0; $i < 17; $i++)
             <tr>
-                <td height="30">&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
+                <td colspan="5" style="text-align:center; font-style:italic; padding: 10px;">Tiada rekod binaan luar.</td>
             </tr>
-            @endfor
             @endforelse
-            @if($premis->binaanLuar->count() > 0 && $premis->binaanLuar->count() < 17)
-            @for($i = $premis->binaanLuar->count(); $i < 17; $i++)
-            <tr>
-                <td height="30">&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-            </tr>
-            @endfor
-            @endif
         </table>
     </div>
 

@@ -90,9 +90,6 @@
                     </div>
                     <div id="seksyenBlok" class="{{ $premis->blok->count() > 0 ? '' : 'd-none' }}">
                         <div class="card-body">
-                            <button type="button" class="btn text-white btn-sm mb-3" id="btnTambahBlok" style="background-color: var(--success-color); border-color: var(--success-color);">
-                                <i class="bi bi-plus-lg"></i> Tambah Blok
-                            </button>
                             <div class="table-responsive">
                                 <table class="table table-bordered align-middle mb-2" id="tableBlok">
                                     <thead class="table-dark">
@@ -149,6 +146,9 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <button type="button" class="btn text-white btn-sm mt-2" id="btnTambahBlok" style="background-color: var(--success-color); border-color: var(--success-color);">
+                                <i class="bi bi-plus-lg"></i> Tambah Blok
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -169,11 +169,8 @@
                     </div>
                     <div id="seksyenBinaan" class="{{ $premis->binaanLuar->count() > 0 ? '' : 'd-none' }}">
                         <div class="card-body">
-                            <button type="button" class="btn text-white btn-sm mb-3" id="btnTambahBinaan" style="background-color: var(--success-color); border-color: var(--success-color);">
-                                <i class="bi bi-plus-lg"></i> Tambah Binaan Luar
-                            </button>
                             <div class="table-responsive">
-                                <table class="table table-bordered align-middle mb-2" id="tableBinaan">
+                                <table class="table table-bordered align-middle mb-2" id="tableBinaan" style="min-width: 1000px;">
                                     <thead class="table-dark">
                                         <tr>
                                             <th style="width:50px;">Bil</th>
@@ -228,6 +225,9 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <button type="button" class="btn text-white btn-sm mt-2" id="btnTambahBinaan" style="background-color: var(--success-color); border-color: var(--success-color);">
+                                <i class="bi bi-plus-lg"></i> Tambah Binaan Luar
+                            </button>
                         </div>
                     </div>
                 </div>
