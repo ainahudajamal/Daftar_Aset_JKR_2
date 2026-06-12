@@ -145,7 +145,12 @@ Route::middleware('auth')->group(function () {
 
         // Aras & Ruang - Combined Management Page
         Route::get('aras-ruang', [ArasRuangController::class, 'index'])->name('aras-ruang.index');
-        Route::get('aras-ruang/export-pdf', [ArasRuangController::class, 'exportPdf'])->name('aras-ruang.export-pdf');
+        Route::get('aras-ruang/create', [ArasRuangController::class, 'create'])->name('aras-ruang.create');
+        Route::post('aras-ruang/store', [ArasRuangController::class, 'store'])->name('aras-ruang.store');
+        Route::get('aras-ruang/{id}/edit', [ArasRuangController::class, 'edit'])->name('aras-ruang.edit');
+        Route::put('aras-ruang/{id}', [ArasRuangController::class, 'update'])->name('aras-ruang.update');
+        Route::delete('aras-ruang/{id}', [ArasRuangController::class, 'destroy'])->name('aras-ruang.destroy');
+        Route::get('aras-ruang/{id}/export-pdf', [ArasRuangController::class, 'exportPdf'])->name('aras-ruang.export-pdf');
         Route::post('aras-ruang/save-form', [ArasRuangController::class, 'saveFormData'])->name('aras-ruang.save-form');
         Route::post('aras-ruang/clear-form', [ArasRuangController::class, 'clearFormData'])->name('aras-ruang.clear-form');
         Route::get('aras-ruang/premis/{id}', [ArasRuangController::class, 'getPremisDetails'])->name('aras-ruang.get-premis-details');

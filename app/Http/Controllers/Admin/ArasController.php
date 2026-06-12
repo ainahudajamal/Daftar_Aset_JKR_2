@@ -77,7 +77,7 @@ class ArasController extends Controller
             'description'  => 'Aras baru ditambah - Kod: ' . $aras->kod . ', Nama: ' . $aras->nama,
         ]);
 
-        return redirect()->route('admin.aras-ruang.index', ['tab' => 'aras'])
+        return redirect()->back()
             ->with('success', 'Aras berjaya ditambah.');
     }
 
@@ -115,7 +115,7 @@ class ArasController extends Controller
             'description'  => 'Aras dikemaskini - Kod: ' . $aras->kod . ', Nama: ' . $aras->nama,
         ]);
 
-        return redirect()->route('admin.aras-ruang.index', ['tab' => 'aras'])
+        return redirect()->back()
             ->with('success', 'Aras berjaya dikemaskini.');
     }
 
@@ -131,7 +131,7 @@ class ArasController extends Controller
 
         $aras->delete();
 
-        return redirect()->route('admin.aras-ruang.index', ['tab' => 'aras'])
+        return redirect()->back()
             ->with('success', 'Aras berjaya dipadam.');
     }
 }

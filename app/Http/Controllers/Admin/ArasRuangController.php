@@ -7,102 +7,85 @@ use App\Models\KodAras;
 use App\Models\KodBlok;
 use App\Models\KodRuang;
 use App\Models\KemasanRuang;
-use Illuminate\Http\Request;
-use App\Models\AuditLog;
-use Mpdf\Mpdf;
+use App\Models\Da5Record;
 use App\Models\Premis;
 use App\Models\Blok;
+use App\Models\AuditLog;
+use Illuminate\Http\Request;
+use Mpdf\Mpdf;
 
 class ArasRuangController extends Controller
 {
     /**
-     * Halaman gabungan Konfigurasi Aras dan Ruang
+     * Display a listing of the DAK (D.A.5) records.
      */
     public function index(Request $request)
     {
         AuditLog::create([
             'user_id'      => auth()->id(),
             'component_id' => null,
-            'title'        => 'Lihat Konfigurasi Aras dan Ruang',
-            'description'  => 'Admin melihat halaman gabungan konfigurasi aras dan ruang',
+            'title'        => 'Lihat Senarai DAK Borang D.A.5',
+            'description'  => 'Admin melihat senarai Borang D.A.5 (Daftar Aset Khusus)',
         ]);
 
-        // Determine active tab (default: aras)
-        $activeTab = $request->get('tab', 'aras');
+        $query = Da5Record::with('premis');
 
-        // ===== ARAS QUERY =====
-        $arasQuery = KodAras::with('blok');
-
-        if ($request->aras_search) {
-            $arasQuery->where(function ($q) use ($request) {
-                $q->where('kod', 'like', '%' . $request->aras_search . '%')
-                  ->orWhere('nama', 'like', '%' . $request->aras_search . '%');
+        // Search Filter (No DPA or Nama Premis or Nama Blok)
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('no_dpa', 'LIKE', "%{$search}%")
+                  ->orWhere('nama_premis', 'LIKE', "%{$search}%")
+                  ->orWhere('nama_blok', 'LIKE', "%{$search}%");
             });
         }
-        if ($request->aras_blok_id) {
-            $arasQuery->where('blok_id', $request->aras_blok_id);
-        }
-        if ($request->aras_status === 'active') {
-            $arasQuery->where('is_active', true);
-        } elseif ($request->aras_status === 'inactive') {
-            $arasQuery->where('is_active', false);
+
+        // Premis Filter
+        if ($request->filled('premis_id')) {
+            $query->where('nama_premis_id', $request->premis_id);
         }
 
-        $arasPaginated = $arasQuery->orderBy('kod')->paginate(10, ['*'], 'aras_page');
-
-        // ===== RUANG QUERY =====
-        $ruangQuery = KodRuang::with(['aras.blok', 'latestKemasan']);
-
-        if ($request->ruang_search) {
-            $ruangQuery->where(function ($q) use ($request) {
-                $q->where('kod', 'like', '%' . $request->ruang_search . '%')
-                  ->orWhere('nama', 'like', '%' . $request->ruang_search . '%');
-            });
-        }
-        if ($request->ruang_aras_id) {
-            $ruangQuery->where('aras_id', $request->ruang_aras_id);
-        }
-        if ($request->ruang_status === 'active') {
-            $ruangQuery->where('is_active', true);
-        } elseif ($request->ruang_status === 'inactive') {
-            $ruangQuery->where('is_active', false);
+        // Status Filter
+        if ($request->filled('status')) {
+            $query->where('status_blok', $request->status);
         }
 
-        $ruangsPaginated = $ruangQuery->orderBy('kod')->paginate(10, ['*'], 'ruang_page');
+        // Date range filters
+        if ($request->filled('tarikh_dari')) {
+            $query->whereDate('created_at', '>=', $request->tarikh_dari);
+        }
+        if ($request->filled('tarikh_hingga')) {
+            $query->whereDate('created_at', '<=', $request->tarikh_hingga);
+        }
 
-        // ===== SHARED DATA =====
-        $bloks   = KodBlok::where('is_active', true)->orderBy('kod')->get();
-        $arasAll = KodAras::with('blok')->where('is_active', true)->orderBy('kod')->get();
-        $da5_data = session('da5_data', []);
+        $records = $query->latest()->paginate(10);
+
+        // Stats calculations
+        $totalRecords = Da5Record::count();
+        $aktifBlok = Da5Record::where('status_blok', 'aktif')->count();
+        $tidakAktifBlok = Da5Record::where('status_blok', 'tidak_aktif')->count();
+        
         $premisList = Premis::orderBy('nama_premis')->get();
 
         return view('admin.aras-ruang.index', compact(
-            'arasPaginated',
-            'ruangsPaginated',
-            'bloks',
-            'arasAll',
-            'activeTab',
-            'da5_data',
+            'records',
+            'totalRecords',
+            'aktifBlok',
+            'tidakAktifBlok',
             'premisList'
         ));
     }
 
     /**
-     * Export PDF — Konfigurasi Aras dan Ruang
-     * Supports the same filter params as index() so users export exactly what they see.
+     * Show form for creating a new D.A.5 record.
      */
-    public function exportPdf(Request $request)
+    public function create(Request $request)
     {
-        AuditLog::create([
-            'user_id'      => auth()->id(),
-            'component_id' => null,
-            'title'        => 'Export PDF Konfigurasi Aras dan Ruang',
-            'description'  => 'Admin mengeksport PDF senarai aras dan ruang',
-        ]);
+        // Tab logic for Aras and Ruang
+        $activeTab = $request->get('tab', 'aras');
 
-        // ===== ARAS QUERY (all records, no pagination) =====
+        // ===== ARAS QUERY =====
         $arasQuery = KodAras::with('blok');
-
         if ($request->aras_search) {
             $arasQuery->where(function ($q) use ($request) {
                 $q->where('kod', 'like', '%' . $request->aras_search . '%')
@@ -117,12 +100,10 @@ class ArasRuangController extends Controller
         } elseif ($request->aras_status === 'inactive') {
             $arasQuery->where('is_active', false);
         }
+        $arasPaginated = $arasQuery->orderBy('kod')->paginate(10, ['*'], 'aras_page');
 
-        $arasAll = $arasQuery->orderBy('blok_id')->orderBy('kod')->get();
-
-        // ===== RUANG QUERY (all records, no pagination) =====
-        $ruangQuery = KodRuang::with(['aras.blok']);
-
+        // ===== RUANG QUERY =====
+        $ruangQuery = KodRuang::with(['aras.blok', 'latestKemasan']);
         if ($request->ruang_search) {
             $ruangQuery->where(function ($q) use ($request) {
                 $q->where('kod', 'like', '%' . $request->ruang_search . '%')
@@ -137,33 +118,229 @@ class ArasRuangController extends Controller
         } elseif ($request->ruang_status === 'inactive') {
             $ruangQuery->where('is_active', false);
         }
+        $ruangsPaginated = $ruangQuery->orderBy('kod')->paginate(10, ['*'], 'ruang_page');
 
-        $ruangsAll = $ruangQuery->orderBy('aras_id')->orderBy('kod')->get();
+        // Shared data for Aras and Ruang
+        $bloks   = KodBlok::where('is_active', true)->orderBy('kod')->get();
+        $arasAll = KodAras::with('blok')->where('is_active', true)->orderBy('kod')->get();
+        $premisList = Premis::orderBy('nama_premis')->get();
 
-        // ===== Build human-readable filter description =====
-        $filterParts = [];
-        if ($request->aras_search)   $filterParts[] = 'Carian Aras: "' . $request->aras_search . '"';
-        if ($request->ruang_search)  $filterParts[] = 'Carian Ruang: "' . $request->ruang_search . '"';
+        return view('admin.aras-ruang.create', compact(
+            'arasPaginated',
+            'ruangsPaginated',
+            'bloks',
+            'arasAll',
+            'activeTab',
+            'premisList'
+        ));
+    }
+
+    /**
+     * Store a newly created D.A.5 record.
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'no_dpa' => 'nullable|string',
+            'kod_blok' => 'nullable|string',
+            'nama_blok' => 'nullable|string',
+        ]);
+
+        $data = $request->except('_token');
+        
+        if ($request->nama_premis_id === 'manual') {
+            $data['nama_premis'] = $request->nama_premis_manual;
+            $data['nama_premis_id'] = null; // Stored as null when manual input
+        } elseif ($request->nama_premis_id) {
+            $premis = Premis::find($request->nama_premis_id);
+            if ($premis) {
+                $data['nama_premis'] = $premis->nama_premis;
+            }
+        }
+
+        // Set default values for checkboxes if not present
+        $data['aset_warisan'] = $request->has('aset_warisan') ? 1 : 0;
+
+        $record = Da5Record::create($data);
+
+        AuditLog::create([
+            'user_id'      => auth()->id(),
+            'component_id' => null,
+            'title'        => 'Daftar Borang D.A.5 Baru',
+            'description'  => 'Pendaftaran D.A.5 Baru untuk Premis: ' . ($record->nama_premis ?? 'Manual') . ', Blok: ' . ($record->nama_blok ?? 'N/A'),
+        ]);
+
+        return redirect()->route('admin.aras-ruang.edit', $record->id)
+            ->with('success', 'Borang D.A.5 berjaya disimpan. Anda boleh mengurus aras dan ruang sekarang.');
+    }
+
+    /**
+     * Show form for editing the specified D.A.5 record.
+     */
+    public function edit($id, Request $request)
+    {
+        $record = Da5Record::findOrFail($id);
+        
+        // Tab logic for Aras and Ruang
+        $activeTab = $request->get('tab', 'aras');
+
+        // ===== ARAS QUERY =====
+        $arasQuery = KodAras::with('blok');
+        if ($request->aras_search) {
+            $arasQuery->where(function ($q) use ($request) {
+                $q->where('kod', 'like', '%' . $request->aras_search . '%')
+                  ->orWhere('nama', 'like', '%' . $request->aras_search . '%');
+            });
+        }
         if ($request->aras_blok_id) {
-            $blok = KodBlok::find($request->aras_blok_id);
-            if ($blok) $filterParts[] = 'Blok: ' . $blok->kod . ' - ' . $blok->nama;
+            $arasQuery->where('blok_id', $request->aras_blok_id);
+        }
+        if ($request->aras_status === 'active') {
+            $arasQuery->where('is_active', true);
+        } elseif ($request->aras_status === 'inactive') {
+            $arasQuery->where('is_active', false);
+        }
+        $arasPaginated = $arasQuery->orderBy('kod')->paginate(10, ['*'], 'aras_page');
+
+        // ===== RUANG QUERY =====
+        $ruangQuery = KodRuang::with(['aras.blok', 'latestKemasan']);
+        if ($request->ruang_search) {
+            $ruangQuery->where(function ($q) use ($request) {
+                $q->where('kod', 'like', '%' . $request->ruang_search . '%')
+                  ->orWhere('nama', 'like', '%' . $request->ruang_search . '%');
+            });
         }
         if ($request->ruang_aras_id) {
-            $aras = KodAras::find($request->ruang_aras_id);
-            if ($aras) $filterParts[] = 'Aras: ' . $aras->kod . ' - ' . $aras->nama;
+            $ruangQuery->where('aras_id', $request->ruang_aras_id);
         }
-        if ($request->aras_status)   $filterParts[] = 'Status Aras: ' . ucfirst($request->aras_status);
-        if ($request->ruang_status)  $filterParts[] = 'Status Ruang: ' . ucfirst($request->ruang_status);
+        if ($request->ruang_status === 'active') {
+            $ruangQuery->where('is_active', true);
+        } elseif ($request->ruang_status === 'inactive') {
+            $ruangQuery->where('is_active', false);
+        }
+        $ruangsPaginated = $ruangQuery->orderBy('kod')->paginate(10, ['*'], 'ruang_page');
 
-        $filterInfo      = implode('  |  ', $filterParts) ?: null;
-        $filterArasBlok  = $request->aras_blok_id ? (KodBlok::find($request->aras_blok_id)?->kod . ' - ' . KodBlok::find($request->aras_blok_id)?->nama) : null;
-        $filterArasStatus  = $request->aras_status  ? ucfirst($request->aras_status)  : null;
-        $filterRuangAras   = $request->ruang_aras_id ? (KodAras::find($request->ruang_aras_id)?->kod . ' - ' . KodAras::find($request->ruang_aras_id)?->nama) : null;
-        $filterRuangStatus = $request->ruang_status  ? ucfirst($request->ruang_status) : null;
+        // Shared data for Aras and Ruang
+        $bloks   = KodBlok::where('is_active', true)->orderBy('kod')->get();
+        $arasAll = KodAras::with('blok')->where('is_active', true)->orderBy('kod')->get();
+        $premisList = Premis::orderBy('nama_premis')->get();
 
-        $da5_data = session('da5_data', []);
+        return view('admin.aras-ruang.edit', compact(
+            'record',
+            'arasPaginated',
+            'ruangsPaginated',
+            'bloks',
+            'arasAll',
+            'activeTab',
+            'premisList'
+        ));
+    }
 
-        // ===== Generate PDF with mPDF (supports mixed portrait/landscape) =====
+    /**
+     * Update the specified D.A.5 record.
+     */
+    public function update(Request $request, $id)
+    {
+        $record = Da5Record::findOrFail($id);
+
+        $request->validate([
+            'no_dpa' => 'nullable|string',
+            'kod_blok' => 'nullable|string',
+            'nama_blok' => 'nullable|string',
+        ]);
+
+        $data = $request->except(['_token', '_method']);
+
+        if ($request->nama_premis_id === 'manual') {
+            $data['nama_premis'] = $request->nama_premis_manual;
+            $data['nama_premis_id'] = null;
+        } elseif ($request->nama_premis_id) {
+            $premis = Premis::find($request->nama_premis_id);
+            if ($premis) {
+                $data['nama_premis'] = $premis->nama_premis;
+            }
+        }
+
+        // Set checkboxes
+        $data['aset_warisan'] = $request->has('aset_warisan') ? 1 : 0;
+        
+        // Explicitly handle contractor and perunding lists if empty to avoid DB issues
+        $data['kontraktor_list'] = $request->input('kontraktor_list', []);
+        $data['juru_perunding_list'] = $request->input('juru_perunding_list', []);
+
+        $record->update($data);
+
+        AuditLog::create([
+            'user_id'      => auth()->id(),
+            'component_id' => null,
+            'title'        => 'Kemaskini Borang D.A.5',
+            'description'  => 'Kemaskini D.A.5 ID: ' . $record->id . ', Premis: ' . ($record->nama_premis ?? 'Manual'),
+        ]);
+
+        return redirect()->route('admin.aras-ruang.edit', $record->id)
+            ->with('success', 'Borang D.A.5 berjaya dikemaskini.');
+    }
+
+    /**
+     * Delete the specified D.A.5 record.
+     */
+    public function destroy($id)
+    {
+        $record = Da5Record::findOrFail($id);
+        
+        AuditLog::create([
+            'user_id'      => auth()->id(),
+            'component_id' => null,
+            'title'        => 'Padam Borang D.A.5',
+            'description'  => 'Padam D.A.5 ID: ' . $record->id . ', Premis: ' . ($record->nama_premis ?? 'Manual'),
+        ]);
+
+        $record->delete();
+
+        return redirect()->route('admin.aras-ruang.index')
+            ->with('success', 'Borang D.A.5 berjaya dipadam.');
+    }
+
+    /**
+     * Export PDF — Konfigurasi Aras dan Ruang
+     */
+    public function exportPdf($id, Request $request)
+    {
+        $record = Da5Record::findOrFail($id);
+
+        AuditLog::create([
+            'user_id'      => auth()->id(),
+            'component_id' => null,
+            'title'        => 'Export PDF Borang D.A.5',
+            'description'  => 'Admin mengeksport PDF Borang D.A.5 ID: ' . $record->id,
+        ]);
+
+        // ===== ARAS QUERY (all records, no pagination) =====
+        $arasQuery = KodAras::with('blok');
+        $arasAll = $arasQuery->orderBy('blok_id')->orderBy('kod')->get();
+
+        // ===== RUANG QUERY (all records, no pagination) =====
+        $ruangQuery = KodRuang::with(['aras.blok']);
+        $ruangsAll = $ruangQuery->orderBy('aras_id')->orderBy('kod')->get();
+
+        $filterInfo = null;
+        $filterArasBlok = null;
+        $filterArasStatus = null;
+        $filterRuangAras = null;
+        $filterRuangStatus = null;
+
+        // Convert the Da5Record into array representation matching the previous $da5_data format
+        $da5_data = $record->toArray();
+
+        // Parse date attributes back to string formats to ensure compatibility with view formatting
+        if ($record->tarikh_siap_bina) {
+            $da5_data['tarikh_siap_bina'] = $record->tarikh_siap_bina->format('Y-m-d');
+        }
+        if ($record->tarikh_penilaian) {
+            $da5_data['tarikh_penilaian'] = $record->tarikh_penilaian->format('Y-m-d');
+        }
+
+        // Generate PDF using mPDF
         $mpdf = new Mpdf([
             'format'        => 'A4',
             'margin_top'    => 15,
@@ -189,27 +366,6 @@ class ArasRuangController extends Controller
         return response($mpdf->Output('DA5-Borang-Pengumpulan-Data.pdf', 'S'), 200)
             ->header('Content-Type', 'application/pdf')
             ->header('Content-Disposition', 'inline; filename="DA5-Borang-Pengumpulan-Data.pdf"');
-    }
-
-    public function saveFormData(Request $request)
-    {
-        $data = $request->except('_token');
-        if ($request->nama_premis_id === 'manual') {
-            $data['nama_premis'] = $request->nama_premis_manual;
-        } elseif ($request->nama_premis_id) {
-            $premis = Premis::find($request->nama_premis_id);
-            if ($premis) {
-                $data['nama_premis'] = $premis->nama_premis;
-            }
-        }
-        session(['da5_data' => $data]);
-        return redirect()->back()->with('success', 'Maklumat D.A.5 berjaya disimpan.');
-    }
-
-    public function clearFormData()
-    {
-        session()->forget('da5_data');
-        return redirect()->back()->with('success', 'Maklumat D.A.5 berjaya dipadam.');
     }
 
     /**
