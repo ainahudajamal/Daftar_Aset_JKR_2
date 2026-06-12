@@ -28,14 +28,7 @@
         </a>
     </div>
 
-    {{-- Alert --}}
-    @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show d-flex align-items-center gap-2 shadow-sm mb-4" role="alert">
-        <i class="bi bi-check-circle-fill fs-5"></i>
-        <span>{{ session('success') }}</span>
-        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
-    </div>
-    @endif
+
 
     {{-- Stats Cards --}}
     <div class="row g-3 mb-4">
