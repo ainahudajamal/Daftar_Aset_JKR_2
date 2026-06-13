@@ -33,7 +33,7 @@
         <div class="col-6 col-md-4 col-xl">
             <div class="card border-0 rounded-3 h-100" style="background: #0d6efd1a;">
                 <div class="card-body d-flex align-items-center gap-3 p-3">
-                    <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
+                    <div class="rounded-3 d-flex align-items-center justify-content-center shrink-0"
                          style="width:44px;height:44px;background:#0d6efd33;">
                          <i class="bi bi-file-earmark-text-fill fs-5 text-primary"></i>
                     </div>
@@ -48,7 +48,7 @@
         <div class="col-6 col-md-4 col-xl">
             <div class="card border-0 rounded-3 h-100" style="background:#1982210d;">
                 <div class="card-body d-flex align-items-center gap-3 p-3">
-                    <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
+                    <div class="rounded-3 d-flex align-items-center justify-content-center shrink-0"
                          style="width:44px;height:44px;background:#19822126;">
                         <i class="bi bi-check2-circle fs-5 text-success"></i>
                     </div>
@@ -63,7 +63,7 @@
         <div class="col-6 col-md-4 col-xl">
             <div class="card border-0 rounded-3 h-100" style="background:#6c757d1a;">
                 <div class="card-body d-flex align-items-center gap-3 p-3">
-                    <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
+                    <div class="rounded-3 d-flex align-items-center justify-content-center shrink-0"
                          style="width:44px;height:44px;background:#6c757d33;">
                         <i class="bi bi-x-circle fs-5 text-secondary"></i>
                     </div>
