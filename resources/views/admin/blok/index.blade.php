@@ -141,7 +141,7 @@
     <div class="card border-0 shadow-sm mb-4">
         <div class="card-header bg-white border-bottom py-3 px-4 d-flex justify-content-between align-items-center">
             <div>
-                <span class="text-dark fw-semibold">
+                <span class="text-primary fw-semibold">
                     <i class="bi bi-geo-alt-fill me-2" style="color: var(--primary-color) !important;"></i>{{ $premis->nama_premis }}
                 </span>
                 @if($premis->no_dpa)

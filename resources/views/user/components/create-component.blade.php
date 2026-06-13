@@ -73,7 +73,7 @@
                                         <select class="form-select" name="nama_premis" id="selectPremis" required>
                                             <option value="">-- Pilih Premis --</option>
                                             @foreach ($premis as $p)
-                                                <option value="{{ $p->nama_premis }}" data-dpa="{{ $p->no_dpa }}"
+                                                <option value="{{ $p->nama_premis }}" data-dpa="{{ $p->no_dpa }}" data-id="{{ $p->id }}"
                                                     {{ old('nama_premis') == $p->nama_premis ? 'selected' : '' }}>
                                                     {{ $p->nama_premis }}
                                                 </option>
@@ -261,28 +261,20 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td width="30%">Nama Binaan Luar</td>
-                                            <td><input type="text" class="form-control" name="nama_binaan_luar"
-                                                    value="{{ old('nama_binaan_luar') }}"
-                                                    placeholder="Contoh: Kolam Renang A"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kod Binaan Luar</td>
+                                            <td width="30%">Kod Binaan Luar</td>
                                             <td>
                                                 <div class="input-group">
                                                     <select class="form-select select2-binaan-luar" name="kod_binaan_luar"
                                                         id="kod_binaan_luar">
-                                                        <option value="">-- Pilih atau Taip Kod Binaan Luar --
-                                                        </option>
-                                                        @if (isset($kodBinaanLuar))
-                                                            @foreach ($kodBinaanLuar as $binaan)
-                                                                <option value="{{ $binaan->kod }}"
-                                                                    data-nama="{{ $binaan->nama }}"
-                                                                    {{ old('kod_binaan_luar') == $binaan->kod ? 'selected' : '' }}>
-                                                                    {{ $binaan->kod }}
-                                                                </option>
-                                                            @endforeach
-                                                        @endif
+                                                        <option value="">-- Pilih atau Taip Kod Binaan Luar --</option>
+                                                        @foreach ($binaanLuars as $binaan)
+                                                            <option value="{{ $binaan->kod_binaan_luar_myspata }}"
+                                                                data-nama="{{ $binaan->nama_binaan_luar }}"
+                                                                data-premis="{{ $binaan->premis_id }}"
+                                                                {{ old('kod_binaan_luar') == $binaan->kod_binaan_luar_myspata ? 'selected' : '' }}>
+                                                                {{ $binaan->kod_binaan_luar_myspata }}
+                                                            </option>
+                                                        @endforeach
                                                     </select>
                                                     <span class="input-group-text"><i class="bi bi-search"></i></span>
                                                 </div>
@@ -290,6 +282,12 @@
                                                     id="nama_binaan_luar_dari_kod"
                                                     value="{{ old('nama_binaan_luar_dari_kod') }}">
                                             </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Nama Binaan Luar</td>
+                                            <td><input type="text" class="form-control" name="nama_binaan_luar" id="nama_binaan_luar"
+                                                    value="{{ old('nama_binaan_luar') }}"
+                                                    placeholder="Contoh: Kolam Renang A"></td>
                                         </tr>
                                         <tr>
                                             <td>Koordinat GPS (WGS 84)</td>
@@ -771,10 +769,65 @@ $('#kod_ruang_binaan').on('select2:select change', function() {
                     });
                 }
             }
-            // Auto-fill No DPA bila pilih premis
+            // Cache original options for Blok & Binaan Luar
+            const originalBlokOptions = $('#kod_blok option').clone();
+            const originalBinaanOptions = $('#kod_binaan_luar option').clone();
+
+            function filterLocationOptions(premisId) {
+                // Filter Blok options
+                const selectedBlokValue = $('#kod_blok').val();
+                $('#kod_blok').empty().append('<option value="">-- Pilih atau Taip Kod Blok --</option>');
+                originalBlokOptions.each(function() {
+                    const blockPremisId = $(this).data('premis');
+                    const val = $(this).val();
+                    if (val !== '') {
+                        if (!premisId || !blockPremisId || blockPremisId == premisId) {
+                            const opt = $(this).clone();
+                            if (val === selectedBlokValue) {
+                                opt.attr('selected', 'selected');
+                            }
+                            $('#kod_blok').append(opt);
+                        }
+                    }
+                });
+                $('#kod_blok').trigger('change');
+
+                // Filter Binaan Luar options
+                const selectedBinaanValue = $('#kod_binaan_luar').val();
+                $('#kod_binaan_luar').empty().append('<option value="">-- Pilih atau Taip Kod Binaan Luar --</option>');
+                originalBinaanOptions.each(function() {
+                    const binaanPremisId = $(this).data('premis');
+                    const val = $(this).val();
+                    if (val !== '') {
+                        if (!premisId || !binaanPremisId || binaanPremisId == premisId) {
+                            const opt = $(this).clone();
+                            if (val === selectedBinaanValue) {
+                                opt.attr('selected', 'selected');
+                            }
+                            $('#kod_binaan_luar').append(opt);
+                        }
+                    }
+                });
+                $('#kod_binaan_luar').trigger('change');
+            }
+
+            // Auto-fill No DPA & filter lists bila pilih premis
             $('#selectPremis').on('change', function() {
-                const dpa = $(this).find(':selected').data('dpa') || '';
+                const selectedOption = $(this).find(':selected');
+                const dpa = selectedOption.data('dpa') || '';
+                const premisId = selectedOption.data('id') || '';
+                
                 $('#inputNoDpa').val(dpa);
+                filterLocationOptions(premisId);
+            });
+
+            // Auto-fill Nama Binaan Luar bila pilih Kod Binaan Luar
+            $('#kod_binaan_luar').on('select2:select change', function() {
+                const selectedOption = $(this).find(':selected');
+                const namaBinaan = selectedOption.data('nama') || '';
+                if (namaBinaan) {
+                    $('#nama_binaan_luar').val(namaBinaan);
+                }
             });
 
             function initializeSelect2() {
@@ -848,6 +901,12 @@ $('#kod_ruang_binaan').on('select2:select change', function() {
 
                 const kodArasBinaanValue = $('#kod_aras_binaan').val();
                 if (kodArasBinaanValue) checkKodAras(kodArasBinaanValue, 'binaan');
+            }
+
+            // Filter on page load if premis is pre-selected
+            const initialPremisId = $('#selectPremis').find(':selected').data('id');
+            if (initialPremisId) {
+                filterLocationOptions(initialPremisId);
             }
         });
     </script>
