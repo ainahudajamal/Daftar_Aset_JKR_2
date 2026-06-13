@@ -657,6 +657,15 @@
                 {{-- ✅ MENU PENGURUSAN - HANYA UNTUK ADMIN --}}
                 @if (auth()->user()->isAdmin())
                     <div class="nav-item">
+                        <a href="{{ route('admin.bidang.index') }}"
+                            class="nav-link {{ request()->routeIs('admin.bidang.*') ? 'active' : '' }}"
+                            data-title="Bidang">
+                            <i class="bi bi-journal-bookmark"></i>
+                            <span class="nav-link-text">Pendaftaran Kod Bidang</span>
+                        </a>
+                    </div>
+
+                    <div class="nav-item">
                         <a href="{{ route('admin.sistem.index') }}"
                             class="nav-link {{ request()->routeIs('admin.sistem.*') ? 'active' : '' }}"
                             data-title="Sistem">

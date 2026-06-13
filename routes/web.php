@@ -28,6 +28,7 @@ use App\Http\Controllers\UserDashboardController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SistemController;
 use App\Http\Controllers\SubsistemController;
+use App\Http\Controllers\BidangController;
 use App\Http\Controllers\Admin\AdminComponentController as AdminComponentController;
 use App\Http\Controllers\Admin\BlokController;
 use App\Http\Controllers\Admin\ArasController;
@@ -116,6 +117,9 @@ Route::middleware('auth')->group(function () {
         Route::post('users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
         Route::get('users/{user}/reset-password', [UserController::class, 'showResetPasswordForm'])->name('users.reset-password');
         Route::post('users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset-password.post');
+
+        // Bidang Management
+        Route::resource('bidang', BidangController::class);
 
         // Sistem Management
         Route::get('sistem', [SistemController::class, 'index'])->name('sistem.index');
