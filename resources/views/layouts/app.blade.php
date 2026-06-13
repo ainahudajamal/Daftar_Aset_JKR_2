@@ -660,7 +660,7 @@
                         <a href="{{ route('admin.bidang.index') }}"
                             class="nav-link {{ request()->routeIs('admin.bidang.*') ? 'active' : '' }}"
                             data-title="Bidang">
-                            <i class="bi bi-journal-bookmark"></i>
+                            <i class="bi bi-tags"></i>
                             <span class="nav-link-text">Pendaftaran Kod Bidang</span>
                         </a>
                     </div>
