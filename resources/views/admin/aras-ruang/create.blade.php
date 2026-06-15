@@ -1502,6 +1502,14 @@
 
 @section('scripts')
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const modals = ['modalTambahAras', 'modalTambahRuang', 'modalEditAras', 'modalEditRuang', 'modalPDF'];
+    modals.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) document.body.appendChild(el);
+    });
+});
+
 // ===== TAB TOGGLE: Show correct Add button =====
 const arasTab    = document.getElementById('aras-tab');
 const ruangTab   = document.getElementById('ruang-tab');
@@ -1531,7 +1539,7 @@ function editAras(id, blokId, kod, nama, isActive) {
     document.getElementById('edit_aras_nama').value = nama;
     document.getElementById('edit_aras_is_active').checked = isActive;
 
-    var modal = new bootstrap.Modal(document.getElementById('modalEditAras'));
+    var modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalEditAras'));
     modal.show();
 }
 
@@ -1604,7 +1612,7 @@ function editRuangFromBtn(btn) {
     // Also sync Kod Ruang
     document.getElementById('edit_kemasan_kod_ruang').value = kod;
 
-    var modal = new bootstrap.Modal(document.getElementById('modalEditRuang'));
+    var modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalEditRuang'));
     modal.show();
 }
 
@@ -1664,12 +1672,12 @@ function deleteRuang(id, nama) {
             // Re-open edit ruang modal (not needed as we redirect back)
         @else
             var modalEl = document.getElementById('modalTambahRuang');
-            var modal = new bootstrap.Modal(modalEl);
+            var modal = bootstrap.Modal.getOrCreateInstance(modalEl);
             modal.show();
         @endif
     @else
         var modalEl = document.getElementById('modalTambahAras');
-        var modal = new bootstrap.Modal(modalEl);
+        var modal = bootstrap.Modal.getOrCreateInstance(modalEl);
         modal.show();
     @endif
 @endif
