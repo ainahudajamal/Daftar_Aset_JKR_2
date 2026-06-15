@@ -242,7 +242,7 @@
 
 <!-- Modal Preview PDF -->
 <div class="modal fade" id="modalPDF" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
@@ -251,7 +251,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-0">
-                <iframe id="pdfFrame" src="" width="100%" height="650px" style="border: none;"></iframe>
+                <iframe id="pdfFrame" src="" width="100%" style="border: none; height: 60vh; min-height: 400px;"></iframe>
             </div>
             <div class="modal-footer">
                 <a id="pdfDownload" href="#" class="btn btn-success">
@@ -269,12 +269,31 @@
 
 @section('scripts')
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const modalEl = document.getElementById('modalPDF');
+    if (modalEl) {
+        modalEl.addEventListener('hidden.bs.modal', function() {
+            const frame = document.getElementById('pdfFrame');
+            if (frame) frame.src = '';
+        });
+    }
+});
+
 function previewPdf(id, nama) {
     const url = `/admin/premis/${id}/export-pdf`;
-    document.getElementById('pdfFrame').src = url;
-    document.getElementById('pdfDownload').href = url;
-    document.getElementById('modalPremisNama').textContent = nama;
-    new bootstrap.Modal(document.getElementById('modalPDF')).show();
+    const frame = document.getElementById('pdfFrame');
+    const downloadLink = document.getElementById('pdfDownload');
+    const titleSpan = document.getElementById('modalPremisNama');
+    
+    if (frame) frame.src = url;
+    if (downloadLink) downloadLink.href = url;
+    if (titleSpan) titleSpan.textContent = nama;
+    
+    const modalEl = document.getElementById('modalPDF');
+    if (modalEl) {
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modal.show();
+    }
 }
 </script>
 @endsection

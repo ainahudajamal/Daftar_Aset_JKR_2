@@ -1473,28 +1473,25 @@
 
 <!-- Modal Preview PDF -->
 <div class="modal fade" id="modalPDF" tabindex="-1" aria-labelledby="modalPDFLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content border-0 shadow">
-            <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title fw-bold" id="modalPDFLabel">
-                    <i class="bi bi-file-pdf me-2"></i>Pratonton D.A.5 - Borang Pengumpulan Data Daftar Aset Khusus (DAK)
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow-lg rounded-3">
+            <div class="modal-header border-bottom px-4">
+                <h5 class="modal-title fw-semibold d-flex align-items-center gap-2" id="modalPDFLabel">
+                    <i class="bi bi-file-pdf-fill text-danger"></i>
+                    Pratonton D.A.5 &mdash;
+                    <span id="modalDA5Nama" class="text-primary"></span>
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body p-0">
-                <iframe
-                    src="#"
-                    width="100%"
-                    height="650px"
-                    style="border: none;">
-                </iframe>
+            <div class="modal-body p-0" style="background:#f0f0f0;">
+                <iframe id="pdfFrame" src="" width="100%" style="border:none;display:block;height:60vh;min-height:400px;"></iframe>
             </div>
-            <div class="modal-footer">
-                <a href="#" class="btn btn-success">
-                    <i class="bi bi-download me-1"></i> Muat Turun PDF
+            <div class="modal-footer border-top px-4 bg-light rounded-bottom-3">
+                <a id="pdfDownload" href="#" class="btn btn-danger d-flex align-items-center gap-2">
+                    <i class="bi bi-download"></i> Muat Turun PDF
                 </a>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="bi bi-x-circle me-1"></i> Tutup
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    Tutup
                 </button>
             </div>
         </div>
@@ -2418,7 +2415,32 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
+
+    const modalEl = document.getElementById('modalPDF');
+    if (modalEl) {
+        modalEl.addEventListener('hidden.bs.modal', function() {
+            const frame = document.getElementById('pdfFrame');
+            if (frame) frame.src = '';
+        });
+    }
 });
+
+function previewPdf(id, nama) {
+    const url = `/admin/aras-ruang/${id}/export-pdf`;
+    const frame = document.getElementById('pdfFrame');
+    const downloadLink = document.getElementById('pdfDownload');
+    const titleSpan = document.getElementById('modalDA5Nama');
+    
+    if (frame) frame.src = url;
+    if (downloadLink) downloadLink.href = url;
+    if (titleSpan) titleSpan.textContent = nama;
+    
+    const modalEl = document.getElementById('modalPDF');
+    if (modalEl) {
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modal.show();
+    }
+}
 </script>
 
 <style>

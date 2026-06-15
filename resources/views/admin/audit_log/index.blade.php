@@ -4,10 +4,11 @@
 
 @section('content')
 <div class="container-fluid">
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2 class="mb-1"><i class="bi bi-journal-text"></i> Audit Log</h2>
+
+    {{-- Page Header --}}
+    <div class="page-header">
+        <div class="page-header-left">
+            <h1 class="page-title"><i class="bi bi-journal-text"></i> Audit Log</h1>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
@@ -17,15 +18,18 @@
         </div>
     </div>
 
-    <!-- Filters -->
-    <div class="card border-0 shadow-sm mb-4">
-        <div class="card-body">
-            <form action="{{ route('admin.audit_log.index') }}" method="GET" class="row g-3">
-                @if(request('search'))
-                    <input type="hidden" name="search" value="{{ request('search') }}">
-                @endif
+    {{-- Filters --}}
+    <div class="filter-panel">
+        <div class="filter-panel-title">
+            <i class="bi bi-funnel-fill"></i> Tapis Rekod
+        </div>
+        <form action="{{ route('admin.audit_log.index') }}" method="GET">
+            @if(request('search'))
+                <input type="hidden" name="search" value="{{ request('search') }}">
+            @endif
+            <div class="row g-3">
                 <div class="col-md-4">
-                    <label class="form-label fw-semibold text-secondary">Pengguna</label>
+                    <label class="form-label">Pengguna</label>
                     <select name="user_id" class="form-select select2-filter">
                         <option value="">Semua Pengguna</option>
                         @foreach($users as $user)
@@ -36,12 +40,12 @@
                     </select>
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label fw-semibold text-secondary">Tajuk</label>
+                    <label class="form-label">Tajuk Log</label>
                     <input type="text" name="title" class="form-control" placeholder="Cari tajuk log..."
                         value="{{ request('title') }}">
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label fw-semibold text-secondary">Komponen</label>
+                    <label class="form-label">Komponen</label>
                     <select name="component_id" class="form-select select2-filter">
                         <option value="">Semua Komponen</option>
                         @foreach($components as $component)
@@ -52,33 +56,41 @@
                     </select>
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label fw-semibold text-secondary">Tarikh Mula</label>
+                    <label class="form-label">Tarikh Mula</label>
                     <input type="date" name="start_date" class="form-control" value="{{ request('start_date') }}">
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label fw-semibold text-secondary">Tarikh Tamat</label>
+                    <label class="form-label">Tarikh Tamat</label>
                     <input type="date" name="end_date" class="form-control" value="{{ request('end_date') }}">
                 </div>
                 <div class="col-md-4 d-flex align-items-end gap-2">
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="bi bi-funnel"></i> Tapis
+                    <button type="submit" class="btn btn-primary flex-fill">
+                        <i class="bi bi-funnel-fill"></i> Tapis
                     </button>
-                    <a href="{{ route('admin.audit_log.index') }}" class="btn btn-outline-secondary w-100">
-                        <i class="bi bi-arrow-counterclockwise"></i> Reset
+                    <a href="{{ route('admin.audit_log.index') }}" class="btn btn-outline-secondary flex-fill">
+                        <i class="bi bi-x-circle"></i> Reset
                     </a>
                 </div>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
 
-    <!-- Log Table -->
-    <div class="card border-0 shadow-sm">
-        <div class="card-body">
+    {{-- Log Table --}}
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h6 class="mb-0 fw-700">
+                <i class="bi bi-list-ul text-primary me-2"></i>Senarai Log
+            </h6>
+            <span class="badge" style="background:rgba(37,99,235,0.1);color:#2563eb;">
+                {{ $logs->total() }} Rekod
+            </span>
+        </div>
+        <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover">
+                <table class="table table-hover mb-0">
                     <thead>
                         <tr>
-                            <th>#</th>
+                            <th width="50">#</th>
                             <th>Pengguna</th>
                             <th>Tajuk</th>
                             <th>Keterangan</th>
@@ -89,32 +101,72 @@
                     <tbody>
                         @forelse($logs as $log)
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $log->user->name ?? '-' }}</td>
-                            <td>{{ $log->title }}</td>
-                            <td>{{ Str::limit($log->description, 50) }}</td>
-                            <td>{{ $log->component->nama_premis ?? '-' }}</td>
-                            <td>{{ $log->created_at->format('d/m/Y H:i') }}</td>
-                            
+                            <td>
+                                <span style="font-size:0.78rem;color:var(--text-secondary);font-weight:600;">
+                                    {{ ($logs->currentPage() - 1) * $logs->perPage() + $loop->iteration }}
+                                </span>
+                            </td>
+                            <td>
+                                @if($log->user)
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="avatar-initials" style="width:30px;height:30px;font-size:0.65rem;border-radius:8px;flex-shrink:0;">
+                                        {{ strtoupper(substr($log->user->name, 0, 2)) }}
+                                    </div>
+                                    <div>
+                                        <div class="fw-600" style="font-size:0.85rem;">{{ $log->user->name }}</div>
+                                        <div class="text-muted" style="font-size:0.72rem;">{{ $log->user->username }}</div>
+                                    </div>
+                                </div>
+                                @else
+                                <span class="text-muted">—</span>
+                                @endif
+                            </td>
+                            <td>
+                                <span class="fw-600" style="font-size:0.88rem;">{{ $log->title }}</span>
+                            </td>
+                            <td>
+                                <span class="text-muted" style="font-size:0.83rem;">
+                                    {{ Str::limit($log->description, 60) }}
+                                </span>
+                            </td>
+                            <td>
+                                @if($log->component)
+                                <span class="badge" style="background:rgba(6,182,212,0.1);color:#0891b2;font-weight:600;">
+                                    {{ Str::limit($log->component->nama_premis, 25) }}
+                                </span>
+                                @else
+                                <span class="text-muted">—</span>
+                                @endif
+                            </td>
+                            <td>
+                                <div style="font-size:0.82rem;font-weight:600;">{{ $log->created_at->format('d/m/Y') }}</div>
+                                <div class="text-muted" style="font-size:0.72rem;">{{ $log->created_at->format('H:i') }}</div>
+                            </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" class="text-center py-4">
-                                <i class="bi bi-inbox fs-1 text-muted d-block mb-2"></i>
-                                Tiada log dijumpai
+                            <td colspan="6">
+                                <div class="empty-state">
+                                    <div class="empty-state-icon"><i class="bi bi-journal-x"></i></div>
+                                    <h6>Tiada Log Dijumpai</h6>
+                                    <p>Cuba ubah penapis untuk melihat lebih banyak rekod</p>
+                                    <a href="{{ route('admin.audit_log.index') }}" class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-arrow-counterclockwise"></i> Reset Penapis
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
-
-            @if($logs->hasPages())
-            <div class="mt-3">
-                {{ $logs->links('pagination::bootstrap-5') }}
-            </div>
-            @endif
         </div>
+
+        @if($logs->hasPages())
+        <div class="card-footer bg-transparent">
+            {{ $logs->links('pagination::bootstrap-5') }}
+        </div>
+        @endif
     </div>
 </div>
 @endsection
@@ -127,11 +179,5 @@ $(document).ready(function() {
         width: '100%'
     });
 });
-
-function deleteLog(logId) {
-    if (confirm('Adakah anda pasti ingin memadam log ini?')) {
-        document.getElementById('delete-form-' + logId).submit();
-    }
-}
 </script>
 @endsection
