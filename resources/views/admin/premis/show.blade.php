@@ -272,6 +272,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const modalEl = document.getElementById('modalPDF');
     if (modalEl) {
+        document.body.appendChild(modalEl);
         modalEl.addEventListener('hidden.bs.modal', function() {
             const frame = document.getElementById('pdfFrame');
             if (frame) frame.src = '';
