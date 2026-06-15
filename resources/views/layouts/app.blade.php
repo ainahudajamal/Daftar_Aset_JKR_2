@@ -740,13 +740,10 @@
 
             <!-- ✅ LOGOUT BUTTON -->
             <div class="sidebar-footer">
-                <form action="{{ route('logout') }}" method="POST" id="logout-form">
-                    @csrf
-                    <button type="submit" class="logout-link">
-                        <i class="bi bi-box-arrow-right"></i>
-                        <span class="nav-link-text">Log Keluar</span>
-                    </button>
-                </form>
+                <button type="button" class="logout-link" data-bs-toggle="modal" data-bs-target="#logoutConfirmModal">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span class="nav-link-text">Log Keluar</span>
+                </button>
             </div>
         </aside>
 
@@ -757,6 +754,34 @@
 
         <!-- ✅ OVERLAY - HANYA SATU SAHAJA -->
         <div class="overlay" id="overlay"></div>
+
+        <!-- Logout Confirmation Modal -->
+        <div class="modal fade" id="logoutConfirmModal" tabindex="-1" aria-labelledby="logoutConfirmModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title" id="logoutConfirmModalLabel">
+                            <i class="bi bi-box-arrow-right"></i> Log Keluar
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                    </div>
+                    <div class="modal-body py-4 text-center">
+                        <i class="bi bi-exclamation-circle text-danger fs-1 d-block mb-3"></i>
+                        <h5 class="mb-2">Adakah anda pasti ingin log keluar?</h5>
+                        <p class="text-muted mb-0">Sesi anda akan ditamatkan dan anda perlu log masuk semula.</p>
+                    </div>
+                    <div class="modal-footer bg-light border-0">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="button" class="btn btn-danger px-4" onclick="document.getElementById('logout-form').submit();">Log Keluar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hidden Logout Form -->
+        <form action="{{ route('logout') }}" method="POST" id="logout-form" class="d-none">
+            @csrf
+        </form>
     @endauth
 
     <!-- ✅ MAIN CONTENT - FIXED CLASS -->
