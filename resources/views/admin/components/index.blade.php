@@ -154,6 +154,9 @@
             <a href="{{ route('admin.components.statistics') }}" class="btn btn-outline-info">
                 <i class="bi bi-graph-up"></i> Statistik
             </a>
+            <a href="{{ route('export.borang-komponen.excel') }}" class="btn btn-success">
+                <i class="bi bi-file-earmark-excel-fill"></i> Export Excel
+            </a>
             <a href="{{ route('admin.components.trashed') }}" class="btn btn-outline-secondary">
                 <i class="bi bi-trash"></i> Arkib ({{ \App\Models\Component::onlyTrashed()->count() }})
             </a>

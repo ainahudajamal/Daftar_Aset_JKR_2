@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Component;
 use App\Models\MainComponent;
 use App\Models\SubComponent;
+use App\Models\Sistem;
+use App\Models\Subsistem;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
@@ -12,6 +14,7 @@ use App\Exports\ComponentExport;
 use App\Exports\MainComponentExport;
 use App\Exports\SubComponentExport;
 use App\Exports\CompleteReportExport;
+use App\Exports\BorangKomponenExport;
 
 class ExportController extends Controller
 {
@@ -221,5 +224,67 @@ class ExportController extends Controller
         $pdf->setOption('defaultFont', 'Arial');
         
         return $pdf->stream('Borang-1-Komponen-' . $component->id . '.pdf');
+    }
+
+    /**
+     * Show the Borang Pendaftaran Komponen table view (Tab 1 — DAKKomponen)
+     */
+    public function borangKomponenIndex(Request $request)
+    {
+        $query = MainComponent::with(['component'])->orderBy('id');
+
+        // Search by component name or kod_lokasi
+        if ($search = $request->get('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('nama_komponen_utama', 'like', "%{$search}%")
+                  ->orWhere('kod_lokasi', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter by sistem kod
+        if ($sistem = $request->get('sistem')) {
+            $query->where('sistem', $sistem);
+        }
+
+        // Filter by bidang (engineering discipline)
+        if ($bidang = $request->get('bidang')) {
+            $query->where($bidang, true);
+        }
+
+        $komponen = $query->paginate(25)->withQueryString();
+
+        // Lookup maps
+        $sistemMap    = Sistem::pluck('nama', 'kod')->toArray();
+        $subsistemMap = Subsistem::pluck('nama', 'kod')->toArray();
+        $sistemList   = Sistem::orderBy('kod')->get();
+
+        // Summary counts
+        $totalKomponen  = MainComponent::count();
+        $totalSistem    = Sistem::count();
+        $totalSubsistem = Subsistem::count();
+
+        return view('user.components.borang-komponen', compact(
+            'komponen',
+            'sistemMap',
+            'subsistemMap',
+            'sistemList',
+            'totalKomponen',
+            'totalSistem',
+            'totalSubsistem'
+        ));
+    }
+
+    /**
+     * Export Borang Pendaftaran Komponen to Excel (4 Tabs)
+     *
+     * Tab 1 — DAKKomponen : Full komponen data  ✅
+     * Tab 2 — DAKRuang    : Room data            (TODO: rakan)
+     * Tab 3 — Kemasan     : Room finishings      (TODO: rakan)
+     * Tab 4 — DAK Blok    : Blok data            (TODO: rakan)
+     */
+    public function exportBorangKomponen()
+    {
+        $filename = 'Borang-Pendaftaran-Komponen-' . date('Ymd-His') . '.xlsx';
+        return Excel::download(new BorangKomponenExport(), $filename);
     }
 }

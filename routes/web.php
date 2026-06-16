@@ -293,5 +293,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/complete-report/{component}/excel', [ExportController::class, 'exportCompleteReportExcel'])->name('complete-report.excel');
         Route::get('/all-components/pdf', [ExportController::class, 'exportAllComponentsPDF'])->name('all-components.pdf');
         Route::get('/all-components/excel', [ExportController::class, 'exportAllComponentsExcel'])->name('all-components.excel');
+        // Borang Pendaftaran Komponen — Excel export
+        Route::get('/borang-komponen/excel', [ExportController::class, 'exportBorangKomponen'])->name('borang-komponen.excel');
     });
-}); // End of auth middleware
+
+});
