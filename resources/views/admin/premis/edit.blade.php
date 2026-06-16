@@ -11,7 +11,7 @@
         display: block;
     }
     .nav-tabs .nav-link.active {
-        color: var(--primary-color) !important;
+        color: var(--primary) !important;
         border-color: #dee2e6 #dee2e6 #fff !important;
         font-weight: 600;
     }
@@ -77,7 +77,7 @@
                     <!-- ==================== HELAIAN 1 ==================== -->
                     <div class="tab-pane fade show active" id="helaian1">
                         <div class="card border-0 shadow-sm mb-4">
-                            <div class="card-header text-white" style="background-color: var(--primary-color) !important;">
+                            <div class="card-header text-white" style="background-color: var(--primary);">
                                 <h5 class="mb-0">D.A.3 — KAD PENDAFTARAN ASET TAK ALIH (Premis Hak Milik)</h5>
                                 <small>Helaian 1</small>
                             </div>
@@ -268,7 +268,7 @@
 
 
                                 <div class="d-flex justify-content-end mt-4">
-                                    <button type="button" class="btn text-white" style="background-color: var(--primary-color); border-color: var(--primary-color);" onclick="nextTab()">
+                                    <button type="button" class="btn btn-primary" onclick="nextTab()">
                                      Seterusnya <i class="bi bi-arrow-right"></i>
                                  </button>
                                 </div>
@@ -281,14 +281,14 @@
                     <div class="tab-pane fade" id="helaian2">
 
                         <div class="card border-0 shadow-sm mb-4">
-                            <div class="card-header text-white" style="background-color: var(--dark-color) !important;">
+                            <div class="card-header text-white" style="background-color: #334155;">
                             <h5 class="mb-0">Maklumat Tanah (jika ada)</h5>
                             <small>Helaian 2</small>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-bordered align-middle" style="min-width:1100px;">
-                                    <thead class="table-dark">
+                                    <thead style="background-color: #334155; color: white;">
                                         <tr>
                                             <th style="width:40px;">Bil</th>
                                                 <th style="min-width:90px;">No. Lot</th>
@@ -370,7 +370,7 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <button type="button" class="btn btn-sm text-white mt-2" style="background-color: var(--success-color); border-color: var(--success-color);" onclick="addTanahRow()">
+                                <button type="button" class="btn btn-success btn-sm mt-2" onclick="addTanahRow()">
                                     <i class="bi bi-plus-circle"></i> Tambah Baris
                                 </button>
                             </div>
@@ -383,7 +383,7 @@
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table class="table table-bordered align-middle" style="min-width:700px;">
-                                        <thead class="table-dark">
+                                        <thead style="background-color: #4a5568; color: white;">
                                             <tr>
                                                 <th style="width:40px;">Bil</th>
                                                 <th style="min-width:130px;">Bidang</th>
@@ -416,7 +416,7 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <button type="button" class="btn btn-sm text-white mt-2" style="background-color: var(--success-color); border-color: var(--success-color);" onclick="addLukisanRow()">
+                                <button type="button" class="btn btn-success btn-sm mt-2" onclick="addLukisanRow()">
                                     <i class="bi bi-plus-circle"></i> Tambah Baris
                                 </button>
                             </div>
@@ -426,7 +426,7 @@
                                 <i class="bi bi-arrow-left"></i> Sebelumnya
                             </button>
                             <div class="d-flex gap-2">
-                                <button type="submit" class="btn text-white" style="background-color: var(--primary-color); border-color: var(--primary-color);">
+                                <button type="submit" class="btn btn-primary">
                                     <i class="bi bi-check-circle"></i> Kemaskini Premis
                                 </button>
                                 <a href="{{ route('admin.premis.index') }}" class="btn btn-secondary">
