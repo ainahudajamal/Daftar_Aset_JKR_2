@@ -5,76 +5,76 @@
 @section('content')
 <div class="container-fluid px-4">
 
+    {{-- Page Header --}}
     <div class="d-flex justify-content-between align-items-start mb-4 pt-2">
         <div>
-            <h2 class="mb-1 fw-bold text-dark">
-                <i class="bi bi-grid-3x3-gap-fill me-2" style="color: var(--primary-color) !important;"></i>Borang D.A.4
+            <h2 class="mb-1 fw-bold" style="color: #1e293b;">
+                <i class="bi bi-grid-3x3-gap-fill me-2" style="color: var(--primary);"></i>Borang D.A.4
             </h2>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item">
-                        <a href="{{ route('admin.dashboard') }}" class="text-decoration-none">
+                        <a href="{{ route('admin.dashboard') }}" class="text-decoration-none text-muted">
                             <i class="bi bi-house-door me-1"></i>Dashboard
                         </a>
                     </li>
-                    <li class="breadcrumb-item active text-muted">Borang D.A.4</li>
+                    <li class="breadcrumb-item active fw-semibold" style="color: var(--primary);">Borang D.A.4</li>
                 </ol>
             </nav>
         </div>
-        <a href="{{ route('admin.blok.create') }}" class="btn text-white d-flex align-items-center gap-2 shadow-sm" style="background-color: var(--primary-color); border-color: var(--primary-color);">
+        <a href="{{ route('admin.blok.create') }}" class="btn btn-primary d-flex align-items-center gap-2 shadow-sm px-4">
             <i class="bi bi-plus-circle-fill"></i>
             <span>Tambah Baru</span>
         </a>
     </div>
 
-
-
+    {{-- Stats Cards --}}
     <div class="row g-3 mb-4">
         <div class="col-12 col-md-4">
-            <div class="card border-0 rounded-3 h-100" style="background: rgba(37, 99, 235, 0.1);">
-                <div class="card-body d-flex align-items-center gap-3 p-3">
+            <div class="card border-0 h-100" style="background: linear-gradient(135deg, rgba(37,99,235,0.12), rgba(37,99,235,0.05)); border-left: 4px solid var(--primary) !important;">
+                <div class="card-body d-flex align-items-center gap-3 p-4">
                     <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
-                         style="width:44px;height:44px;background: rgba(37, 99, 235, 0.2);">
-                        <i class="bi bi-buildings fs-5" style="color: var(--primary-color) !important;"></i>
+                         style="width:52px;height:52px;background: rgba(37,99,235,0.15);">
+                        <i class="bi bi-buildings fs-4" style="color: var(--primary);"></i>
                     </div>
                     <div>
-                        <div class="fw-semibold" style="font-size:0.75rem;letter-spacing:.04em; color: var(--primary-color) !important;">PREMIS BERDAFTAR</div>
-                        <div class="fw-bold fs-4 lh-1 mt-1" style="color: var(--primary-color) !important;">{{ $totalPremisDa4 ?? 0 }}</div>
+                        <div class="text-uppercase fw-semibold mb-1" style="font-size:0.72rem;letter-spacing:.06em; color: var(--primary);">Premis Berdaftar</div>
+                        <div class="fw-bold lh-1" style="font-size:2rem; color: var(--primary);">{{ $totalPremisDa4 ?? 0 }}</div>
                     </div>
                 </div>
             </div>
         </div>
-
         <div class="col-12 col-md-4">
-            <div class="card border-0 rounded-3 h-100" style="background: rgba(111, 66, 193, 0.1);">
-                <div class="card-body d-flex align-items-center gap-3 p-3">
+            <div class="card border-0 h-100" style="background: linear-gradient(135deg, rgba(111,66,193,0.12), rgba(111,66,193,0.05)); border-left: 4px solid #6f42c1 !important;">
+                <div class="card-body d-flex align-items-center gap-3 p-4">
                     <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
-                         style="width:44px;height:44px;background: rgba(111, 66, 193, 0.2);">
-                        <i class="bi bi-grid-fill fs-5" style="color: #6f42c1 !important;"></i>
+                         style="width:52px;height:52px;background: rgba(111,66,193,0.15);">
+                        <i class="bi bi-building fs-4" style="color: #6f42c1;"></i>
                     </div>
                     <div>
-                        <div class="fw-semibold" style="font-size:0.75rem;letter-spacing:.04em; color: #6f42c1 !important;">JUMLAH BLOK</div>
-                        <div class="fw-bold fs-4 lh-1 mt-1" style="color: #6f42c1 !important;">{{ $totalBlok ?? 0 }}</div>
+                        <div class="text-uppercase fw-semibold mb-1" style="font-size:0.72rem;letter-spacing:.06em; color: #6f42c1;">Jumlah Blok</div>
+                        <div class="fw-bold lh-1" style="font-size:2rem; color: #6f42c1;">{{ $totalBlok ?? 0 }}</div>
                     </div>
                 </div>
             </div>
         </div>
-
         <div class="col-12 col-md-4">
-            <div class="card border-0 rounded-3 h-100" style="background: rgba(16, 185, 129, 0.1);">
-                <div class="card-body d-flex align-items-center gap-3 p-3">
+            <div class="card border-0 h-100" style="background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(16,185,129,0.05)); border-left: 4px solid var(--success) !important;">
+                <div class="card-body d-flex align-items-center gap-3 p-4">
                     <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
-                         style="width:44px;height:44px;background: rgba(16, 185, 129, 0.2);">
-                        <i class="bi bi-house-gear fs-5" style="color: var(--success-color) !important;"></i>
+                         style="width:52px;height:52px;background: rgba(16,185,129,0.15);">
+                        <i class="bi bi-house-gear fs-4" style="color: var(--success);"></i>
                     </div>
                     <div>
-                        <div class="fw-semibold" style="font-size:0.75rem;letter-spacing:.04em; color: var(--success-color) !important;">JUMLAH BINAAN LUAR</div>
-                        <div class="fw-bold fs-4 lh-1 mt-1" style="color: var(--success-color) !important;">{{ $totalBinaanLuar ?? 0 }}</div>
+                        <div class="text-uppercase fw-semibold mb-1" style="font-size:0.72rem;letter-spacing:.06em; color: var(--success);">Jumlah Binaan Luar</div>
+                        <div class="fw-bold lh-1" style="font-size:2rem; color: var(--success);">{{ $totalBinaanLuar ?? 0 }}</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    {{-- Filter Panel --}}
     <div class="card border-0 shadow-sm rounded-3 mb-4">
         <div class="card-header bg-white border-bottom py-3 px-4 d-flex align-items-center gap-2">
             <i class="bi bi-funnel text-muted"></i>
@@ -83,18 +83,14 @@
         <div class="card-body p-4">
             <form action="{{ route('admin.blok.index') }}" method="GET">
                 <div class="row g-3">
-                    <div class="col-12 col-md-3">
-                        <label for="search" class="form-label text-muted small fw-semibold mb-1">Carian</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-white"><i class="bi bi-search text-muted small"></i></span>
-                            <input type="text" class="form-control border-start-0 ps-0" id="search" name="search" 
-                                   placeholder="No. DPA atau Nama Premis..." 
-                                   value="{{ request('search') }}">
-                        </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <label class="form-label text-muted small fw-semibold mb-1">Carian</label>
+                        <input type="text" class="form-control" name="search"
+                               placeholder="Nama premis atau No. DPA..."
+                               value="{{ request('search') }}">
                     </div>
-
-                    <div class="col-12 col-md-3">
-                        <label for="premis_id" class="form-label text-muted small fw-semibold mb-1">Pilihan Premis</label>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <label class="form-label text-muted small fw-semibold mb-1">Premis</label>
                         <select class="form-select" id="premis_id" name="premis_id">
                             <option value="">Semua Premis</option>
                             @foreach(\App\Models\Premis::whereHas('blok')->orWhereHas('binaanLuar')->orderBy('nama_premis')->get() as $p)
@@ -102,9 +98,8 @@
                             @endforeach
                         </select>
                     </div>
-
-                    <div class="col-12 col-md-3">
-                        <label for="negeri" class="form-label text-muted small fw-semibold mb-1">Negeri</label>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <label class="form-label text-muted small fw-semibold mb-1">Negeri</label>
                         <select class="form-select" id="negeri" name="negeri">
                             <option value="">Semua Negeri</option>
                             @foreach(\App\Models\Premis::whereNotNull('negeri')->where('negeri', '!=', '')->distinct()->orderBy('negeri')->pluck('negeri') as $n)
@@ -112,19 +107,17 @@
                             @endforeach
                         </select>
                     </div>
-
-                    <div class="col-12 col-md-3">
-                        <label for="status" class="form-label text-muted small fw-semibold mb-1">Status</label>
-                        <select class="form-select" id="status" name="status">
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <label class="form-label text-muted small fw-semibold mb-1">Status</label>
+                        <select class="form-select" name="status">
                             <option value="">Semua</option>
                             <option value="Aktif" {{ request('status') == 'Aktif' ? 'selected' : '' }}>Aktif</option>
                             <option value="Tidak Aktif" {{ request('status') == 'Tidak Aktif' ? 'selected' : '' }}>Tidak Aktif</option>
                         </select>
                     </div>
                 </div>
-
                 <div class="d-flex align-items-center gap-2 mt-3 pt-3 border-top">
-                    <button type="submit" class="btn btn-dark px-4">
+                    <button type="submit" class="btn btn-primary px-4">
                         <i class="bi bi-funnel me-1"></i> Tapis
                     </button>
                     @if(request()->anyFilled(['search', 'premis_id', 'negeri', 'status']))
@@ -137,140 +130,146 @@
         </div>
     </div>
 
-   @forelse($bloks as $premis)
-    <div class="card border-0 shadow-sm mb-4">
-        <div class="card-header bg-white border-bottom py-3 px-4 d-flex justify-content-between align-items-center">
-            <div>
-                <span class="text-primary fw-semibold">
-                    <i class="bi bi-geo-alt-fill me-2" style="color: var(--primary-color) !important;"></i>{{ $premis->nama_premis }}
-                </span>
-                @if($premis->no_dpa)
-                <span class="badge bg-light text-dark ms-2 border">No. DPA: {{ $premis->no_dpa }}</span>
-                @endif
-            </div>
-            <div class="d-flex gap-2 align-items-center">
-                <span class="badge" style="background-color: rgba(37, 99, 235, 0.1) !important; color: var(--primary-color) !important; border: 1px solid rgba(37, 99, 235, 0.25) !important;">
-                    {{ $premis->blok->count() }} Blok
-                </span>
-                <span class="badge" style="background-color: rgba(16, 185, 129, 0.1) !important; color: var(--success-color) !important; border: 1px solid rgba(16, 185, 129, 0.25) !important;">
-                    {{ $premis->binaanLuar->count() }} Binaan Luar
-                </span>
-                <a href="{{ route('admin.blok.edit', $premis->id) }}" class="btn btn-sm btn-outline-warning border-0 bg-warning bg-opacity-10 text-warning" title="Edit">
-                    <i class="bi bi-pencil"></i> <span class="d-none d-sm-inline">Edit</span>
-                </a>
-                <button type="button" class="btn btn-sm btn-outline-danger border-0 bg-danger bg-opacity-10 text-danger"
-                    onclick="previewPdf({{ $premis->id }}, '{{ addslashes($premis->nama_premis) }}')" title="PDF">
-                    <i class="bi bi-file-pdf"></i> <span class="d-none d-sm-inline">PDF</span>
-                </button>
-                <form action="{{ route('admin.blok.destroy', $premis->id) }}" method="POST"
-                    onsubmit="return confirm('Padam semua blok dan binaan luar untuk {{ addslashes($premis->nama_premis) }}?')" class="mb-0">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-sm btn-outline-danger border-0 bg-danger bg-opacity-10 text-danger" title="Padam">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                </form>
-            </div>
-        </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover align-middle mb-0">
-                    <thead class="table-dark">
-                        <tr>
-                            <th style="width:50px;" class="text-center">Bil</th>
-                            <th>Jenis</th>
-                            <th>Nama</th>
-                            <th>Fungsi / Jenis Binaan</th>
-                            <th style="width:140px;">Luas Tapak (m²)</th>
-                            <th>Kod mySPATA</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($premis->blok as $index => $blok)
-                        <tr>
-                            <td class="text-center">{{ $index + 1 }}</td>
-                            <td>
-                                <span class="badge rounded-pill bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-3">Blok</span>
-                            </td>
-                            <td>{{ $blok->nama_blok }}</td>
-                            <td>{{ $blok->fungsi_binaan ?? '-' }}</td>
-                            <td>{{ $blok->luas_tapak ?? '-' }}</td>
-                            <td>{{ $blok->kod_blok_myspata ?? '-' }}</td>
-                        </tr>
-                        @endforeach
-                        @foreach($premis->binaanLuar as $index => $binaan)
-                        <tr>
-                            <td class="text-center">{{ $premis->blok->count() + $index + 1 }}</td>
-                            <td>
-                                <span class="badge rounded-pill bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3">Binaan Luar</span>
-                            </td>
-                            <td>{{ $binaan->nama_binaan_luar }}</td>
-                            <td>{{ $binaan->jenis_binaan_luar ?? '-' }}</td>
-                            <td>{{ $binaan->luas_tapak ?? '-' }}</td>
-                            <td>{{ $binaan->kod_binaan_luar_myspata ?? '-' }}</td>
-                        </tr>
-                        @endforeach
-                        @if($premis->blok->count() == 0 && $premis->binaanLuar->count() == 0)
-                        <tr>
-                            <td colspan="6" class="text-center text-muted py-4">Tiada rekod blok atau binaan luar didaftarkan untuk premis ini.</td>
-                        </tr>
-                        @endif
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    @empty
-    <div class="card border-0 shadow-sm mb-4">
-        <div class="card-body text-center py-5">
-            <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
-                <i class="bi bi-inbox fs-1 text-muted"></i>
-            </div>
-            <h5 class="text-muted">Tiada rekod blok atau binaan luar dijumpai.</h5>
-            <p class="text-muted mb-4">Sila ubah tapisan anda atau tambah rekod baru.</p>
-            @if(!request()->anyFilled(['search', 'negeri', 'status']))
-                <a href="{{ route('admin.blok.create') }}" class="btn btn-primary">
-                    <i class="bi bi-plus-lg me-1"></i> Tambah Sekarang
-                </a>
-            @else
-                <a href="{{ route('admin.blok.index') }}" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Carian
-                </a>
-            @endif
-        </div>
-    </div>
-    @endforelse
+    {{-- Table Card --}}
+    <div class="card border-0 shadow-sm rounded-3">
 
-    <div class="d-flex justify-content-end mt-3">
-        {{ $bloks->appends(request()->query())->links() }}
+        {{-- Table Header --}}
+        <div class="px-4 py-3 d-flex justify-content-between align-items-center border-bottom">
+            <span class="fw-semibold text-muted small text-uppercase" style="letter-spacing:.04em;">
+                Senarai Premis
+            </span>
+            <span class="badge bg-primary rounded-pill">{{ $bloks->total() }} rekod</span>
+        </div>
+
+        {{-- Table --}}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" style="font-size: 0.9rem; min-width: 750px;">
+                <thead style="background-color: #f8fafc;">
+                    <tr>
+                        <th class="ps-4 text-muted fw-semibold" style="width:55px; font-size:0.8rem;">BIL</th>
+                        <th class="text-muted fw-semibold" style="font-size:0.8rem;">NAMA PREMIS</th>
+                        <th class="text-muted fw-semibold" style="font-size:0.8rem;">NO. DPA</th>
+                        <th class="text-center text-muted fw-semibold" style="font-size:0.8rem; width:90px;">BLOK</th>
+                        <th class="text-center text-muted fw-semibold" style="font-size:0.8rem; width:110px;">BINAAN LUAR</th>
+                        <th class="text-end pe-4 text-muted fw-semibold" style="font-size:0.8rem; width:180px;">TINDAKAN</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($bloks as $index => $premis)
+                    <tr style="border-bottom: 1px solid #f1f5f9;">
+                        <td class="ps-4 text-muted">{{ $bloks->firstItem() + $index }}</td>
+                        <td>
+                            <div class="fw-semibold text-dark">{{ $premis->nama_premis }}</div>
+                            @if($premis->negeri)
+                                <small class="text-muted"><i class="bi bi-geo-alt me-1"></i>{{ $premis->negeri }}</small>
+                            @endif
+                        </td>
+                        <td>
+                            @if($premis->no_dpa)
+                                <code class="text-muted" style="font-size:0.78rem; word-break:break-all;">{{ $premis->no_dpa }}</code>
+                            @else
+                                <span class="text-muted">—</span>
+                            @endif
+                        </td>
+                        <td class="text-center">
+                            <span class="badge rounded-pill px-3 py-2"
+                                  style="background-color: rgba(37,99,235,0.1); color: var(--primary); font-size:0.85rem; font-weight:600;">
+                                {{ $premis->blok->count() }}
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge rounded-pill px-3 py-2"
+                                  style="background-color: rgba(16,185,129,0.1); color: var(--success); font-size:0.85rem; font-weight:600;">
+                                {{ $premis->binaanLuar->count() }}
+                            </span>
+                        </td>
+                        <td class="text-end pe-4">
+                            <div class="d-flex gap-1 justify-content-end align-items-center">
+                                <a href="{{ route('admin.blok.show', $premis->id) }}"
+                                   class="btn btn-sm btn-primary px-3" title="Lihat Detail">
+                                    <i class="bi bi-eye me-1"></i>Lihat
+                                </a>
+                                <a href="{{ route('admin.blok.edit', $premis->id) }}"
+                                   class="btn btn-sm btn-outline-warning" title="Edit">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </a>
+                                <button type="button" class="btn btn-sm btn-outline-danger"
+                                    onclick="previewPdf({{ $premis->id }}, '{{ addslashes($premis->nama_premis) }}')" title="PDF">
+                                    <i class="bi bi-file-pdf-fill"></i>
+                                </button>
+                                <form action="{{ route('admin.blok.destroy', $premis->id) }}" method="POST"
+                                    onsubmit="return confirm('Padam data DA4 untuk {{ addslashes($premis->nama_premis) }}?')" class="mb-0">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Padam">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="6">
+                            <div class="text-center py-5">
+                                <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                                     style="width:70px;height:70px; background: rgba(37,99,235,0.08);">
+                                    <i class="bi bi-inbox fs-2" style="color: var(--primary);"></i>
+                                </div>
+                                <h6 class="text-muted fw-semibold">Tiada rekod dijumpai</h6>
+                                <p class="text-muted small mb-3">Cuba ubah tapisan atau tambah rekod baru.</p>
+                                @if(!request()->anyFilled(['search', 'negeri', 'status']))
+                                    <a href="{{ route('admin.blok.create') }}" class="btn btn-primary btn-sm px-4">
+                                        <i class="bi bi-plus-lg me-1"></i> Tambah Sekarang
+                                    </a>
+                                @else
+                                    <a href="{{ route('admin.blok.index') }}" class="btn btn-outline-secondary btn-sm px-4">
+                                        <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Carian
+                                    </a>
+                                @endif
+                            </div>
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        {{-- Pagination footer --}}
+        @if($bloks->hasPages())
+        <div class="card-footer bg-white border-top px-4 py-3 d-flex justify-content-between align-items-center">
+            <small class="text-muted">
+                Menunjukkan {{ $bloks->firstItem() }}–{{ $bloks->lastItem() }} daripada {{ $bloks->total() }} rekod
+            </small>
+            {{ $bloks->appends(request()->query())->links() }}
+        </div>
+        @endif
     </div>
 
 </div>
 
+{{-- PDF Preview Modal --}}
 <div class="modal fade" id="modalPDF" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content border-0 shadow">
-            <div class="modal-header bg-light">
-                <h5 class="modal-title fw-bold">
-                    <i class="bi bi-file-pdf-fill text-danger me-2"></i>Pratonton Konfigurasi Blok — <span id="modalPremisNama" class="text-primary"></span>
+            <div class="modal-header" style="background-color: var(--primary);">
+                <h5 class="modal-title fw-bold text-white">
+                    <i class="bi bi-file-pdf-fill me-2"></i>Pratonton — <span id="modalPremisNama"></span>
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-0 bg-secondary">
-                <iframe id="pdfFrame" src="" width="100%" style="border: none; height: 60vh; min-height: 400px;"></iframe>
+                <iframe id="pdfFrame" src="" width="100%" style="border: none; height: 65vh; min-height: 450px;"></iframe>
             </div>
             <div class="modal-footer bg-light">
                 <a id="pdfDownload" href="#" class="btn btn-danger">
                     <i class="bi bi-download me-1"></i> Muat Turun PDF
                 </a>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    Tutup
-                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
             </div>
         </div>
     </div>
 </div>
-
 @endsection
 
 @push('scripts')
@@ -286,27 +285,19 @@ $(document).ready(function() {
     if (modalEl) {
         document.body.appendChild(modalEl);
         modalEl.addEventListener('hidden.bs.modal', function() {
-            const frame = document.getElementById('pdfFrame');
-            if (frame) frame.src = '';
+            document.getElementById('pdfFrame').src = '';
         });
     }
 });
 
 function previewPdf(id, nama) {
-    const url = `/admin/blok/${id}/export-pdf`;
-    const frame = document.getElementById('pdfFrame');
-    const downloadLink = document.getElementById('pdfDownload');
-    const titleSpan = document.getElementById('modalPremisNama');
-    
-    if (frame) frame.src = url;
-    if (downloadLink) downloadLink.href = url;
-    if (titleSpan) titleSpan.textContent = nama;
-    
-    const modalEl = document.getElementById('modalPDF');
-    if (modalEl) {
-        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-        modal.show();
-    }
+    const base = '{{ rtrim(url("/"), "/") }}';
+    const url = `${base}/admin/blok/${id}/export-pdf`;
+    document.getElementById('pdfFrame').src = url;
+    document.getElementById('pdfDownload').href = url;
+    document.getElementById('modalPremisNama').textContent = nama;
+    const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalPDF'));
+    modal.show();
 }
 </script>
 @endpush

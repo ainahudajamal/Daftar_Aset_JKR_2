@@ -3,14 +3,15 @@
 @section('title', 'Tambah Blok / Binaan Luar')
 
 @section('content')
-<div class="container-fluid">
+<div class="container-fluid px-4">
     <div class="row justify-content-center">
         <div class="col-md-10">
 
+            {{-- Page Header --}}
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
                     <h2 class="mb-1 fw-bold text-dark">
-                        <i class="bi bi-plus-circle me-2" style="color: var(--primary-color) !important;"></i>Tambah Blok / Binaan Luar
+                        <i class="bi bi-plus-circle me-2" style="color: var(--primary);"></i>Tambah Blok / Binaan Luar
                     </h2>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb mb-0">
@@ -20,11 +21,9 @@
                         </ol>
                     </nav>
                 </div>
-                <div>
-                    <a href="{{ route('admin.blok.index') }}" class="btn btn-secondary">
-                        <i class="bi bi-arrow-left"></i> Kembali
-                    </a>
-                </div>
+                <a href="{{ route('admin.blok.index') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Kembali
+                </a>
             </div>
 
             @if($errors->any())
@@ -40,10 +39,10 @@
             <form action="{{ route('admin.blok.store') }}" method="POST" id="mainForm">
                 @csrf
 
-                <!-- Maklumat Premis -->
+                {{-- Maklumat Premis --}}
                 <div class="card border-0 shadow-sm mb-4">
-                    <div class="card-header text-white py-2" style="background-color: var(--primary-color) !important;">
-                        <h6 class="mb-0"><i class="bi bi-geo-alt-fill me-2"></i>Maklumat Premis</h6>
+                    <div class="card-header text-white py-3" style="background-color: var(--primary);">
+                        <h6 class="mb-0 fw-semibold"><i class="bi bi-geo-alt-fill me-2"></i>Maklumat Premis</h6>
                     </div>
                     <div class="card-body pt-3">
                         <div class="row g-3">
@@ -73,9 +72,9 @@
                     </div>
                 </div>
 
-                <!-- Bahagian A — Blok -->
-                <div class="card border-0 shadow-sm mb-3">
-                    <div class="card-header py-2 text-white" style="background-color: var(--dark-color) !important;">
+                {{-- Bahagian A — Blok --}}
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header py-3" style="background-color: var(--primary);">
                         <div class="form-check d-flex align-items-center gap-2 mb-0">
                             <input class="form-check-input mt-0 flex-shrink-0" type="checkbox"
                                 name="ada_blok" id="chkBlok" value="1"
@@ -90,11 +89,11 @@
                     <div id="seksyenBlok" class="{{ old('ada_blok', true) ? '' : 'd-none' }}">
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-bordered align-middle mb-2" id="tableBlok">
-                                    <thead class="table-dark">
+                                <table class="table table-bordered align-middle mb-0" id="tableBlok">
+                                    <thead style="background-color: var(--primary); color: white;">
                                         <tr>
-                                            <th style="width:50px;">Bil</th>
-                                            <th>Nama Blok <span class="text-danger">*</span></th>
+                                            <th style="width:50px;" class="text-center">Bil</th>
+                                            <th>Nama Blok <span class="text-warning">*</span></th>
                                             <th>Fungsi Binaan</th>
                                             <th style="width:160px;">Luas Tapak (m²)</th>
                                             <th>Kod Blok mySPATA</th>
@@ -124,16 +123,19 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <button type="button" class="btn text-white btn-sm mt-2" id="btnTambahBlok" style="background-color: var(--success-color); border-color: var(--success-color);">
-                                <i class="bi bi-plus-lg"></i> Tambah Blok
-                            </button>
+                            {{-- Tambah Blok button — bawah sebelah kiri --}}
+                            <div class="mt-2">
+                                <button type="button" class="btn btn-success btn-sm" id="btnTambahBlok">
+                                    <i class="bi bi-plus-lg me-1"></i> Tambah Blok
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Bahagian B — Binaan Luar -->
+                {{-- Bahagian B — Binaan Luar --}}
                 <div class="card border-0 shadow-sm mb-4">
-                    <div class="card-header py-2 text-white" style="background-color: #4a5568 !important;">
+                    <div class="card-header py-3" style="background-color: #4a5568;">
                         <div class="form-check d-flex align-items-center gap-2 mb-0">
                             <input class="form-check-input mt-0 flex-shrink-0" type="checkbox"
                                 name="ada_binaan_luar" id="chkBinaan" value="1"
@@ -148,11 +150,11 @@
                     <div id="seksyenBinaan" class="{{ old('ada_binaan_luar') ? '' : 'd-none' }}">
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-bordered align-middle mb-2" id="tableBinaan">
-                                    <thead class="table-dark">
+                                <table class="table table-bordered align-middle mb-0" id="tableBinaan">
+                                    <thead style="background-color: #4a5568; color: white;">
                                         <tr>
-                                            <th style="width:50px;">Bil</th>
-                                            <th>Nama Binaan Luar <span class="text-danger">*</span></th>
+                                            <th style="width:50px;" class="text-center">Bil</th>
+                                            <th>Nama Binaan Luar <span class="text-warning">*</span></th>
                                             <th>Jenis Binaan Luar</th>
                                             <th style="width:160px;">Luas Tapak (m²)</th>
                                             <th>Kod Binaan Luar mySPATA</th>
@@ -182,19 +184,23 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <button type="button" class="btn text-white btn-sm mt-2" id="btnTambahBinaan" style="background-color: var(--success-color); border-color: var(--success-color);">
-                                <i class="bi bi-plus-lg"></i> Tambah Binaan Luar
-                            </button>
+                            {{-- Tambah Binaan Luar button — bawah sebelah kiri --}}
+                            <div class="mt-2">
+                                <button type="button" class="btn btn-success btn-sm" id="btnTambahBinaan">
+                                    <i class="bi bi-plus-lg me-1"></i> Tambah Binaan Luar
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
+                {{-- Submit Buttons --}}
                 <div class="d-flex gap-2 mb-5">
-                    <button type="submit" class="btn text-white px-4" style="background-color: var(--primary-color); border-color: var(--primary-color);">
-                        <i class="bi bi-check-circle"></i> Simpan
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="bi bi-check-circle me-1"></i> Simpan
                     </button>
                     <a href="{{ route('admin.blok.index') }}" class="btn btn-secondary px-4">
-                        <i class="bi bi-x-circle"></i> Batal
+                        <i class="bi bi-x-circle me-1"></i> Batal
                     </a>
                 </div>
 
@@ -208,7 +214,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
-    // Initialize Select2 on the premise dropdown
+    // Select2 on premis dropdown
     const selectPremis = $('#selectPremis');
     if (selectPremis.length) {
         selectPremis.select2({
@@ -216,8 +222,6 @@ document.addEventListener('DOMContentLoaded', function () {
             placeholder: '-- Pilih Premis --',
             allowClear: true
         });
-
-        // Auto-fill No. DPA
         selectPremis.on('change', function () {
             const selectedOpt = this.options[this.selectedIndex];
             const dpa = selectedOpt ? selectedOpt.getAttribute('data-dpa') || '' : '';
@@ -225,7 +229,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Toggle checkbox
+    // Toggle sections
     function bindToggle(checkboxId, seksyenId) {
         const chk = document.getElementById(checkboxId);
         const seksyen = document.getElementById(seksyenId);
@@ -236,13 +240,14 @@ document.addEventListener('DOMContentLoaded', function () {
     bindToggle('chkBlok', 'seksyenBlok');
     bindToggle('chkBinaan', 'seksyenBinaan');
 
-    // Renumber bil
+    // Renumber bil column
     function renumberBil(tbody, bilClass) {
         tbody.querySelectorAll('.' + bilClass).forEach(function (td, i) {
             td.textContent = i + 1;
         });
     }
 
+    // Rename array indexes in input names
     function renameIndexes(tbody) {
         tbody.querySelectorAll('tr').forEach(function (tr, i) {
             tr.querySelectorAll('input, textarea, select').forEach(function (el) {
@@ -251,7 +256,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Blok: Tambah row
+    // ── BLOK: Tambah row ──────────────────────────────────────────────────────
     document.getElementById('btnTambahBlok').addEventListener('click', function () {
         const tbody = document.getElementById('bodyBlok');
         const idx = tbody.querySelectorAll('tr').length;
@@ -291,7 +296,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     document.querySelectorAll('#bodyBlok .btn-padam-blok').forEach(bindPadamBlok);
 
-    // Binaan Luar: Tambah row
+    // ── BINAAN LUAR: Tambah row ───────────────────────────────────────────────
     document.getElementById('btnTambahBinaan').addEventListener('click', function () {
         const tbody = document.getElementById('bodyBinaan');
         const idx = tbody.querySelectorAll('tr').length;
@@ -331,7 +336,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     document.querySelectorAll('#bodyBinaan .btn-padam-binaan').forEach(bindPadamBinaan);
 
-    // Validate sebelum submit
+    // Validate before submit
     document.getElementById('mainForm').addEventListener('submit', function (e) {
         const chkBlok = document.getElementById('chkBlok');
         const chkBinaan = document.getElementById('chkBinaan');
