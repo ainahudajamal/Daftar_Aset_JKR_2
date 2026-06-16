@@ -10,7 +10,7 @@
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
                     <h2 class="mb-1 fw-bold text-dark">
-                        <i class="bi bi-pencil-square me-2" style="color: var(--primary-color) !important;"></i>Edit Blok / Binaan Luar
+                        <i class="bi bi-pencil-square me-2" style="color: var(--primary);"></i>Edit Blok / Binaan Luar
                     </h2>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb mb-0">
@@ -43,7 +43,7 @@
 
                 <!-- Maklumat Premis -->
                 <div class="card border-0 shadow-sm mb-4">
-                    <div class="card-header text-white py-2" style="background-color: var(--primary-color) !important;">
+                    <div class="card-header text-white py-2" style="background-color: var(--primary);">
                         <h6 class="mb-0"><i class="bi bi-geo-alt-fill me-2"></i>Maklumat Premis</h6>
                     </div>
                     <div class="card-body pt-3">
@@ -76,7 +76,7 @@
 
                 <!-- Bahagian A — Blok -->
                 <div class="card border-0 shadow-sm mb-3">
-                    <div class="card-header py-2 text-white" style="background-color: var(--dark-color) !important;">
+                    <div class="card-header py-2 text-white" style="background-color: var(--primary);">
                         <div class="form-check d-flex align-items-center gap-2 mb-0">
                             <input class="form-check-input mt-0 flex-shrink-0" type="checkbox"
                                 name="ada_blok" id="chkBlok" value="1"
@@ -92,7 +92,7 @@
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-bordered align-middle mb-2" id="tableBlok">
-                                    <thead class="table-dark">
+                                    <thead style="background-color: var(--primary); color: white;">
                                         <tr>
                                             <th style="width:50px;">Bil</th>
                                             <th>Nama Blok <span class="text-danger">*</span></th>
@@ -146,7 +146,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <button type="button" class="btn text-white btn-sm mt-2" id="btnTambahBlok" style="background-color: var(--success-color); border-color: var(--success-color);">
+                            <button type="button" class="btn btn-success btn-sm mt-2" id="btnTambahBlok">
                                 <i class="bi bi-plus-lg"></i> Tambah Blok
                             </button>
                         </div>
@@ -155,7 +155,7 @@
 
                 <!-- Bahagian B — Binaan Luar -->
                 <div class="card border-0 shadow-sm mb-4">
-                    <div class="card-header py-2 text-white" style="background-color: #4a5568 !important;">
+                    <div class="card-header py-2 text-white" style="background-color: #4a5568;">
                         <div class="form-check d-flex align-items-center gap-2 mb-0">
                             <input class="form-check-input mt-0 flex-shrink-0" type="checkbox"
                                 name="ada_binaan_luar" id="chkBinaan" value="1"
@@ -171,7 +171,7 @@
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-bordered align-middle mb-2" id="tableBinaan" style="min-width: 1000px;">
-                                    <thead class="table-dark">
+                                    <thead style="background-color: #4a5568; color: white;">
                                         <tr>
                                             <th style="width:50px;">Bil</th>
                                             <th>Nama Binaan Luar <span class="text-danger">*</span></th>
@@ -225,7 +225,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <button type="button" class="btn text-white btn-sm mt-2" id="btnTambahBinaan" style="background-color: var(--success-color); border-color: var(--success-color);">
+                            <button type="button" class="btn btn-success btn-sm mt-2" id="btnTambahBinaan">
                                 <i class="bi bi-plus-lg"></i> Tambah Binaan Luar
                             </button>
                         </div>
@@ -233,7 +233,7 @@
                 </div>
 
                 <div class="d-flex gap-2 mb-5">
-                    <button type="submit" class="btn text-white px-4" style="background-color: var(--primary-color); border-color: var(--primary-color);">
+                    <button type="submit" class="btn btn-primary px-4">
                         <i class="bi bi-check-circle"></i> Kemaskini
                     </button>
                     <a href="{{ route('admin.blok.index') }}" class="btn btn-secondary px-4">
