@@ -197,15 +197,9 @@
 
                         <td class="text-center">
                             @if($p->status_premis == 'Aktif')
-                                <span class="badge rounded-pill px-3"
-                                      style="background-color: rgba(16,185,129,0.1); color: var(--success); border: 1px solid rgba(16,185,129,0.3);">
-                                    <i class="bi bi-circle-fill me-1" style="font-size:.4rem;vertical-align:middle;"></i>Aktif
-                                </span>
+                                <span class="badge bg-success px-3">Aktif</span>
                             @else
-                                <span class="badge rounded-pill px-3"
-                                      style="background-color: rgba(239,68,68,0.1); color: var(--danger); border: 1px solid rgba(239,68,68,0.3);">
-                                    <i class="bi bi-circle-fill me-1" style="font-size:.4rem;vertical-align:middle;"></i>Tidak Aktif
-                                </span>
+                                <span class="badge bg-secondary px-3">Tidak Aktif</span>
                             @endif
                         </td>
 

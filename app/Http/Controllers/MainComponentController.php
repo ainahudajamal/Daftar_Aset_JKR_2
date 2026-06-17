@@ -6,6 +6,7 @@ use App\Models\MainComponent;
 use App\Models\Component;
 use App\Models\Sistem;
 use App\Models\Subsistem;
+use App\Models\Bidang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -97,12 +98,17 @@ class MainComponentController extends Controller
                 }
             }
 
-            // Handle checkboxes
-            $validated['awam_arkitek'] = $request->has('awam_arkitek') ? 1 : 0;
-            $validated['elektrikal'] = $request->has('elektrikal') ? 1 : 0;
-            $validated['elv_ict'] = $request->has('elv_ict') ? 1 : 0;
-            $validated['mekanikal'] = $request->has('mekanikal') ? 1 : 0;
-            $validated['bio_perubatan'] = $request->has('bio_perubatan') ? 1 : 0;
+            // Handle bidang_id (new dynamic bidang from bidangs table)
+            $validated['bidang_id'] = $request->input('bidang_id') ?: null;
+
+            // Handle legacy boolean flags (backward compat — set based on bidang_id if possible)
+            $bidang = $validated['bidang_id'] ? Bidang::find($validated['bidang_id']) : null;
+            $kodBidang = $bidang ? strtoupper($bidang->kod) : '';
+            $validated['awam_arkitek']  = $kodBidang === 'A' ? 1 : 0;
+            $validated['elektrikal']    = $kodBidang === 'E' ? 1 : 0;
+            $validated['elv_ict']       = $kodBidang === 'T' ? 1 : 0;
+            $validated['mekanikal']     = $kodBidang === 'M' ? 1 : 0;
+            $validated['bio_perubatan'] = $kodBidang === 'B' ? 1 : 0;
 
             // BUANG measurement fields (akan guna table measurements)
             unset($validated['saiz'], $validated['saiz_unit']);
@@ -236,12 +242,17 @@ class MainComponentController extends Controller
                 }
             }
 
-            // Handle checkboxes
-            $validated['awam_arkitek'] = $request->has('awam_arkitek') ? 1 : 0;
-            $validated['elektrikal'] = $request->has('elektrikal') ? 1 : 0;
-            $validated['elv_ict'] = $request->has('elv_ict') ? 1 : 0;
-            $validated['mekanikal'] = $request->has('mekanikal') ? 1 : 0;
-            $validated['bio_perubatan'] = $request->has('bio_perubatan') ? 1 : 0;
+            // Handle bidang_id (new dynamic bidang from bidangs table)
+            $validated['bidang_id'] = $request->input('bidang_id') ?: null;
+
+            // Handle legacy boolean flags (backward compat — set based on bidang_id if possible)
+            $bidang = $validated['bidang_id'] ? Bidang::find($validated['bidang_id']) : null;
+            $kodBidang = $bidang ? strtoupper($bidang->kod) : '';
+            $validated['awam_arkitek']  = $kodBidang === 'A' ? 1 : 0;
+            $validated['elektrikal']    = $kodBidang === 'E' ? 1 : 0;
+            $validated['elv_ict']       = $kodBidang === 'T' ? 1 : 0;
+            $validated['mekanikal']     = $kodBidang === 'M' ? 1 : 0;
+            $validated['bio_perubatan'] = $kodBidang === 'B' ? 1 : 0;
 
             // BUANG measurement fields
             unset($validated['saiz'], $validated['saiz_unit']);
@@ -306,8 +317,9 @@ class MainComponentController extends Controller
     public function edit(MainComponent $mainComponent)
     {
         $components = Component::where('status', 'aktif')->get();
-        $sistems = Sistem::orderBy('kod')->get();
+        $sistems    = Sistem::orderBy('kod')->get();
         $subsistems = Subsistem::orderBy('kod')->get();
+        $bidangs    = Bidang::active()->get(); // Dynamic bidang from database
 
         // Load measurements dengan relationships untuk edit form
         $mainComponent->load([
@@ -323,7 +335,8 @@ class MainComponentController extends Controller
             'mainComponent',
             'components',
             'sistems',
-            'subsistems'
+            'subsistems',
+            'bidangs'
         ));
     }
 
@@ -395,6 +408,7 @@ class MainComponentController extends Controller
     {
         return [
             'component_id' => 'required|exists:components,id',
+            'bidang_id' => 'nullable|exists:bidangs,id',
             'kod_lokasi' => 'required|string|max:100',
             'nama_komponen_utama' => 'required|string|max:255',
             'sistem' => 'nullable|string|max:255',
@@ -573,13 +587,15 @@ class MainComponentController extends Controller
     public function create()
     {
         $components = Component::where('status', 'aktif')->get();
-        $sistems = Sistem::orderBy('kod')->get();
+        $sistems    = Sistem::orderBy('kod')->get();
         $subsistems = Subsistem::orderBy('kod')->get();
+        $bidangs    = Bidang::active()->get(); // Dynamic bidang from database
 
         return view('user.components.create-main-component', compact(
             'components',
             'sistems',
-            'subsistems'
+            'subsistems',
+            'bidangs'
         ));
     }
 

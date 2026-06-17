@@ -222,49 +222,41 @@
                                 </div>
                             </div>
 
-                            <!-- Bidang Kejuruteraan -->
+                            <!-- Bidang Kejuruteraan — Dynamic dari Pendaftaran Kod Bidang -->
                             <div class="card mb-3">
                                 <div class="card-header bg-light">
-                                    <strong>Bidang Kejuruteraan Komponen:</strong>
+                                    <strong>Bidang Kejuruteraan Komponen: <span class="text-danger">*</span></strong>
                                 </div>
                                 <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="awam_arkitek" id="awam" value="1" {{ old('awam_arkitek', $mainComponent->awam_arkitek) ? 'checked' : '' }}>
-                                                <label class="form-check-label" for="awam">Awam/Arkitek</label>
-                                            </div>
+                                    @if($bidangs->isEmpty())
+                                        <div class="alert alert-warning mb-0">
+                                            <i class="bi bi-exclamation-triangle"></i>
+                                            Tiada bidang kejuruteraan didaftarkan. Sila tambah bidang dalam
+                                            <a href="{{ route('admin.bidang.create') }}" target="_blank">Pendaftaran Kod Bidang</a>.
                                         </div>
-                                        <div class="col-md-4">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="elektrikal" id="elektrikal" value="1" {{ old('elektrikal', $mainComponent->elektrikal) ? 'checked' : '' }}>
-                                                <label class="form-check-label" for="elektrikal">Elektrikal</label>
-                                            </div>
+                                    @else
+                                        <div class="row">
+                                            @foreach($bidangs as $bidang)
+                                                <div class="col-md-4 mb-2">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio"
+                                                               name="bidang_id"
+                                                               id="bidang_{{ $bidang->id }}"
+                                                               value="{{ $bidang->id }}"
+                                                               {{ old('bidang_id', $mainComponent->bidang_id) == $bidang->id ? 'checked' : '' }}
+                                                               required>
+                                                        <label class="form-check-label" for="bidang_{{ $bidang->id }}">
+                                                            <span class="badge bg-secondary me-1">{{ $bidang->kod }}</span>
+                                                            {{ $bidang->nama }}
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            @endforeach
                                         </div>
-                                        <div class="col-md-4">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="elv_ict" id="elv" value="1" {{ old('elv_ict', $mainComponent->elv_ict) ? 'checked' : '' }}>
-                                                <label class="form-check-label" for="elv">ELV/ICT</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-2">
-                                        <div class="col-md-4">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="mekanikal" id="mekanikal" value="1" {{ old('mekanikal', $mainComponent->mekanikal) ? 'checked' : '' }}>
-                                                <label class="form-check-label" for="mekanikal">Mekanikal</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="bio_perubatan" id="bio" value="1" {{ old('bio_perubatan', $mainComponent->bio_perubatan) ? 'checked' : '' }}>
-                                                <label class="form-check-label" for="bio">Bio Perubatan</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <input type="text" class="form-control" name="lain_lain" placeholder="Lain-lain:" value="{{ old('lain_lain', $mainComponent->lain_lain) }}">
-                                        </div>
-                                    </div>
+                                        @error('bidang_id')
+                                            <div class="text-danger small mt-1">{{ $message }}</div>
+                                        @enderror
+                                    @endif
                                 </div>
                             </div>
 
@@ -433,14 +425,19 @@
                         </div>
                     </div>
 
-                    <!-- Buttons -->
+                    <!-- Button to show attributes section -->
                     <div class="d-flex justify-content-between" id="mainButtons">
                         <a href="{{ route('components.index') }}" class="btn btn-secondary">
                             <i class="bi bi-arrow-left"></i> Kembali
                         </a>
-                        <button type="submit" class="btn btn-warning">
-                            <i class="bi bi-save"></i> Kemaskini
+                        <button type="button" class="btn btn-info text-white" onclick="showAttributesSection()">
+                            Seterusnya: Atribut Spesifikasi <i class="bi bi-arrow-right"></i>
                         </button>
+                    </div>
+
+                    <!-- Hidden section for attributes -->
+                    <div id="attributesSection" style="display: none; margin-top: 20px;">
+                        @include('user.components.partials.main-component-attributes')
                     </div>
 
                 </form>
@@ -448,6 +445,14 @@
         </div>
     </div>
 </div>
+
+<script>
+function showAttributesSection() {
+    document.getElementById('attributesSection').style.display = 'block';
+    document.getElementById('mainButtons').style.display = 'none';
+    document.getElementById('attributesSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
 @endsection
 
 @section('scripts')

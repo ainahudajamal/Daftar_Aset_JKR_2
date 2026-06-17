@@ -15,8 +15,9 @@ class MainComponent extends Model
      * Mass Assignment - fillable untuk keselamatan
      */
     protected $fillable = [
-        'user_id',  // ✅ TAMBAH INI
+        'user_id',
         'component_id', 'nama_komponen_utama', 'kod_komponen_utama', 'kod_lokasi', 'sistem', 'subsistem',
+        'bidang_id',  // ✅ NEW — dynamic bidang from bidangs table
         'kuantiti', 'komponen_sama_jenis', 'gambar_komponen', 'awam_arkitek',
         'elektrikal', 'elv_ict', 'mekanikal', 'bio_perubatan', 'lain_lain',
         'catatan', 'tarikh_perolehan', 'kos_perolehan', 'no_pesanan_rasmi_kontrak',
@@ -28,7 +29,6 @@ class MainComponent extends Model
         'no_tag_label', 'no_sijil_pendaftaran', 'jenis', 'bekalan_elektrik',
         'bahan', 'kaedah_pemasangan', 'catatan_atribut', 'catatan_komponen_berhubung',
         'catatan_dokumen', 'nota', 'status',
-        // TAMBAH fields yang tertinggal
         'kod_ptj', 'no_perolehan_1gfmas'
     ];
  
@@ -67,6 +67,15 @@ class MainComponent extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Relationship ke Bidang Kejuruteraan (dynamic — from bidangs table)
+     * NOTE: Named 'bidangRef' to avoid conflict with getBidangKejuruteraanAttribute() accessor
+     */
+    public function bidangRef()
+    {
+        return $this->belongsTo(Bidang::class, 'bidang_id');
     }
     
     public function component()
@@ -261,6 +270,10 @@ class MainComponent extends Model
      */
     public function getBidangKejuruteraanAttribute(): array
     {
+        if ($this->bidangRef) {
+            return [$this->bidangRef->nama];
+        }
+
         $bidang = [];
         
         if ($this->awam_arkitek) $bidang[] = 'Awam/Arkitek';

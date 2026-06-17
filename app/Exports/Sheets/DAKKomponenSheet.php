@@ -40,14 +40,52 @@ class DAKKomponenSheet implements
      */
     public function collection()
     {
-        return MainComponent::with([
+        $components = MainComponent::with([
             'component',
             'measurements',
             'relatedComponents',
             'relatedDocuments',
+            'bidangRef',  // Renamed from bidangKejuruteraan to avoid accessor conflict
         ])
-            ->orderBy('id')
-            ->get();
+        ->orderBy('sistem')
+        ->orderBy('subsistem')
+        ->orderBy('id')
+        ->get();
+
+        // ── Pre-compute Label Komponen & Bilangan Turutan ────────────────────
+        // Kumpulan = bidang + sistem.
+        // Bila mana-mana satu berubah (sistem atau bidang) → no siri reset ke 1.
+        // Bila subsistem berbeza tapi sistem sama → no siri sambung naik (1, 2, 3, 4…).
+        $groupCounters = [];
+
+        foreach ($components as $mc) {
+            $bidangChar   = $this->getPrimaryBidangChar($mc);
+            $kodSistem    = $mc->sistem    ?? '';
+            $kodSubsistem = $mc->subsistem ?? '';
+
+            // Group key: bidang + sistem
+            // Contoh: "T" + "44" = "T44"  →  counter berkongsi antara "T4402" dan "T4403"
+            $groupKey = $bidangChar . $kodSistem;
+
+            if (!isset($groupCounters[$groupKey])) {
+                $groupCounters[$groupKey] = 0;
+            }
+            $groupCounters[$groupKey]++;
+            $seq = $groupCounters[$groupKey];
+
+            // Label = prefix + . + 5-digit sequence
+            // Prefix = bidang + sistem + subsistem  →  e.g. T4402
+            if ($bidangChar === '-' || empty($kodSistem)) {
+                $this->labelMap[$mc->id] = '-';
+            } else {
+                $prefix = $bidangChar . $kodSistem . $kodSubsistem;
+                $this->labelMap[$mc->id] = $prefix . '.' . str_pad($seq, 5, '0', STR_PAD_LEFT);
+            }
+
+            $this->turutanMap[$mc->id] = $seq;
+        }
+
+        return $components;
     }
 
     /**
@@ -80,7 +118,7 @@ class DAKKomponenSheet implements
         $this->rowNumber++;
 
         // ── Bidang Kejuruteraan ──────────────────────────────────────────────
-        $kodBidang  = $this->deriveKodBidang($mc);
+        $kodBidang  = $this->getPrimaryBidangChar($mc);
         $namaBidang = $this->deriveNamaBidang($mc);
 
         // ── Sistem & Subsistem ────────────────────────────────────────────────
@@ -159,8 +197,8 @@ class DAKKomponenSheet implements
             $mc->relatedDocuments->pluck('nama_dokumen')->filter()->implode(', ') ?: '-',       // NAMA DOKUMEN
             $mc->relatedDocuments->pluck('no_rujukan_berkaitan')->filter()->implode(', ') ?: '-', // NO. RUJUKAN
             $mc->catatan_dokumen                     ?? '-',           // CATATAN (dokumen)
-            $mc->no_tag_label                        ?? '-',           // LABEL KOMPONEN
-            $mc->komponen_sama_jenis ?? $mc->kuantiti ?? '-',          // BILANGAN TURUTAN
+            $this->labelMap[$mc->id]   ?? '-',           // LABEL KOMPONEN (auto-generated)
+            $this->turutanMap[$mc->id] ?? '-',           // BILANGAN TURUTAN KOMPONEN SAMA JENIS
         ];
     }
 
@@ -174,15 +212,6 @@ class DAKKomponenSheet implements
         $lastCol = $sheet->getHighestColumn();
 
         // ── Section header row colours (row 1) ──────────────────────────────
-        // Cols 1-5  (A-E)  : A+B Maklumat Lokasi & Komponen  — Pastel Blue
-        // Cols 6-11 (F-K)  : C   Klasifikasi Kejuruteraan    — Pastel Lavender
-        // Cols 12-16(L-P)  : D   Maklumat Perolehan          — Pastel Sky
-        // Cols 17-20(Q-T)  : E   Tarikh & Waranti            — Pastel Peach
-        // Cols 21-24(U-X)  : F   Pembekal & Pengilang        — Pastel Mint
-        // Cols 25-27(Y-AA) : G   Kontraktor                  — Pastel Pink
-        // Cols 28-36(AB-AJ): H   Pendaftaran Aset            — Pastel Lilac
-        // Cols 37-47(AK-AU): I   Spesifikasi Teknikal        — Pastel Steel Blue
-        // Cols 48-55(AV-BC): J   Maklumat Tambahan           — Pastel Yellow
         $sectionColors = [
             'A1:E1'   => 'FFB3D4F5',  // Pastel Blue     — Lokasi & Komponen
             'F1:K1'   => 'FFD4B8E8',  // Pastel Lavender — Klasifikasi Kejuruteraan
@@ -263,19 +292,30 @@ class DAKKomponenSheet implements
     // PRIVATE HELPERS
     // ─────────────────────────────────────────────────────────────────────────
 
-    private function deriveKodBidang(MainComponent $mc): string
+    private function getPrimaryBidangChar(MainComponent $mc): string
     {
-        $codes = [];
-        if ($mc->awam_arkitek)  $codes[] = 'A';
-        if ($mc->elektrikal)    $codes[] = 'E';
-        if ($mc->elv_ict)       $codes[] = 'T';
-        if ($mc->mekanikal)     $codes[] = 'M';
-        if ($mc->bio_perubatan) $codes[] = 'B';
-        return empty($codes) ? '-' : implode(', ', $codes);
+        // Priority 1: Use dynamic bidang from bidangs table (via bidangRef relationship)
+        if ($mc->bidangRef) {
+            return strtoupper($mc->bidangRef->kod);
+        }
+
+        // Priority 2: Fallback to legacy boolean flags (for old records)
+        if ($mc->elv_ict)       return 'T';
+        if ($mc->elektrikal)    return 'E';
+        if ($mc->mekanikal)     return 'M';
+        if ($mc->awam_arkitek)  return 'A';
+        if ($mc->bio_perubatan) return 'B';
+        return '-';
     }
 
     private function deriveNamaBidang(MainComponent $mc): string
     {
+        // Priority 1: Use dynamic bidang nama from bidangs table
+        if ($mc->bidangRef) {
+            return $mc->bidangRef->nama;
+        }
+
+        // Priority 2: Fallback to legacy boolean flags
         $names = [];
         if ($mc->awam_arkitek)  $names[] = 'Awam/Arkitek';
         if ($mc->elektrikal)    $names[] = 'Elektrikal';

@@ -83,16 +83,7 @@
                                 <strong>Bidang Kejuruteraan Komponen:</strong>
                             </div>
                             <div class="card-body">
-                                @php
-                                    $bidang = [];
-                                    if($mainComponent->awam_arkitek) $bidang[] = 'Awam/Arkitek';
-                                    if($mainComponent->elektrikal) $bidang[] = 'Elektrikal';
-                                    if($mainComponent->elv_ict) $bidang[] = 'ELV/ICT';
-                                    if($mainComponent->mekanikal) $bidang[] = 'Mekanikal';
-                                    if($mainComponent->bio_perubatan) $bidang[] = 'Bio Perubatan';
-                                    if($mainComponent->lain_lain) $bidang[] = $mainComponent->lain_lain;
-                                @endphp
-                                <p class="mb-0">{{ !empty($bidang) ? implode(', ', $bidang) : '-' }}</p>
+                                <p class="mb-0">{{ $mainComponent->bidang_kejuruteraan_string ?: '-' }}</p>
                             </div>
                         </div>
 

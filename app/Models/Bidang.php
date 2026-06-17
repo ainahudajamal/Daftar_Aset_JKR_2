@@ -76,4 +76,12 @@ class Bidang extends Model
     {
         return $this->kod . ' - ' . $this->nama;
     }
+
+    /**
+     * Relationship ke MainComponent
+     */
+    public function mainComponents()
+    {
+        return $this->hasMany(\App\Models\MainComponent::class, 'bidang_id');
+    }
 }
