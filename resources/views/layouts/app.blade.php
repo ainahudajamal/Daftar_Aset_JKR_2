@@ -457,7 +457,6 @@
             flex-wrap: wrap;
             gap: 0.75rem;
         }
-        .page-header-left {}
         .page-title {
             font-size: 1.35rem;
             font-weight: 800;
@@ -1001,7 +1000,6 @@
             });
         });
 
-        @auth
         // Sidebar Toggle
         const sidebar = document.getElementById('sidebar');
         const mainContent = document.getElementById('mainContent');
@@ -1039,6 +1037,8 @@
 
         // Live Clock
         function updateClock() {
+            const el = document.getElementById('clockTime');
+            if (!el) return;
             const now = new Date();
             const days = ['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'];
             const months = ['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogos','Sep','Okt','Nov','Dis'];
@@ -1049,12 +1049,12 @@
             const h = String(now.getHours()).padStart(2,'0');
             const m = String(now.getMinutes()).padStart(2,'0');
             const s = String(now.getSeconds()).padStart(2,'0');
-            const el = document.getElementById('clockTime');
-            if (el) el.textContent = `${d}, ${date} ${month} ${year} | ${h}:${m}:${s}`;
+            el.textContent = `${d}, ${date} ${month} ${year} | ${h}:${m}:${s}`;
         }
-        updateClock();
-        setInterval(updateClock, 1000);
-        @endauth
+        if (document.getElementById('clockTime')) {
+            updateClock();
+            setInterval(updateClock, 1000);
+        }
     </script>
 
     @stack('scripts')
