@@ -463,7 +463,6 @@
                 <a class="chip" href="{{ url('/index.html') }}">index.html</a>
                 @auth
                     <a class="chip" href="{{ route('dashboard') }}">Dashboard</a>
-                    <a class="button" href="{{ route('components.index') }}">Buka Sistem</a>
                 @else
                     <a class="chip" href="{{ route('login') }}">Log masuk</a>
                     <a class="button" href="{{ route('login') }}">Masuk ke sistem</a>
@@ -483,7 +482,6 @@
                 <div class="actions">
                     @auth
                         <a class="button" href="{{ route('dashboard') }}">Pergi ke Dashboard</a>
-                        <a class="ghost" href="{{ route('components.index') }}">Komponen</a>
                         <a class="ghost" href="{{ route('admin.dashboard') }}">Admin Dashboard</a>
                     @else
                         <a class="button" href="{{ route('login') }}">Log masuk untuk akses modul</a>
@@ -548,11 +546,7 @@
                 <a class="inline-link" href="{{ route('login') }}">Open login</a>
             </article>
 
-            <article class="link-card">
-                <h3>User dashboard</h3>
-                <p>Lihat paparan komponen, borang, dan rekod yang dipautkan ke pangkalan data.</p>
-                <a class="inline-link" href="{{ route('dashboard') }}">Open dashboard</a>
-            </article>
+            {{-- Hiding user dashboard card --}}
 
             <article class="link-card">
                 <h3>Admin area</h3>

@@ -561,10 +561,7 @@
                         <i class="bi bi-info-circle-fill"></i> Akaun Percubaan
                     </div>
                     <div class="demo-item">
-                        <span class="demo-badge">Admin</span> username: <strong>admin</strong> | kata laluan: <strong>P@ssw0rd</strong>
-                    </div>
-                    <div class="demo-item">
-                        <span class="demo-badge">User</span> username: <strong>user</strong> | kata laluan: <strong>user123</strong>
+                        <span class="demo-badge">JKR</span> username: <strong>admin</strong> | kata laluan: <strong>P@ssw0rd</strong>
                     </div>
                 </div>
 

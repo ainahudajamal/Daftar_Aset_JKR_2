@@ -748,7 +748,7 @@
             <!-- Navigation -->
             <nav class="sidebar-nav">
                 {{-- USER DASHBOARD --}}
-                @if (!auth()->user()->isAdmin())
+                @if (false) {{-- Hiding user function --}}
                     <div class="nav-section-label">Menu Utama</div>
                     <div class="nav-item">
                         <a href="{{ route('dashboard') }}"
@@ -774,7 +774,7 @@
                 @endif
 
                 {{-- BORANG (USER ONLY) --}}
-                @if (!auth()->user()->isAdmin())
+                @if (false) {{-- Hiding user function --}}
                     <div class="nav-section-label">Borang</div>
                     <div class="nav-item">
                         <a href="{{ route('components.create') }}"
