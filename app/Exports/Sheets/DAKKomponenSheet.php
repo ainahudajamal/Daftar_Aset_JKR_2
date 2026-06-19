@@ -53,9 +53,9 @@ class DAKKomponenSheet implements
         ->get();
 
         // ── Pre-compute Label Komponen & Bilangan Turutan ────────────────────
-        // Kumpulan = bidang + sistem.
-        // Bila mana-mana satu berubah (sistem atau bidang) → no siri reset ke 1.
-        // Bila subsistem berbeza tapi sistem sama → no siri sambung naik (1, 2, 3, 4…).
+        // Kumpulan = bidang + sistem + subsistem.
+        // Bila mana-mana satu berubah (sistem, bidang, atau subsistem) → no siri reset ke 1.
+        // Bila bidang, sistem, dan subsistem sama → no siri sambung naik (1, 2, 3, 4…).
         $groupCounters = [];
 
         foreach ($components as $mc) {
@@ -63,9 +63,9 @@ class DAKKomponenSheet implements
             $kodSistem    = $mc->sistem    ?? '';
             $kodSubsistem = $mc->subsistem ?? '';
 
-            // Group key: bidang + sistem
-            // Contoh: "T" + "44" = "T44"  →  counter berkongsi antara "T4402" dan "T4403"
-            $groupKey = $bidangChar . $kodSistem;
+            // Group key: bidang + sistem + subsistem
+            // Contoh: "T" + "44" + "02" = "T4402"  →  counter berbeza antara "T4402" dan "T4403"
+            $groupKey = $bidangChar . $kodSistem . $kodSubsistem;
 
             if (!isset($groupCounters[$groupKey])) {
                 $groupCounters[$groupKey] = 0;
