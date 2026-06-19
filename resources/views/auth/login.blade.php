@@ -6,18 +6,18 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Log Masuk - Asset Project Integrated Record Application</title>
     <link rel="shortcut icon" type="image/png" href="{{ asset('assets/favicon.png') }}">
-    
+
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-    
+
     <style>
         :root {
             --primary: #0f5e3a; /* Dark green JKR style */
@@ -253,12 +253,12 @@
         .input-group:focus-within {
             box-shadow: 0 0 0 4px var(--primary-glow);
         }
-        
+
         .input-group:focus-within .input-group-text {
             border-color: var(--primary-light);
             color: var(--primary);
         }
-        
+
         .input-group:focus-within .form-control {
             border-color: var(--primary-light);
         }
@@ -480,11 +480,11 @@
                             <span class="input-group-text">
                                 <i class="bi bi-person"></i>
                             </span>
-                            <input 
-                                type="text" 
-                                name="username" 
+                            <input
+                                type="text"
+                                name="username"
                                 id="username"
-                                class="form-control @error('username') is-invalid @enderror" 
+                                class="form-control @error('username') is-invalid @enderror"
                                 placeholder="Masukkan username"
                                 value="{{ old('username') }}"
                                 required
@@ -509,17 +509,17 @@
                             <span class="input-group-text">
                                 <i class="bi bi-lock"></i>
                             </span>
-                            <input 
-                                type="password" 
-                                name="password" 
+                            <input
+                                type="password"
+                                name="password"
                                 id="password"
-                                class="form-control password-input @error('password') is-invalid @enderror" 
+                                class="form-control password-input @error('password') is-invalid @enderror"
                                 placeholder="Masukkan kata laluan"
                                 required
                             >
-                            <button 
-                                class="btn btn-toggle-pw" 
-                                type="button" 
+                            <button
+                                class="btn btn-toggle-pw"
+                                type="button"
                                 id="togglePassword"
                             >
                                 <i class="bi bi-eye" id="eyeIcon"></i>
@@ -535,10 +535,10 @@
                     <!-- Ingat Saya Checkbox -->
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <div class="form-check">
-                            <input 
-                                class="form-check-input" 
-                                type="checkbox" 
-                                name="remember" 
+                            <input
+                                class="form-check-input"
+                                type="checkbox"
+                                name="remember"
                                 id="remember"
                             >
                             <label class="form-check-label" for="remember">
@@ -555,7 +555,15 @@
                     </div>
                 </form>
 
-
+                <!-- Demo Credentials -->
+                <div class="demo-box">
+                    <div class="demo-title">
+                        <i class="bi bi-info-circle-fill"></i> Akaun Percubaan
+                    </div>
+                    <div class="demo-item">
+                        <span class="demo-badge">JKR</span> username: <strong>admin</strong> | kata laluan: <strong>P@ssw0rd</strong>
+                    </div>
+                </div>
 
                 <div class="auth-footer">
                     <p class="mb-1">&copy; {{ date('Y') }} Kementerian Kerja Raya Malaysia</p>
@@ -579,7 +587,7 @@
         document.getElementById('togglePassword').addEventListener('click', function () {
             const passwordInput = document.getElementById('password');
             const eyeIcon = document.getElementById('eyeIcon');
-            
+
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';
                 eyeIcon.classList.remove('bi-eye');
