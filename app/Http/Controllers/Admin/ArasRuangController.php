@@ -194,7 +194,7 @@ class ArasRuangController extends Controller
     /**
      * Show form for editing the specified D.A.5 record.
      */
-    public function edit($id, Request $request)
+    public function edit(int $id, Request $request)
     {
         $record = Da5Record::findOrFail($id);
         
@@ -256,7 +256,7 @@ class ArasRuangController extends Controller
     /**
      * Display the specified D.A.5 record in read-only mode.
      */
-    public function show($id, Request $request)
+    public function show(int $id, Request $request)
     {
         $record = Da5Record::findOrFail($id);
         
@@ -340,7 +340,7 @@ class ArasRuangController extends Controller
     /**
      * Update the specified D.A.5 record.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id)
     {
         $record = Da5Record::findOrFail($id);
 
@@ -413,7 +413,7 @@ class ArasRuangController extends Controller
     /**
      * Delete the specified D.A.5 record.
      */
-    public function destroy($id)
+    public function destroy(int $id)
     {
         $record = Da5Record::findOrFail($id);
         
@@ -441,7 +441,7 @@ class ArasRuangController extends Controller
     /**
      * Export PDF — Konfigurasi Aras dan Ruang
      */
-    public function exportPdf($id, Request $request)
+    public function exportPdf(int $id, Request $request)
     {
         $record = Da5Record::findOrFail($id);
 
@@ -533,7 +533,7 @@ class ArasRuangController extends Controller
     /**
      * Dapatkan maklumat premis berserta blok dan binaan luar untuk AJAX D.A.5
      */
-    public function getPremisDetails($id)
+    public function getPremisDetails(int $id)
     {
         $premis = Premis::with(['blok', 'binaanLuar', 'tanah'])->find($id);
         if (!$premis) {
