@@ -40,7 +40,7 @@ class DAKKomponenSheet implements
      */
     public function collection()
     {
-        $components = MainComponent::with([
+        $components = MainComponent::has('component')->with([
             'component',
             'measurements',
             'relatedComponents',
@@ -213,15 +213,13 @@ class DAKKomponenSheet implements
 
         // ── Section header row colours (row 1) ──────────────────────────────
         $sectionColors = [
-            'A1:E1'   => 'FFB3D4F5',  // Pastel Blue     — Lokasi & Komponen
-            'F1:K1'   => 'FFD4B8E8',  // Pastel Lavender — Klasifikasi Kejuruteraan
-            'L1:P1'   => 'FFAEE8F5',  // Pastel Sky      — Maklumat Perolehan
-            'Q1:T1'   => 'FFFFD5AA',  // Pastel Peach    — Tarikh & Waranti
-            'U1:X1'   => 'FFB2F0E4',  // Pastel Mint     — Pembekal & Pengilang
-            'Y1:AA1'  => 'FFFFCCE4',  // Pastel Pink     — Kontraktor
-            'AB1:AJ1' => 'FFD8D8F0',  // Pastel Lilac    — Pendaftaran Aset
+            'A1:K1'   => 'FFB3D4F5',  // Pastel Blue     — Lokasi & Klasifikasi
+            'L1:AB1'  => 'FFFFCCE4',  // Pastel Pink     — Perolehan to Catatan
+            'AC1:AJ1' => 'FFD8D8F0',  // Pastel Lilac    — Pendaftaran Aset
             'AK1:AU1' => 'FFCCDAE8',  // Pastel Steel    — Spesifikasi Teknikal
-            'AV1:BC1' => 'FFFFF0B3',  // Pastel Yellow   — Maklumat Tambahan
+            'AV1:AX1' => 'FFB2F0E4',  // Pastel Mint     — Premis, Ruang & Tag
+            'AY1:BA1' => 'FFFFF0B3',  // Pastel Yellow   — Dokumen & Catatan
+            'BB1:BC1' => 'FFFFFF00',  // Bright Yellow   — Label & Turutan Komponen
         ];
 
         foreach ($sectionColors as $range => $color) {
@@ -276,6 +274,14 @@ class DAKKomponenSheet implements
                     ]);
                 }
             }
+
+            // Style columns BB and BC (LABEL KOMPONEN and BILANGAN TURUTAN KOMPONEN SAMA JENIS) with red font color
+            $sheet->getStyle('BB2:BC' . $lastRow)->applyFromArray([
+                'font' => [
+                    'color' => ['argb' => 'FFFF0000'], // Red
+                    'bold'  => true,
+                ],
+            ]);
         }
 
         // ── Freeze header ────────────────────────────────────────────────────

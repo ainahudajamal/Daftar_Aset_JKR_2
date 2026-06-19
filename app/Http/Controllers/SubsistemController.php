@@ -23,7 +23,12 @@ class SubsistemController extends Controller
     public function store(Request $request, Sistem $sistem)
     {
         $validated = $request->validate([
-            'kod' => 'required|string|max:50|unique:subsistems',
+            'kod' => [
+                'required',
+                'string',
+                'max:50',
+                \Illuminate\Validation\Rule::unique('subsistems')->where('sistem_id', $sistem->id),
+            ],
             'nama' => 'required|string|max:255',
             'keterangan' => 'nullable|string',
         ], [
@@ -62,7 +67,14 @@ class SubsistemController extends Controller
     public function update(Request $request, Sistem $sistem, Subsistem $subsistem)
     {
         $validated = $request->validate([
-            'kod' => 'required|string|max:50|unique:subsistems,kod,' . $subsistem->id,
+            'kod' => [
+                'required',
+                'string',
+                'max:50',
+                \Illuminate\Validation\Rule::unique('subsistems')
+                    ->where('sistem_id', $sistem->id)
+                    ->ignore($subsistem->id),
+            ],
             'nama' => 'required|string|max:255',
             'keterangan' => 'nullable|string',
         ], [

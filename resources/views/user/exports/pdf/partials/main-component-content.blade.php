@@ -16,7 +16,7 @@
             <span>Nama Premis</span>
             <span style="margin: 0 5px;">:</span>
             <span style="border-bottom: 1px solid #000; display: inline-block; width: calc(100% - 95px); min-height: 12px; padding-left: 5px;">
-                {{ $mainComponent->component->nama_premis ?? '' }}
+                {{ $mainComponent->component?->nama_premis ?? '' }}
             </span>
         </div>
 
@@ -24,7 +24,7 @@
             <span>Nombor DPA</span>
             <span style="margin: 0 5px;">:</span>
             <span style="border-bottom: 1px solid #000; display: inline-block; width: 200px; min-height: 12px; padding-left: 5px;">
-                {{ $mainComponent->component->nombor_dpa ?? '' }}
+                {{ $mainComponent->component?->nombor_dpa ?? '' }}
             </span>
             
             <span style="margin-left: 40px;">Kod Lokasi</span>

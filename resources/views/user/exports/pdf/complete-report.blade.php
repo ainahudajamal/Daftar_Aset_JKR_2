@@ -637,14 +637,14 @@
         <div style="margin-bottom: 2px; font-size: 7.4pt;">
             <span>Nama Premis</span>
             <span style="margin: 0 5px;">:</span>
-            <span style="border-bottom: 1px solid #000; display: inline-block; width: calc(100% - 95px); min-height: 12px; padding-left: 5px;">{{ $mainComponent->component->nama_premis ?? '' }}</span>
+            <span style="border-bottom: 1px solid #000; display: inline-block; width: calc(100% - 95px); min-height: 12px; padding-left: 5px;">{{ $mainComponent->component?->nama_premis ?? '' }}</span>
         </div>
 
         <!-- Nombor DPA + Kod Lokasi (SEBARIS) -->
         <div style="font-size: 7.4pt;">
             <span>Nombor DPA</span>
             <span style="margin: 0 5px;">:</span>
-            <span style="border-bottom: 1px solid #000; display: inline-block; width: 200px; min-height: 12px; padding-left: 5px;">{{ $mainComponent->component->nombor_dpa ?? '' }}</span>
+            <span style="border-bottom: 1px solid #000; display: inline-block; width: 200px; min-height: 12px; padding-left: 5px;">{{ $mainComponent->component?->nombor_dpa ?? '' }}</span>
             
             <span style="margin-left: 40px;">Kod Lokasi</span>
             <span style="margin: 0 5px;">:</span>

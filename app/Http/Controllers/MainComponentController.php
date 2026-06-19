@@ -67,7 +67,13 @@ class MainComponentController extends Controller
             // HANDLE SUBSISTEM - Check if exists or create new
             // ============================================
             if (!empty($validated['subsistem'])) {
-                $existingSubSistem = Subsistem::where('kod', $validated['subsistem'])->first();
+                // Get sistem_id first
+                $sistem = Sistem::where('kod', $validated['sistem'])->first();
+                $sistemId = $sistem ? $sistem->id : null;
+
+                $existingSubSistem = Subsistem::where('kod', $validated['subsistem'])
+                    ->where('sistem_id', $sistemId)
+                    ->first();
 
                 if (!$existingSubSistem) {
                     // Kod BARU - MESTI ada nama_subsistem
@@ -76,10 +82,6 @@ class MainComponentController extends Controller
                             'nama_subsistem' => 'Kod subsistem "' . $validated['subsistem'] . '" adalah baru. Sila masukkan nama subsistem.'
                         ]);
                     }
-
-                    // Get sistem_id
-                    $sistem = Sistem::where('kod', $validated['sistem'])->first();
-                    $sistemId = $sistem ? $sistem->id : null;
 
                     // Create new SubSistem dengan nama dari form
                     Subsistem::create([
@@ -216,7 +218,13 @@ class MainComponentController extends Controller
             // HANDLE SUBSISTEM - Check if exists or create new
             // ============================================
             if (!empty($validated['subsistem'])) {
-                $existingSubSistem = Subsistem::where('kod', $validated['subsistem'])->first();
+                // Get sistem_id first
+                $sistem = Sistem::where('kod', $validated['sistem'])->first();
+                $sistemId = $sistem ? $sistem->id : null;
+
+                $existingSubSistem = Subsistem::where('kod', $validated['subsistem'])
+                    ->where('sistem_id', $sistemId)
+                    ->first();
 
                 if (!$existingSubSistem) {
                     // Kod BARU - MESTI ada nama_subsistem
@@ -225,10 +233,6 @@ class MainComponentController extends Controller
                             'nama_subsistem' => 'Kod subsistem "' . $validated['subsistem'] . '" adalah baru. Sila masukkan nama subsistem.'
                         ]);
                     }
-
-                    // Get sistem_id
-                    $sistem = Sistem::where('kod', $validated['sistem'])->first();
-                    $sistemId = $sistem ? $sistem->id : null;
 
                     // Create new SubSistem
                     Subsistem::create([

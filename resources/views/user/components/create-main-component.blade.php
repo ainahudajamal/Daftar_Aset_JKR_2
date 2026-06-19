@@ -646,16 +646,8 @@ $(document).ready(function() {
         $subsistem.val('').trigger('change');
         $subsistem.find('option:not([value=""])').remove();
         
-        // Add all options back
-        allSubsistemOptions.forEach(function(opt) {
-            const newOption = new Option(opt.text, opt.value, false, false);
-            $(newOption).data('sistem-id', opt.sistemId);
-            $(newOption).data('nama', opt.nama);
-            $subsistem.append(newOption);
-        });
-        
-        $subsistem.prop('disabled', false);
-        $subsistem.next('.select2-container').find('.select2-selection').removeClass('bg-light');
+        $subsistem.prop('disabled', true);
+        $subsistem.next('.select2-container').find('.select2-selection').addClass('bg-light');
         $subsistem.trigger('change.select2');
         
         $('#nama-subsistem-row').slideUp(300);
@@ -816,6 +808,8 @@ $(document).ready(function() {
     const sistemValue = $('#sistem').val();
     if (sistemValue) {
         checkKodSistem(sistemValue);
+    } else {
+        resetSubsistemOptions();
     }
 
     const subsistemValue = $('#subsistem').val();

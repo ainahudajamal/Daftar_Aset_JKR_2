@@ -28,7 +28,7 @@
                                         <option value="">-- Pilih Komponen Utama --</option>
                                         @foreach($mainComponents as $mainComp)
                                             <option value="{{ $mainComp->id }}" 
-                                                    data-komponen="{{ $mainComp->component->nama_premis }}"
+                                                    data-komponen="{{ $mainComp->component?->nama_premis }}"
                                                     {{ old('main_component_id') == $mainComp->id ? 'selected' : '' }}>
                                                 {{ $mainComp->nama_komponen_utama }}
                                             </option>

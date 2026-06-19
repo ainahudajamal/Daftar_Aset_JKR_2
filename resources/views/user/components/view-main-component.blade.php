@@ -33,11 +33,11 @@
                         <div class="row mb-3">
                             <div class="col-md-4">
                                 <strong>Nama Premis:</strong>
-                                <p class="mb-0">{{ $mainComponent->component->nama_premis ?? '-' }}</p>
+                                <p class="mb-0">{{ $mainComponent->component?->nama_premis ?? '-' }}</p>
                             </div>
                             <div class="col-md-4">
                                 <strong>Nombor DPA:</strong>
-                                <p class="mb-0">{{ $mainComponent->component->nombor_dpa ?? '-' }}</p>
+                                <p class="mb-0">{{ $mainComponent->component?->nombor_dpa ?? '-' }}</p>
                             </div>
                             <div class="col-md-4">
                                 <strong>Kod Lokasi:</strong>

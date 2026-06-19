@@ -497,6 +497,19 @@ $(document).ready(function() {
     console.log('Current Sistem Value:', currentSistemValue);
     console.log('Current SubSistem Value:', currentSubSistemValue);
 
+    // Store all subsistem options on page load
+    var allSubsistemOptions = [];
+    $('#subsistem option').each(function() {
+        if ($(this).val() !== '') {
+            allSubsistemOptions.push({
+                value: $(this).val(),
+                text: $(this).text(),
+                sistemId: $(this).data('sistem-id'),
+                nama: $(this).data('nama')
+            });
+        }
+    });
+
     // ===========================
     // Initialize Select2 untuk Sistem dengan Tags
     // ===========================
@@ -775,45 +788,48 @@ $(document).ready(function() {
             $subsistem.select2('destroy');
         }
         
+        // Clear all options except the placeholder
+        $subsistem.find('option:not([value=""])').remove();
+        
         if (sistemId) {
-            // Show only related subsistems
-            var hasVisibleOptions = false;
-            $subsistem.find('option').each(function() {
-                if ($(this).val() === '') {
-                    // Always show the placeholder
-                    $(this).prop('disabled', false).show();
-                    return;
-                }
-                
-                var optionSistemId = $(this).data('sistem-id');
-                console.log('Option:', $(this).val(), 'Sistem ID:', optionSistemId);
-                
-                if (optionSistemId && optionSistemId == sistemId) {
-                    $(this).prop('disabled', false).show();
-                    hasVisibleOptions = true;
-                } else {
-                    $(this).prop('disabled', true).hide();
-                }
+            // Filter options based on sistemId
+            var filteredOptions = allSubsistemOptions.filter(function(opt) {
+                return opt.sistemId == sistemId;
             });
             
-            // If current value is not in the filtered list, clear it
-            var currentOption = $subsistem.find('option[value="' + currentSubSistemValue + '"]');
-            var currentOptionSistemId = currentOption.data('sistem-id');
+            if (filteredOptions.length > 0) {
+                filteredOptions.forEach(function(opt) {
+                    var newOption = new Option(opt.text, opt.value, false, false);
+                    $(newOption).data('sistem-id', opt.sistemId);
+                    $(newOption).data('nama', opt.nama);
+                    $subsistem.append(newOption);
+                });
+                
+                $subsistem.prop('disabled', false);
+                $subsistem.next('.select2-container').find('.select2-selection').removeClass('bg-light');
+            } else {
+                // If no subsystems found but system is selected/typed, allow typing new ones
+                $subsistem.prop('disabled', false);
+                $subsistem.next('.select2-container').find('.select2-selection').removeClass('bg-light');
+            }
             
-            if (currentSubSistemValue && currentOptionSistemId != sistemId) {
+            // Check if current value is still in the filtered list. If not, clear it.
+            var valueStillValid = filteredOptions.some(function(opt) {
+                return opt.value === currentSubSistemValue;
+            });
+            
+            if (currentSubSistemValue && !valueStillValid) {
                 console.log('Current SubSistem does not match selected Sistem, clearing...');
                 $subsistem.val('');
                 $('#kod-subsistem-status').html('');
                 $('#nama-subsistem-row').slideUp(300);
-            }
-            
-            if (!hasVisibleOptions) {
-                console.log('No subsistems found for this sistem');
+                currentSubSistemValue = '';
             }
         } else {
-            // No sistem selected, show all options
-            console.log('No Sistem selected, showing all SubSistem options');
-            $subsistem.find('option').prop('disabled', false).show();
+            // No sistem selected, clear options and disable
+            console.log('No Sistem selected, disabling SubSistem options');
+            $subsistem.prop('disabled', true);
+            $subsistem.next('.select2-container').find('.select2-selection').addClass('bg-light');
         }
         
         // Reinitialize Select2 with filtered options
@@ -840,13 +856,10 @@ $(document).ready(function() {
             }
         });
         
-        // Restore value if it's still valid
+        // Restore value if it is still valid or was newly created
         if (currentSubSistemValue) {
-            var isStillValid = $subsistem.find('option[value="' + currentSubSistemValue + '"]:not(:disabled)').length > 0;
-            if (isStillValid) {
-                $subsistem.val(currentSubSistemValue).trigger('change.select2');
-                console.log('Restored SubSistem value:', currentSubSistemValue);
-            }
+            $subsistem.val(currentSubSistemValue).trigger('change.select2');
+            console.log('Restored SubSistem value:', currentSubSistemValue);
         }
     }
     

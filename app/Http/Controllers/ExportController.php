@@ -15,6 +15,7 @@ use App\Exports\MainComponentExport;
 use App\Exports\SubComponentExport;
 use App\Exports\CompleteReportExport;
 use App\Exports\BorangKomponenExport;
+use App\Exports\Sheets\DAKBlokSheet;
 
 class ExportController extends Controller
 {

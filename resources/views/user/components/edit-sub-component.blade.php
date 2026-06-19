@@ -29,7 +29,7 @@
                                         <option value="">-- Pilih Komponen Utama --</option>
                                         @foreach($mainComponents as $mainComp)
                                             <option value="{{ $mainComp->id }}" 
-                                                    data-komponen="{{ $mainComp->component->nama_premis }}"
+                                                    data-komponen="{{ $mainComp->component?->nama_premis }}"
                                                     {{ old('main_component_id', $subComponent->main_component_id) == $mainComp->id ? 'selected' : '' }}>
                                                 {{ $mainComp->nama_komponen_utama }}
                                             </option>
@@ -42,7 +42,7 @@
                                 <div class="col-md-6">
                                     <label class="form-label">Id Komponen Utama</label>
                                     <input type="text" class="form-control" id="displayKomponen" readonly
-                                           value="{{ $subComponent->mainComponent->component->nama_premis }}">
+                                           value="{{ $subComponent->mainComponent?->component?->nama_premis }}">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Kod Lokasi</label>

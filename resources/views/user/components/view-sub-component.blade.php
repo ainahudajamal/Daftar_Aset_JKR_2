@@ -18,9 +18,15 @@
                     <a href="{{ route('export.sub-component.pdf', $subComponent) }}" class="btn btn-danger">
                         <i class="bi bi-file-pdf"></i> Download PDF
                     </a>
-                    <a href="{{ route('main-components.show', $subComponent->mainComponent) }}" class="btn btn-secondary btn-sm">
-                        <i class="bi bi-arrow-left"></i> Kembali
-                    </a>
+                    @if($subComponent->mainComponent)
+                        <a href="{{ route('main-components.show', $subComponent->mainComponent) }}" class="btn btn-secondary btn-sm">
+                            <i class="bi bi-arrow-left"></i> Kembali
+                        </a>
+                    @else
+                        <a href="{{ route('components.index') }}" class="btn btn-secondary btn-sm">
+                            <i class="bi bi-arrow-left"></i> Kembali
+                        </a>
+                    @endif
                 </div>
             </div>
             <div class="card-body">
@@ -34,18 +40,22 @@
                         <div class="row mb-3">
                             <div class="col-md-4">
                                 <strong>Nama Premis:</strong>
-                                <p class="mb-0">{{ $subComponent->mainComponent->component->nama_premis ?: '-' }}</p>
+                                <p class="mb-0">{{ $subComponent->mainComponent?->component?->nama_premis ?: '-' }}</p>
                             </div>
                             <div class="col-md-4">
                                 <strong>Nombor DPA:</strong>
-                                <p class="mb-0">{{ $subComponent->mainComponent->component->nombor_dpa ?: '-' }}</p>
+                                <p class="mb-0">{{ $subComponent->mainComponent?->component?->nombor_dpa ?: '-' }}</p>
                             </div>
                             <div class="col-md-4">
                                 <strong>Komponen Utama:</strong>
                                 <p class="mb-0">
-                                    <a href="{{ route('main-components.show', $subComponent->mainComponent) }}" class="text-decoration-none">
-                                        {{ $subComponent->mainComponent->nama_komponen_utama ?: '-' }}
-                                    </a>
+                                    @if($subComponent->mainComponent)
+                                        <a href="{{ route('main-components.show', $subComponent->mainComponent) }}" class="text-decoration-none">
+                                            {{ $subComponent->mainComponent->nama_komponen_utama ?: '-' }}
+                                        </a>
+                                    @else
+                                        -
+                                    @endif
                                 </p>
                             </div>
                         </div>
