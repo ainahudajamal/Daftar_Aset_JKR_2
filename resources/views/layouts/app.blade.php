@@ -196,7 +196,7 @@
         .sidebar.collapsed .user-details { opacity: 0; width: 0; display: none; }
 
         .user-name { font-weight: 600; font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .user-role { font-size: 0.72rem; color: rgba(255,255,255,0.55); white-space: nowrap; display: flex; align-items: center; gap: 4px; margin-top: 2px; }
+        .user-role { font-size: 0.72rem; color: rgba(255,255,255,0.55); white-space: nowrap; display: flex; align-items: center; gap: 6px; margin-top: 2px; }
 
         /* Online dot */
         .status-dot {
@@ -206,6 +206,9 @@
             box-shadow: 0 0 6px var(--success);
             animation: pulse-dot 2s ease-in-out infinite;
             display: inline-block;
+            flex-shrink: 0;
+            margin-right: 8px;
+            margin-left: 2px;
         }
 
         /* ========== NAV SECTION LABEL ========== */
@@ -735,11 +738,7 @@
                         <div class="user-name">{{ auth()->user()->name }}</div>
                         <div class="user-role">
                             <span class="status-dot"></span>
-                            @if (auth()->user()->isAdmin())
-                                Administrator
-                            @else
-                                Pengguna
-                            @endif
+                            <span>{{ auth()->user()->isAdmin() ? 'Administrator' : 'Pengguna' }}</span>
                         </div>
                     </div>
                 </div>
