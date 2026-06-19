@@ -186,14 +186,14 @@
                         <td class="text-end pe-4">
                             <div class="d-flex gap-1 justify-content-end align-items-center">
                                 <a href="{{ route('admin.blok.show', $premis->id) }}"
-                                   class="btn btn-sm btn-primary px-3" title="Lihat Detail">
-                                    <i class="bi bi-eye me-1"></i>Lihat
+                                   class="btn btn-sm btn-outline-primary border-0 bg-primary bg-opacity-10" title="Lihat Detail">
+                                    <i class="bi bi-eye"></i>
                                 </a>
                                 <a href="{{ route('admin.blok.edit', $premis->id) }}"
-                                   class="btn btn-sm btn-outline-warning" title="Edit">
+                                   class="btn btn-sm btn-outline-warning border-0 bg-warning bg-opacity-10" title="Edit">
                                     <i class="bi bi-pencil-fill"></i>
                                 </a>
-                                <button type="button" class="btn btn-sm btn-outline-danger"
+                                <button type="button" class="btn btn-sm btn-outline-danger border-0 bg-danger bg-opacity-10"
                                     data-id="{{ $premis->id }}"
                                     data-nama="{{ $premis->nama_premis }}"
                                     onclick="previewPdfFromBtn(this)" title="PDF">
@@ -204,7 +204,7 @@
                                     onsubmit="return confirm('Padam data DA4 untuk ' + this.dataset.nama + '?')" class="mb-0">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Padam">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger border-0 bg-danger bg-opacity-10" title="Padam">
                                         <i class="bi bi-trash-fill"></i>
                                     </button>
                                 </form>

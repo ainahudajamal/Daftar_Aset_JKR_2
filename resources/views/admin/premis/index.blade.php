@@ -197,9 +197,9 @@
 
                         <td class="text-center">
                             @if($p->status_premis == 'Aktif')
-                                <span class="badge bg-success px-3">Aktif</span>
+                                <span class="badge badge-status-active px-3">Aktif</span>
                             @else
-                                <span class="badge bg-secondary px-3">Tidak Aktif</span>
+                                <span class="badge badge-status-inactive px-3">Tidak Aktif</span>
                             @endif
                         </td>
 
@@ -208,15 +208,15 @@
                         <td class="pe-4">
                             <div class="d-flex justify-content-center gap-1">
                                 <a href="{{ route('admin.premis.show', $p->id) }}"
-                                   class="btn btn-sm btn-primary px-2" title="Lihat">
+                                   class="btn btn-sm btn-outline-primary border-0 bg-primary bg-opacity-10" title="Lihat">
                                     <i class="bi bi-eye"></i>
                                 </a>
                                 <a href="{{ route('admin.premis.edit', $p->id) }}"
-                                   class="btn btn-sm btn-outline-warning" title="Edit">
+                                   class="btn btn-sm btn-outline-warning border-0 bg-warning bg-opacity-10" title="Edit">
                                     <i class="bi bi-pencil-fill"></i>
                                 </a>
                                 <button type="button"
-                                    class="btn btn-sm btn-outline-danger"
+                                    class="btn btn-sm btn-outline-danger border-0 bg-danger bg-opacity-10"
                                     data-id="{{ $p->id }}"
                                     data-nama="{{ $p->nama_premis }}"
                                     onclick="previewPdfFromBtn(this)"
@@ -228,7 +228,7 @@
                                     onsubmit="return confirm('Padam premis ' + this.dataset.nama + '?')" class="mb-0">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Padam">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger border-0 bg-danger bg-opacity-10" title="Padam">
                                         <i class="bi bi-trash-fill"></i>
                                     </button>
                                 </form>
