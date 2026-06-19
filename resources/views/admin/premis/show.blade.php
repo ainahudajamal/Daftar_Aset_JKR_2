@@ -91,9 +91,9 @@
                     <td class="fw-semibold bg-light">Status Premis</td>
                     <td>
                         @if($premis->status_premis == 'Aktif')
-                            <span class="badge bg-success">Aktif</span>
+                            <span class="badge badge-status-active">Aktif</span>
                         @else
-                            <span class="badge bg-secondary">Tidak Aktif</span>
+                            <span class="badge badge-status-inactive">Tidak Aktif</span>
                         @endif
                     </td>
                     <td class="fw-semibold bg-light">Aset Warisan</td>
