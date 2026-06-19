@@ -13,6 +13,8 @@ use App\Models\Blok;
 use App\Models\AuditLog;
 use Illuminate\Http\Request;
 use Mpdf\Mpdf;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ArasRuangController extends Controller
 {
@@ -22,7 +24,7 @@ class ArasRuangController extends Controller
     public function index(Request $request)
     {
         AuditLog::create([
-            'user_id'      => auth()->id(),
+            'user_id'      => Auth::id(),
             'component_id' => null,
             'title'        => 'Lihat Senarai DAK Borang D.A.5',
             'description'  => 'Admin melihat senarai Borang D.A.5 (Daftar Aset Khusus)',
@@ -179,7 +181,7 @@ class ArasRuangController extends Controller
         $record = Da5Record::create($data);
 
         AuditLog::create([
-            'user_id'      => auth()->id(),
+            'user_id'      => Auth::id(),
             'component_id' => null,
             'title'        => 'Daftar Borang D.A.5 Baru',
             'description'  => 'Pendaftaran D.A.5 Baru untuk Premis: ' . ($record->nama_premis ?? 'Manual') . ', Blok: ' . ($record->nama_blok ?? 'N/A'),
@@ -318,7 +320,7 @@ class ArasRuangController extends Controller
         $premisList = Premis::orderBy('nama_premis')->get();
 
         AuditLog::create([
-            'user_id'      => auth()->id(),
+            'user_id'      => Auth::id(),
             'component_id' => null,
             'title'        => 'Lihat Butiran Borang D.A.5',
             'description'  => 'Admin melihat butiran Borang D.A.5 untuk Premis: ' . ($record->nama_premis ?? 'Manual'),
@@ -367,25 +369,25 @@ class ArasRuangController extends Controller
 
         // Image replacement/deletion logic
         if ($request->hasFile('gambar_hadapan')) {
-            if ($record->gambar_hadapan && \Storage::disk('public')->exists($record->gambar_hadapan)) {
-                \Storage::disk('public')->delete($record->gambar_hadapan);
+            if ($record->gambar_hadapan && Storage::disk('public')->exists($record->gambar_hadapan)) {
+                Storage::disk('public')->delete($record->gambar_hadapan);
             }
             $data['gambar_hadapan'] = $request->file('gambar_hadapan')->store('gambar_da5', 'public');
         } elseif ($request->input('padam_gambar_hadapan')) {
-            if ($record->gambar_hadapan && \Storage::disk('public')->exists($record->gambar_hadapan)) {
-                \Storage::disk('public')->delete($record->gambar_hadapan);
+            if ($record->gambar_hadapan && Storage::disk('public')->exists($record->gambar_hadapan)) {
+                Storage::disk('public')->delete($record->gambar_hadapan);
             }
             $data['gambar_hadapan'] = null;
         }
 
         if ($request->hasFile('gambar_belakang')) {
-            if ($record->gambar_belakang && \Storage::disk('public')->exists($record->gambar_belakang)) {
-                \Storage::disk('public')->delete($record->gambar_belakang);
+            if ($record->gambar_belakang && Storage::disk('public')->exists($record->gambar_belakang)) {
+                Storage::disk('public')->delete($record->gambar_belakang);
             }
             $data['gambar_belakang'] = $request->file('gambar_belakang')->store('gambar_da5', 'public');
         } elseif ($request->input('padam_gambar_belakang')) {
-            if ($record->gambar_belakang && \Storage::disk('public')->exists($record->gambar_belakang)) {
-                \Storage::disk('public')->delete($record->gambar_belakang);
+            if ($record->gambar_belakang && Storage::disk('public')->exists($record->gambar_belakang)) {
+                Storage::disk('public')->delete($record->gambar_belakang);
             }
             $data['gambar_belakang'] = null;
         }
@@ -398,7 +400,7 @@ class ArasRuangController extends Controller
         $record->update($data);
 
         AuditLog::create([
-            'user_id'      => auth()->id(),
+            'user_id'      => Auth::id(),
             'component_id' => null,
             'title'        => 'Kemaskini Borang D.A.5',
             'description'  => 'Kemaskini D.A.5 ID: ' . $record->id . ', Premis: ' . ($record->nama_premis ?? 'Manual'),
@@ -416,18 +418,18 @@ class ArasRuangController extends Controller
         $record = Da5Record::findOrFail($id);
         
         AuditLog::create([
-            'user_id'      => auth()->id(),
+            'user_id'      => Auth::id(),
             'component_id' => null,
             'title'        => 'Padam Borang D.A.5',
             'description'  => 'Padam D.A.5 ID: ' . $record->id . ', Premis: ' . ($record->nama_premis ?? 'Manual'),
         ]);
 
         // Clean up images from storage
-        if ($record->gambar_hadapan && \Storage::disk('public')->exists($record->gambar_hadapan)) {
-            \Storage::disk('public')->delete($record->gambar_hadapan);
+        if ($record->gambar_hadapan && Storage::disk('public')->exists($record->gambar_hadapan)) {
+            Storage::disk('public')->delete($record->gambar_hadapan);
         }
-        if ($record->gambar_belakang && \Storage::disk('public')->exists($record->gambar_belakang)) {
-            \Storage::disk('public')->delete($record->gambar_belakang);
+        if ($record->gambar_belakang && Storage::disk('public')->exists($record->gambar_belakang)) {
+            Storage::disk('public')->delete($record->gambar_belakang);
         }
 
         $record->delete();
@@ -444,7 +446,7 @@ class ArasRuangController extends Controller
         $record = Da5Record::findOrFail($id);
 
         AuditLog::create([
-            'user_id'      => auth()->id(),
+            'user_id'      => Auth::id(),
             'component_id' => null,
             'title'        => 'Export PDF Borang D.A.5',
             'description'  => 'Admin mengeksport PDF Borang D.A.5 ID: ' . $record->id,

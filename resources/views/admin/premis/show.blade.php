@@ -19,7 +19,9 @@
         </div>
         <div class="d-flex gap-2">
             <button type="button" class="btn btn-danger"
-                onclick="previewPdf({{ $premis->id }}, '{{ $premis->nama_premis }}')">
+                data-id="{{ $premis->id }}"
+                data-nama="{{ $premis->nama_premis }}"
+                onclick="previewPdfFromBtn(this)">
                 <i class="bi bi-file-pdf"></i> PDF
             </button>
             <a href="{{ route('admin.premis.edit', $premis->id) }}" class="btn btn-warning">
@@ -295,6 +297,10 @@ function previewPdf(id, nama) {
         const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
         modal.show();
     }
+}
+
+function previewPdfFromBtn(btn) {
+    previewPdf(btn.dataset.id, btn.dataset.nama);
 }
 </script>
 @endsection

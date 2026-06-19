@@ -398,7 +398,7 @@
                                     <span style="font-size:0.83rem;font-weight:600;">{{ $sistem->subsistems_count }} Subsistem</span>
                                 </div>
                                 <div class="sistem-progress mt-2">
-                                    <div class="sistem-progress-bar" style="width:{{ min(($sistem->subsistems_count / max($sistemStats->max('subsistems_count'), 1)) * 100, 100) }}%;"></div>
+                                    <div class="sistem-progress-bar" data-width="{{ min(($sistem->subsistems_count / max($sistemStats->max('subsistems_count'), 1)) * 100, 100) }}"></div>
                                 </div>
                             </div>
                         </div>
@@ -501,6 +501,13 @@
 @endsection
 
 @section('scripts')
+@php
+    $top5 = $userActivity->take(5);
+    $barLabels = $top5->pluck('name')->map(fn($n) => strlen($n) > 16 ? substr($n, 0, 16).'…' : $n)->toJson();
+    $barData = $top5->pluck('total_components')->toJson();
+@endphp
+<script id="user-activity-labels" type="application/json">{!! $barLabels !!}</script>
+<script id="user-activity-data" type="application/json">{!! $barData !!}</script>
 <script>
 // ===== ANIMATED COUNTERS =====
 document.querySelectorAll('.counter').forEach(el => {
@@ -525,9 +532,9 @@ new Chart(donutCtx, {
         labels: ['Aktif', 'Tidak Aktif', 'Arkib'],
         datasets: [{
             data: [
-                {{ \App\Models\Component::aktif()->count() }},
-                {{ \App\Models\Component::where('status','tidak_aktif')->count() }},
-                {{ \App\Models\Component::onlyTrashed()->count() }}
+                parseInt("{{ \App\Models\Component::aktif()->count() }}", 10),
+                parseInt("{{ \App\Models\Component::where('status','tidak_aktif')->count() }}", 10),
+                parseInt("{{ \App\Models\Component::onlyTrashed()->count() }}", 10)
             ],
             backgroundColor: ['#10b981', '#94a3b8', '#f59e0b'],
             borderWidth: 0,
@@ -550,18 +557,16 @@ new Chart(donutCtx, {
 
 // ===== CHART.JS: TOP 5 USER ACTIVITY =====
 const barCtx = document.getElementById('userActivityChart').getContext('2d');
-@php
-    $top5 = $userActivity->take(5);
-    $barLabels = $top5->pluck('name')->map(fn($n) => strlen($n) > 16 ? substr($n, 0, 16).'…' : $n)->toJson();
-    $barData = $top5->pluck('total_components')->toJson();
-@endphp
+const barLabels = JSON.parse(document.getElementById('user-activity-labels').textContent);
+const barData = JSON.parse(document.getElementById('user-activity-data').textContent);
+
 new Chart(barCtx, {
     type: 'bar',
     data: {
-        labels: {!! $barLabels !!},
+        labels: barLabels,
         datasets: [{
             label: 'Komponen',
-            data: {!! $barData !!},
+            data: barData,
             backgroundColor: 'rgba(37,99,235,0.15)',
             borderColor: '#2563eb',
             borderWidth: 2,
@@ -593,6 +598,11 @@ new Chart(barCtx, {
         },
         animation: { duration: 900, easing: 'easeInOutQuart' }
     }
+});
+
+// ===== SET PROGRESS BAR WIDTHS =====
+document.querySelectorAll('.sistem-progress-bar').forEach(el => {
+    el.style.width = el.dataset.width + '%';
 });
 </script>
 @endsection

@@ -38,7 +38,10 @@
             </button>
 
             {{-- Preview PDF Button --}}
-            <button type="button" class="btn btn-danger" onclick="previewPdf({{ $record->id }}, '{{ addslashes($record->nama_premis ?? 'Manual') }}')">
+            <button type="button" class="btn btn-danger" 
+                data-id="{{ $record->id }}" 
+                data-nama="{{ $record->nama_premis ?? 'Manual' }}" 
+                onclick="previewPdfFromBtn(this)">
                 <i class="bi bi-file-pdf"></i> Preview PDF
             </button>
         </div>
@@ -626,16 +629,23 @@
                                         @endif
                                     </td>
                                     <td class="text-center">
-                                        <button type="button" class="btn btn-sm btn-outline-warning me-1"
-                                            onclick="editAras({{ $item->id }}, '{{ addslashes($item->blok_id) }}', '{{ addslashes($item->kod) }}', '{{ addslashes($item->nama) }}', {{ $item->is_active ? 'true' : 'false' }})"
-                                            title="Edit">
-                                            <i class="bi bi-pencil-fill"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-sm btn-outline-danger"
-                                            onclick="deleteAras({{ $item->id }}, '{{ addslashes($item->nama) }}')"
-                                            title="Padam">
-                                            <i class="bi bi-trash-fill"></i>
-                                        </button>
+                                         <button type="button" class="btn btn-sm btn-outline-warning me-1"
+                                             data-id="{{ $item->id }}"
+                                             data-blok-id="{{ $item->blok_id }}"
+                                             data-kod="{{ $item->kod }}"
+                                             data-nama="{{ $item->nama }}"
+                                             data-active="{{ $item->is_active ? '1' : '0' }}"
+                                             onclick="editArasFromBtn(this)"
+                                             title="Edit">
+                                             <i class="bi bi-pencil-fill"></i>
+                                         </button>
+                                         <button type="button" class="btn btn-sm btn-outline-danger"
+                                             data-id="{{ $item->id }}"
+                                             data-nama="{{ $item->nama }}"
+                                             onclick="deleteArasFromBtn(this)"
+                                             title="Padam">
+                                             <i class="bi bi-trash-fill"></i>
+                                         </button>
                                         <form id="delete-aras-{{ $item->id }}" action="{{ route('admin.aras.destroy', $item) }}" method="POST" class="d-none">
                                             @csrf @method('DELETE')
                                         </form>
@@ -785,11 +795,13 @@
                                             title="Edit">
                                             <i class="bi bi-pencil-fill"></i>
                                         </button>
-                                        <button type="button" class="btn btn-sm btn-outline-danger"
-                                            onclick="deleteRuang({{ $ruang->id }}, '{{ addslashes($ruang->nama) }}')"
-                                            title="Padam">
-                                            <i class="bi bi-trash-fill"></i>
-                                        </button>
+                                         <button type="button" class="btn btn-sm btn-outline-danger"
+                                             data-id="{{ $ruang->id }}"
+                                             data-nama="{{ $ruang->nama }}"
+                                             onclick="deleteRuangFromBtn(this)"
+                                             title="Padam">
+                                             <i class="bi bi-trash-fill"></i>
+                                         </button>
                                         <form id="delete-ruang-{{ $ruang->id }}" action="{{ route('admin.ruang.destroy', $ruang) }}" method="POST" class="d-none">
                                             @csrf @method('DELETE')
                                         </form>
@@ -1555,10 +1567,11 @@ ruangTab.addEventListener('shown.bs.tab', function () {
 });
 
 // Init button state
-@if($activeTab === 'ruang')
+const activeTab = "{{ $activeTab }}";
+if (activeTab === 'ruang') {
     btnTambahAras.classList.add('d-none');
     btnTambahRuang.classList.remove('d-none');
-@endif
+}
 
 // ===== EDIT ARAS =====
 function editAras(id, blokId, kod, nama, isActive) {
@@ -1572,11 +1585,24 @@ function editAras(id, blokId, kod, nama, isActive) {
     modal.show();
 }
 
+function editArasFromBtn(btn) {
+    const id = btn.dataset.id;
+    const blokId = btn.dataset.blokId;
+    const kod = btn.dataset.kod;
+    const nama = btn.dataset.nama;
+    const isActive = btn.dataset.active === '1';
+    editAras(id, blokId, kod, nama, isActive);
+}
+
 // ===== DELETE ARAS =====
 function deleteAras(id, nama) {
     if (confirm('Adakah anda pasti ingin memadam aras "' + nama + '"?\n\nTindakan ini tidak boleh dibatalkan.')) {
         document.getElementById('delete-aras-' + id).submit();
     }
+}
+
+function deleteArasFromBtn(btn) {
+    deleteAras(btn.dataset.id, btn.dataset.nama);
 }
 
 // ===== EDIT RUANG (reads from data attributes on the button) =====
@@ -1690,26 +1716,42 @@ function deleteRuang(id, nama) {
     }
 }
 
+function deleteRuangFromBtn(btn) {
+    deleteRuang(btn.dataset.id, btn.dataset.nama);
+}
+
+function previewPdfFromBtn(btn) {
+    previewPdf(btn.dataset.id, btn.dataset.nama);
+}
+
 // ===== AUTO-OPEN MODAL if validation failed =====
-@if($errors->any())
-    @if(old('_redirect_tab') === 'ruang' || session('_redirect_tab') === 'ruang')
+const hasErrors = "{{ $errors->any() ? 'true' : 'false' }}" === 'true';
+const redirectTab = "{{ old('_redirect_tab', session('_redirect_tab') ?? '') }}";
+const formType = "{{ old('_form_type', '') }}";
+
+if (hasErrors) {
+    if (redirectTab === 'ruang') {
         // Trigger ruang tab
         var ruangTabEl = document.getElementById('ruang-tab');
-        bootstrap.Tab.getOrCreateInstance(ruangTabEl).show();
+        if (ruangTabEl) {
+            bootstrap.Tab.getOrCreateInstance(ruangTabEl).show();
+        }
 
-        @if(old('_form_type') === 'edit_ruang')
-            // Re-open edit ruang modal (not needed as we redirect back)
-        @else
+        if (formType !== 'edit_ruang') {
             var modalEl = document.getElementById('modalTambahRuang');
+            if (modalEl) {
+                var modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                modal.show();
+            }
+        }
+    } else {
+        var modalEl = document.getElementById('modalTambahAras');
+        if (modalEl) {
             var modal = bootstrap.Modal.getOrCreateInstance(modalEl);
             modal.show();
-        @endif
-    @else
-        var modalEl = document.getElementById('modalTambahAras');
-        var modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-        modal.show();
-    @endif
-@endif
+        }
+    }
+}
 
 // Auto-uppercase kod inputs
 document.querySelectorAll('input[name="kod"]').forEach(function(el) {

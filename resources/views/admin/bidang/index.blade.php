@@ -106,7 +106,7 @@
                         <a href="{{ route('admin.bidang.edit', $bidang) }}" class="btn btn-sm btn-outline-primary flex-fill">
                             <i class="bi bi-pencil-fill"></i> Edit
                         </a>
-                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteBidang({{ $bidang->id }})">
+                        <button type="button" class="btn btn-sm btn-outline-danger" data-id="{{ $bidang->id }}" onclick="deleteBidang(this.dataset.id)">
                             <i class="bi bi-trash-fill"></i> Padam
                         </button>
                     </div>

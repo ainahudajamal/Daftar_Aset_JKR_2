@@ -137,9 +137,10 @@
                                         <i class="bi bi-pencil-fill"></i>
                                     </a>
                                     <button type="button" class="btn btn-sm btn-outline-warning"
-                                        onclick="toggleStatus({{ $user->id }})"
+                                        data-id="{{ $user->id }}"
+                                        onclick="toggleStatus(this.dataset.id)"
                                         title="{{ $user->is_active ? 'Nyahaktifkan' : 'Aktifkan' }}"
-                                        {{ $user->id === auth()->id() ? 'disabled' : '' }}>
+                                        {{ $user->id === Auth::id() ? 'disabled' : '' }}>
                                         <i class="bi bi-toggle-{{ $user->is_active ? 'on' : 'off' }}"></i>
                                     </button>
                                     <a href="{{ route('admin.users.reset-password', $user) }}"
@@ -147,8 +148,9 @@
                                         <i class="bi bi-key-fill"></i>
                                     </a>
                                     <button type="button" class="btn btn-sm btn-outline-danger"
-                                        onclick="deleteUser({{ $user->id }})"
-                                        {{ $user->id === auth()->id() ? 'disabled' : '' }}
+                                        data-id="{{ $user->id }}"
+                                        onclick="deleteUser(this.dataset.id)"
+                                        {{ $user->id === Auth::id() ? 'disabled' : '' }}
                                         title="Padam">
                                         <i class="bi bi-trash-fill"></i>
                                     </button>

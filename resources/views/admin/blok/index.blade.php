@@ -194,11 +194,14 @@
                                     <i class="bi bi-pencil-fill"></i>
                                 </a>
                                 <button type="button" class="btn btn-sm btn-outline-danger"
-                                    onclick="previewPdf({{ $premis->id }}, '{{ addslashes($premis->nama_premis) }}')" title="PDF">
+                                    data-id="{{ $premis->id }}"
+                                    data-nama="{{ $premis->nama_premis }}"
+                                    onclick="previewPdfFromBtn(this)" title="PDF">
                                     <i class="bi bi-file-pdf-fill"></i>
                                 </button>
                                 <form action="{{ route('admin.blok.destroy', $premis->id) }}" method="POST"
-                                    onsubmit="return confirm('Padam data DA4 untuk {{ addslashes($premis->nama_premis) }}?')" class="mb-0">
+                                    data-nama="{{ $premis->nama_premis }}"
+                                    onsubmit="return confirm('Padam data DA4 untuk ' + this.dataset.nama + '?')" class="mb-0">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-outline-danger" title="Padam">
@@ -298,6 +301,10 @@ function previewPdf(id, nama) {
     document.getElementById('modalPremisNama').textContent = nama;
     const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalPDF'));
     modal.show();
+}
+
+function previewPdfFromBtn(btn) {
+    previewPdf(btn.dataset.id, btn.dataset.nama);
 }
 </script>
 @endpush

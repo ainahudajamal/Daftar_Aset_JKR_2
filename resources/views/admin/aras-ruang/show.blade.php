@@ -30,7 +30,10 @@
         </div>
         <div class="d-flex gap-2">
             {{-- Preview PDF Button --}}
-            <button type="button" class="btn btn-danger d-flex align-items-center gap-2 shadow-sm" onclick="previewPdf({{ $record->id }}, '{{ addslashes($record->nama_premis ?? 'Manual') }}')">
+            <button type="button" class="btn btn-danger d-flex align-items-center gap-2 shadow-sm" 
+                data-id="{{ $record->id }}" 
+                data-nama="{{ $record->nama_premis ?? 'Manual' }}" 
+                onclick="previewPdfFromBtn(this)">
                 <i class="bi bi-file-pdf-fill"></i> Pratonton PDF
             </button>
             <a href="{{ route('admin.aras-ruang.edit', $record->id) }}" class="btn btn-warning d-flex align-items-center gap-2 shadow-sm">
@@ -709,6 +712,10 @@ function previewPdf(id, nama) {
         const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
         modal.show();
     }
+}
+
+function previewPdfFromBtn(btn) {
+    previewPdf(btn.dataset.id, btn.dataset.nama);
 }
 </script>
 @endsection

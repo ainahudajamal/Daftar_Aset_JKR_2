@@ -7,6 +7,7 @@ use App\Models\KodAras;
 use App\Models\KodBlok;
 use Illuminate\Http\Request;
 use App\Models\AuditLog;
+use Illuminate\Support\Facades\Auth;
 
 class ArasController extends Controller
 {
@@ -14,7 +15,7 @@ class ArasController extends Controller
     {
         // TAMBAH LOG
         AuditLog::create([
-            'user_id'      => auth()->id(),
+            'user_id'      => Auth::id(),
             'component_id' => null,
             'title'        => 'Lihat Senarai Aras',
             'description'  => 'Admin melihat senarai aras',
@@ -71,7 +72,7 @@ class ArasController extends Controller
         ]);
 
         AuditLog::create([
-            'user_id'      => auth()->id(),
+            'user_id'      => Auth::id(),
             'component_id' => null,
             'title'        => 'Tambah Aras',
             'description'  => 'Aras baru ditambah - Kod: ' . $aras->kod . ', Nama: ' . $aras->nama,
@@ -109,7 +110,7 @@ class ArasController extends Controller
         ]);
 
         AuditLog::create([
-            'user_id'      => auth()->id(),
+            'user_id'      => Auth::id(),
             'component_id' => null,
             'title'        => 'Kemaskini Aras',
             'description'  => 'Aras dikemaskini - Kod: ' . $aras->kod . ', Nama: ' . $aras->nama,
@@ -122,7 +123,7 @@ class ArasController extends Controller
     public function destroy(KodAras $aras)
     {
         AuditLog::create([
-            'user_id'      => auth()->id(),
+            'user_id'      => Auth::id(),
             'component_id' => null,
             'title'        => 'Padam Aras',
             'description'  => 'Aras dipadam - Kod: ' . $aras->kod . ', Nama: ' . $aras->nama,

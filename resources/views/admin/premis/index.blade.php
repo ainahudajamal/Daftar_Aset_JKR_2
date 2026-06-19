@@ -217,12 +217,15 @@
                                 </a>
                                 <button type="button"
                                     class="btn btn-sm btn-outline-danger"
-                                    onclick="previewPdf({{ $p->id }}, '{{ addslashes($p->nama_premis) }}')"
+                                    data-id="{{ $p->id }}"
+                                    data-nama="{{ $p->nama_premis }}"
+                                    onclick="previewPdfFromBtn(this)"
                                     title="PDF">
                                     <i class="bi bi-file-pdf-fill"></i>
                                 </button>
                                 <form action="{{ route('admin.premis.destroy', $p->id) }}" method="POST"
-                                    onsubmit="return confirm('Padam premis {{ addslashes($p->nama_premis) }}?')" class="mb-0">
+                                    data-nama="{{ $p->nama_premis }}"
+                                    onsubmit="return confirm('Padam premis ' + this.dataset.nama + '?')" class="mb-0">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-outline-danger" title="Padam">
@@ -333,6 +336,10 @@ function previewPdf(id, nama) {
         const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
         modal.show();
     }
+}
+
+function previewPdfFromBtn(btn) {
+    previewPdf(btn.dataset.id, btn.dataset.nama);
 }
 </script>
 @endsection

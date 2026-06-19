@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AuditLog;
 use App\Models\Component;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 use App\Models\User;
 
@@ -66,7 +67,7 @@ class AuditLogController extends Controller
         ]);
 
         AuditLog::create([
-            'user_id'      => auth()->id(),
+            'user_id'      => Auth::id(),
             'component_id' => $request->component_id,
             'title'        => $request->title,
             'description'  => $request->description,

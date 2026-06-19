@@ -8,13 +8,14 @@ use App\Models\KodAras;
 use App\Models\KemasanRuang;
 use Illuminate\Http\Request;
 use App\Models\AuditLog;
+use Illuminate\Support\Facades\Auth;
 
 class RuangController extends Controller
 {
     public function index(Request $request)
     {
         AuditLog::create([
-            'user_id'      => auth()->id(),
+            'user_id'      => Auth::id(),
             'component_id' => null,
             'title'        => 'Lihat Konfigurasi Ruang',
             'description'  => 'Admin melihat konfigurasi ruang',
@@ -96,7 +97,7 @@ class RuangController extends Controller
         }
 
         AuditLog::create([
-            'user_id'      => auth()->id(),
+            'user_id'      => Auth::id(),
             'component_id' => null,
             'title'        => 'Tambah Ruang',
             'description'  => 'Ruang baru ditambah - Kod: ' . $ruang->kod . ', Nama: ' . $ruang->nama,
@@ -160,7 +161,7 @@ class RuangController extends Controller
         }
 
         AuditLog::create([
-            'user_id'      => auth()->id(),
+            'user_id'      => Auth::id(),
             'component_id' => null,
             'title'        => 'Kemaskini Ruang',
             'description'  => 'Ruang dikemaskini - Kod: ' . $ruang->kod . ', Nama: ' . $ruang->nama,
@@ -173,7 +174,7 @@ class RuangController extends Controller
     public function destroy(KodRuang $ruang)
     {
         AuditLog::create([
-            'user_id'      => auth()->id(),
+            'user_id'      => Auth::id(),
             'component_id' => null,
             'title'        => 'Padam Ruang',
             'description'  => 'Ruang dipadam - Kod: ' . $ruang->kod . ', Nama: ' . $ruang->nama,

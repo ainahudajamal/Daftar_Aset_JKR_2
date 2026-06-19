@@ -429,7 +429,7 @@
 <body>
     <div class="split-layout">
         <!-- Left Side: Branding (Dynamic resizing) -->
-        <div class="branding-side" style="background-image: url('{{ asset('assets/hero-bg.jpg') }}');">
+        <div class="branding-side" data-bg="{{ asset('assets/hero-bg.jpg') }}">
             <!-- Top official system badge -->
             <div class="branding-header">
                 <div class="system-badge">
@@ -581,6 +581,12 @@
 
     <!-- Password visibility toggle script -->
     <script>
+        // Set background image from data attribute
+        const brandingSide = document.querySelector('.branding-side');
+        if (brandingSide) {
+            brandingSide.style.backgroundImage = "url('" + brandingSide.dataset.bg + "')";
+        }
+
         document.getElementById('togglePassword').addEventListener('click', function () {
             const passwordInput = document.getElementById('password');
             const eyeIcon = document.getElementById('eyeIcon');
