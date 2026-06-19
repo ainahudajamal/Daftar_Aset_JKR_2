@@ -555,15 +555,7 @@
                     </div>
                 </form>
 
-                <!-- Demo Credentials -->
-                <div class="demo-box">
-                    <div class="demo-title">
-                        <i class="bi bi-info-circle-fill"></i> Akaun Percubaan
-                    </div>
-                    <div class="demo-item">
-                        <span class="demo-badge">JKR</span> username: <strong>admin</strong> | kata laluan: <strong>P@ssw0rd</strong>
-                    </div>
-                </div>
+
 
                 <div class="auth-footer">
                     <p class="mb-1">&copy; {{ date('Y') }} Kementerian Kerja Raya Malaysia</p>
