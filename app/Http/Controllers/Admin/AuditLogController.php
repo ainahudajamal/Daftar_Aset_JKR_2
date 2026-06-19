@@ -47,7 +47,35 @@ class AuditLogController extends Controller
         $components = Component::orderBy('id')->get();
         $users = User::orderBy('name')->get();
 
-        return view('admin.audit_log.index', compact('logs', 'components', 'users'));
+        $totalLogs = AuditLog::count();
+        $ciptaLogs = AuditLog::where(function($q) {
+            $q->where('title', 'like', 'Tambah%')
+              ->orWhere('title', 'like', 'Cipta%')
+              ->orWhere('title', 'like', '%tambah%')
+              ->orWhere('title', 'like', '%cipta%');
+        })->count();
+        $kemaskiniLogs = AuditLog::where(function($q) {
+            $q->where('title', 'like', 'Kemaskini%')
+              ->orWhere('title', 'like', '%kemaskini%');
+        })->count();
+        $padamLogs = AuditLog::where(function($q) {
+            $q->where('title', 'like', 'Padam%')
+              ->orWhere('title', 'like', '%padam%');
+        })->count();
+        $lihatLogs = AuditLog::where(function($q) {
+            $q->where('title', 'like', 'Lihat%')
+              ->orWhere('title', 'like', '%lihat%')
+              ->orWhere('title', 'like', 'Melihat%')
+              ->orWhere('title', 'like', '%melihat%');
+        })->count();
+        $eksportLogs = AuditLog::where(function($q) {
+            $q->where('title', 'like', 'Eksport%')
+              ->orWhere('title', 'like', 'Export%')
+              ->orWhere('title', 'like', '%eksport%')
+              ->orWhere('title', 'like', '%export%');
+        })->count();
+
+        return view('admin.audit_log.index', compact('logs', 'components', 'users', 'totalLogs', 'ciptaLogs', 'kemaskiniLogs', 'padamLogs', 'lihatLogs', 'eksportLogs'));
     }
 
     public function create()

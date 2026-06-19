@@ -31,43 +31,46 @@
     {{-- Stats Cards --}}
     <div class="row g-3 mb-4">
         <div class="col-12 col-md-4">
-            <div class="card border-0 h-100" style="background: linear-gradient(135deg, rgba(37,99,235,0.12), rgba(37,99,235,0.05)); border-left: 4px solid var(--primary) !important;">
-                <div class="card-body d-flex align-items-center gap-3 p-4">
-                    <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
-                         style="width:52px;height:52px;background: rgba(37,99,235,0.15);">
-                        <i class="bi bi-buildings fs-4" style="color: var(--primary);"></i>
-                    </div>
+            <div class="stat-card card-hover-lift">
+                <div class="stat-accent" style="background:#2563eb;"></div>
+                <div class="stat-body d-flex justify-content-between align-items-start">
                     <div>
-                        <div class="text-uppercase fw-semibold mb-1" style="font-size:0.72rem;letter-spacing:.06em; color: var(--primary);">Jumlah Premis</div>
-                        <div class="fw-bold lh-1" style="font-size:2rem; color: var(--primary);">{{ $totalPremis ?? 0 }}</div>
+                        <div class="stat-label">Jumlah Premis</div>
+                        <div class="stat-value">{{ $totalPremis ?? 0 }}</div>
+                        <div class="stat-sub">Premis berdaftar</div>
+                    </div>
+                    <div class="stat-icon" style="background:rgba(37,99,235,0.1);color:#2563eb;">
+                        <i class="bi bi-buildings"></i>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-12 col-md-4">
-            <div class="card border-0 h-100" style="background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(16,185,129,0.05)); border-left: 4px solid var(--success) !important;">
-                <div class="card-body d-flex align-items-center gap-3 p-4">
-                    <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
-                         style="width:52px;height:52px;background: rgba(16,185,129,0.15);">
-                        <i class="bi bi-check2-circle fs-4" style="color: var(--success);"></i>
-                    </div>
+            <div class="stat-card card-hover-lift">
+                <div class="stat-accent" style="background:#10b981;"></div>
+                <div class="stat-body d-flex justify-content-between align-items-start">
                     <div>
-                        <div class="text-uppercase fw-semibold mb-1" style="font-size:0.72rem;letter-spacing:.06em; color: var(--success);">Premis Aktif</div>
-                        <div class="fw-bold lh-1" style="font-size:2rem; color: var(--success);">{{ $aktifPremis ?? 0 }}</div>
+                        <div class="stat-label">Premis Aktif</div>
+                        <div class="stat-value">{{ $aktifPremis ?? 0 }}</div>
+                        <div class="stat-sub">Status aktif</div>
+                    </div>
+                    <div class="stat-icon" style="background:rgba(16,185,129,0.1);color:#10b981;">
+                        <i class="bi bi-check2-circle"></i>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-12 col-md-4">
-            <div class="card border-0 h-100" style="background: linear-gradient(135deg, rgba(239,68,68,0.12), rgba(239,68,68,0.05)); border-left: 4px solid var(--danger) !important;">
-                <div class="card-body d-flex align-items-center gap-3 p-4">
-                    <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
-                         style="width:52px;height:52px;background: rgba(239,68,68,0.15);">
-                        <i class="bi bi-x-circle fs-4" style="color: var(--danger);"></i>
-                    </div>
+            <div class="stat-card card-hover-lift">
+                <div class="stat-accent" style="background:#ef4444;"></div>
+                <div class="stat-body d-flex justify-content-between align-items-start">
                     <div>
-                        <div class="text-uppercase fw-semibold mb-1" style="font-size:0.72rem;letter-spacing:.06em; color: var(--danger);">Tidak Aktif</div>
-                        <div class="fw-bold lh-1" style="font-size:2rem; color: var(--danger);">{{ $tidakAktifPremis ?? 0 }}</div>
+                        <div class="stat-label">Tidak Aktif</div>
+                        <div class="stat-value">{{ $tidakAktifPremis ?? 0 }}</div>
+                        <div class="stat-sub">Status tidak aktif</div>
+                    </div>
+                    <div class="stat-icon" style="background:rgba(239,68,68,0.1);color:#ef4444;">
+                        <i class="bi bi-x-circle"></i>
                     </div>
                 </div>
             </div>
