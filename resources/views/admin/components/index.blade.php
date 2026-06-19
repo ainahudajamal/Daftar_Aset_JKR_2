@@ -4,6 +4,7 @@
 @section('title', 'Pendaftaran Komponen - Admin')
 
 @section('content')
+<div class="container-fluid">
 <style>
     .page-title {
         font-size: 1.75rem;
@@ -12,42 +13,7 @@
         margin-bottom: 0.5rem;
     }
 
-    .stats-card {
-        background: white;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        padding: 1.5rem;
-        height: 100%;
-        transition: all 0.2s;
-    }
 
-    .stats-card:hover {
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }
-
-    .stats-number {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #1e293b;
-        margin: 0.5rem 0;
-    }
-
-    .stats-label {
-        color: #64748b;
-        font-size: 0.9rem;
-        font-weight: 500;
-    }
-
-    .stats-icon {
-        width: 48px;
-        height: 48px;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        margin-bottom: 1rem;
-    }
 
     .filter-card {
         background: white;
@@ -167,41 +133,69 @@
 
 
 <!-- Stats -->
-<div class="row mb-4">
-    <div class="col-md-3 mb-3">
-        <div class="stats-card">
-            <div class="stats-icon" style="background: #dbeafe; color: #2563eb;">
-                <i class="bi bi-building"></i>
+<div class="row g-3 mb-4">
+    <!-- Jumlah Komponen -->
+    <div class="col-6 col-md-3">
+        <div class="stat-card card-hover-lift">
+            <div class="stat-accent" style="background:#2563eb;"></div>
+            <div class="stat-body d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="stat-label">Jumlah Komponen</div>
+                    <div class="stat-value">{{ \App\Models\Component::count() }}</div>
+                    <div class="stat-sub">Komponen berdaftar</div>
+                </div>
+                <div class="stat-icon" style="background:rgba(37,99,235,0.1);color:#2563eb;">
+                    <i class="bi bi-building"></i>
+                </div>
             </div>
-            <div class="stats-number">{{ \App\Models\Component::count() }}</div>
-            <div class="stats-label">Jumlah Komponen</div>
         </div>
     </div>
-    <div class="col-md-3 mb-3">
-        <div class="stats-card">
-            <div class="stats-icon" style="background: #d1fae5; color: #10b981;">
-                <i class="bi bi-check-circle"></i>
+    <!-- Komponen Aktif -->
+    <div class="col-6 col-md-3">
+        <div class="stat-card card-hover-lift">
+            <div class="stat-accent" style="background:#10b981;"></div>
+            <div class="stat-body d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="stat-label">Komponen Aktif</div>
+                    <div class="stat-value">{{ \App\Models\Component::aktif()->count() }}</div>
+                    <div class="stat-sub">Status aktif</div>
+                </div>
+                <div class="stat-icon" style="background:rgba(16,185,129,0.1);color:#10b981;">
+                    <i class="bi bi-check-circle"></i>
+                </div>
             </div>
-            <div class="stats-number">{{ \App\Models\Component::aktif()->count() }}</div>
-            <div class="stats-label">Komponen Aktif</div>
         </div>
     </div>
-    <div class="col-md-3 mb-3">
-        <div class="stats-card">
-            <div class="stats-icon" style="background: #fef3c7; color: #f59e0b;">
-                <i class="bi bi-x-circle"></i>
+    <!-- Tidak Aktif -->
+    <div class="col-6 col-md-3">
+        <div class="stat-card card-hover-lift">
+            <div class="stat-accent" style="background:#64748b;"></div>
+            <div class="stat-body d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="stat-label">Tidak Aktif</div>
+                    <div class="stat-value">{{ \App\Models\Component::tidakAktif()->count() }}</div>
+                    <div class="stat-sub">Status tidak aktif</div>
+                </div>
+                <div class="stat-icon" style="background:rgba(100,116,139,0.1);color:#64748b;">
+                    <i class="bi bi-x-circle"></i>
+                </div>
             </div>
-            <div class="stats-number">{{ \App\Models\Component::tidakAktif()->count() }}</div>
-            <div class="stats-label">Tidak Aktif</div>
         </div>
     </div>
-    <div class="col-md-3 mb-3">
-        <div class="stats-card">
-            <div class="stats-icon" style="background: #e0e7ff; color: #6366f1;">
-                <i class="bi bi-people"></i>
+    <!-- Pengguna Aktif -->
+    <div class="col-6 col-md-3">
+        <div class="stat-card card-hover-lift">
+            <div class="stat-accent" style="background:#f59e0b;"></div>
+            <div class="stat-body d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="stat-label">Pengguna Aktif</div>
+                    <div class="stat-value">{{ \App\Models\User::whereHas('components')->count() }}</div>
+                    <div class="stat-sub">Pengguna berdaftar</div>
+                </div>
+                <div class="stat-icon" style="background:rgba(245,158,11,0.1);color:#f59e0b;">
+                    <i class="bi bi-people"></i>
+                </div>
             </div>
-            <div class="stats-number">{{ \App\Models\User::whereHas('components')->count() }}</div>
-            <div class="stats-label">Pengguna Aktif</div>
         </div>
     </div>
 </div>
@@ -325,10 +319,10 @@
                             @csrf
                             @method('PATCH')
                             <button type="submit" 
-                                    class="badge {{ $component->status === 'aktif' ? 'bg-success' : 'bg-secondary' }} border-0" 
-                                    style="cursor: pointer;"
+                                    class="badge {{ $component->status === 'aktif' ? 'badge-status-active' : 'badge-status-inactive' }}" 
+                                    style="cursor: pointer; padding: 0.35rem 0.8rem; font-size: 0.75rem;"
                                     title="Klik untuk tukar status">
-                                {{ ucfirst($component->status) }}
+                                {{ $component->status === 'aktif' ? 'Aktif' : 'Tidak Aktif' }}
                             </button>
                         </form>
                     </td>
@@ -386,7 +380,7 @@
     <p class="text-muted mb-0">Tiada komponen yang sepadan dengan carian anda.</p>
 </div>
 @endif
-
+</div>
 @endsection
 
 @section('scripts')

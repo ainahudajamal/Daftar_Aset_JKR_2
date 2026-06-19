@@ -434,7 +434,7 @@
             border-radius: 4px 0 0 4px;
         }
         .stat-card .stat-body { padding: 1.25rem 1.25rem 1.25rem 1.5rem; }
-        .stat-card .stat-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary); margin-bottom: 0.4rem; }
+        .stat-card .stat-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary); margin-bottom: 0.4rem; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
         .stat-card .stat-value { font-size: 2rem; font-weight: 800; line-height: 1; color: var(--text-primary); }
         .stat-card .stat-sub { font-size: 0.78rem; color: var(--text-secondary); margin-top: 0.4rem; }
         .stat-card .stat-icon {

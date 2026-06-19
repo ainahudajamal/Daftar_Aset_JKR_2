@@ -62,14 +62,14 @@
         </div>
         <div class="col-12 col-md-4">
             <div class="stat-card card-hover-lift">
-                <div class="stat-accent" style="background:#ef4444;"></div>
+                <div class="stat-accent" style="background:#64748b;"></div>
                 <div class="stat-body d-flex justify-content-between align-items-start">
                     <div>
                         <div class="stat-label">Tidak Aktif</div>
                         <div class="stat-value">{{ $tidakAktifPremis ?? 0 }}</div>
                         <div class="stat-sub">Status tidak aktif</div>
                     </div>
-                    <div class="stat-icon" style="background:rgba(239,68,68,0.1);color:#ef4444;">
+                    <div class="stat-icon" style="background:rgba(100,116,139,0.1);color:#64748b;">
                         <i class="bi bi-x-circle"></i>
                     </div>
                 </div>
