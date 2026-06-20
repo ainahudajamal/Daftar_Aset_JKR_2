@@ -557,7 +557,7 @@
 
 
                 <div class="auth-footer">
-                    <p class="mb-1">&copy; {{ date('Y') }} Kementerian Kerja Raya Malaysia</p>
+                    <p class="mb-1">&copy; {{ date('Y') }} Jabatan Kerja Raya Malaysia</p>
                     <p class="text-muted" style="font-size: 0.75rem;">Sistem Selamat &amp; Terlindungi</p>
                 </div>
             </div>

@@ -2,21 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use App\Models\AuditLog;
-use App\Models\Blok;
-use App\Models\Component;
-use App\Models\KodAras;
-use App\Models\KodBinaanLuar;
-use App\Models\KodRuang;
-use App\Models\MainComponent;
-use App\Models\RelatedComponent;
-use App\Models\RelatedDocument;
-use App\Models\Sistem;
-use App\Models\SubComponent;
-use App\Models\SubComponentDocument;
-use App\Models\SubComponentMeasurement;
-use App\Models\Subsistem;
-use App\Models\User;
 use App\Http\Controllers\ComponentController;
 use App\Http\Controllers\MainComponentController;
 use App\Http\Controllers\SubComponentController;
@@ -39,25 +24,7 @@ use App\Http\Controllers\Admin\AdminPremisController;
 use App\Http\Controllers\Admin\BlokPremisController;
 
 $landingPage = function () {
-    $stats = [
-        ['label' => 'Users', 'value' => User::count(), 'hint' => 'Account records stored in the database.'],
-        ['label' => 'Components', 'value' => Component::count(), 'hint' => 'Primary asset records available to the system.'],
-        ['label' => 'Main components', 'value' => MainComponent::count(), 'hint' => 'Linked main component entries.'],
-        ['label' => 'Sub components', 'value' => SubComponent::count(), 'hint' => 'Detailed sub component records.'],
-        ['label' => 'Systems', 'value' => Sistem::count(), 'hint' => 'Master system categories.'],
-        ['label' => 'Subsystems', 'value' => Subsistem::count(), 'hint' => 'Master subsystem categories.'],
-        ['label' => 'Blok', 'value' => Blok::count(), 'hint' => 'Block reference data.'],
-        ['label' => 'Aras', 'value' => KodAras::count(), 'hint' => 'Floor and level reference data.'],
-        ['label' => 'Ruang', 'value' => KodRuang::count(), 'hint' => 'Room reference data.'],
-        ['label' => 'Binaan luar', 'value' => KodBinaanLuar::count(), 'hint' => 'External construction reference data.'],
-        ['label' => 'Audit logs', 'value' => AuditLog::count(), 'hint' => 'Activity tracking records.'],
-        ['label' => 'Related components', 'value' => RelatedComponent::count(), 'hint' => 'Component relationships stored in the database.'],
-        ['label' => 'Related documents', 'value' => RelatedDocument::count(), 'hint' => 'Document relationships stored in the database.'],
-        ['label' => 'Sub component docs', 'value' => SubComponentDocument::count(), 'hint' => 'Attached sub component documents.'],
-        ['label' => 'Sub component measurements', 'value' => SubComponentMeasurement::count(), 'hint' => 'Measurement records for sub components.'],
-    ];
-
-    return view('welcome', compact('stats'));
+    return view('welcome');
 };
 
 Route::get('/', $landingPage)->name('home');

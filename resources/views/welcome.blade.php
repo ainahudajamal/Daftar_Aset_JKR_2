@@ -1,559 +1,873 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Sistem Daftar Aset JKR') }}</title>
+    <title>ASPIRA — Sistem Pengurusan Aset JKR</title>
     <link rel="shortcut icon" type="image/png" href="{{ asset('assets/favicon.png') }}">
 
+    {{-- Fonts --}}
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700|space-grotesk:500,700" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700,800|space-grotesk:400,500,600,700" rel="stylesheet" />
 
     <style>
+        /* ============================================
+             ASPIRA — DESIGN TOKENS
+             ============================================ */
         :root {
-            --bg: #f4f1e8;
-            --surface: rgba(255, 255, 255, 0.84);
-            --surface-strong: #ffffff;
-            --text: #142016;
-            --muted: #5f6d60;
-            --line: rgba(20, 32, 22, 0.12);
-            --accent: #0f5e3a;
-            --accent-2: #d4972f;
-            --accent-3: #203c2b;
-            --shadow: 0 28px 70px rgba(23, 33, 27, 0.14);
+            --color-primary: #0a5c36;
+            --color-primary-dark: #073d24;
+            --color-primary-light: #e8f5ee;
+            --color-accent: #d4972f;
+            --color-accent-dark: #b87d1e;
+            --color-accent-light: #fef7ed;
+            --color-surface: #ffffff;
+            --color-surface-alt: #f8faf9;
+            --color-text: #111c15;
+            --color-text-muted: #5b6b60;
+            --color-border: rgba(10, 92, 54, 0.10);
+            --color-border-strong: rgba(10, 92, 54, 0.18);
+            --radius-sm: 10px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 32px;
+            --shadow-sm: 0 1px 3px rgba(17, 28, 21, 0.06);
+            --shadow-md: 0 8px 30px rgba(17, 28, 21, 0.08);
+            --shadow-lg: 0 20px 60px rgba(17, 28, 21, 0.12);
+            --shadow-xl: 0 32px 80px rgba(17, 28, 21, 0.16);
+            --transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * { box-sizing: border-box; }
 
-        html, body { min-height: 100%; }
+        html, body {
+            min-height: 100%;
+            scroll-behavior: smooth;
+        }
 
         body {
             margin: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            color: var(--text);
-            background:
-                radial-gradient(circle at top left, rgba(15, 94, 58, 0.18), transparent 36%),
-                radial-gradient(circle at top right, rgba(212, 151, 47, 0.16), transparent 32%),
-                linear-gradient(180deg, #faf8f2 0%, var(--bg) 100%);
-            overflow-x: hidden;
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            color: var(--color-text);
+            background-color: #fafbf9;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            background-image:
-                linear-gradient(rgba(20, 32, 22, 0.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(20, 32, 22, 0.04) 1px, transparent 1px);
-            background-size: 48px 48px;
-            mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
+        /* ============================================
+             TYPOGRAPHY
+             ============================================ */
+        .heading-display {
+            font-family: 'Space Grotesk', system-ui, sans-serif;
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            line-height: 1.05;
         }
 
-        a {
-            color: inherit;
-            text-decoration: none;
+        .heading-section {
+            font-family: 'Space Grotesk', system-ui, sans-serif;
+            font-weight: 600;
+            letter-spacing: -0.03em;
         }
 
-        .page {
-            position: relative;
-            width: min(1200px, calc(100% - 32px));
-            margin: 0 auto;
-            padding: 28px 0 40px;
-        }
-
-        .topbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            padding: 8px 0 28px;
-        }
-
-        .brand {
+        /* ============================================
+             BUTTONS
+             ============================================ */
+        .btn {
             display: inline-flex;
             align-items: center;
-            gap: 14px;
-            font-weight: 700;
-            letter-spacing: 0.02em;
-        }
-
-        .brand-mark {
-            width: 46px;
-            height: 46px;
-            border-radius: 14px;
-            display: grid;
-            place-items: center;
-            background: linear-gradient(135deg, var(--accent), #0a3d27);
-            color: #fff;
-            box-shadow: 0 16px 30px rgba(15, 94, 58, 0.26);
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 20px;
-        }
-
-        .brand-copy {
-            display: flex;
-            flex-direction: column;
-            line-height: 1.1;
-        }
-
-        .brand-copy small {
-            color: var(--muted);
-            font-weight: 600;
-            margin-top: 4px;
-        }
-
-        .nav {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: flex-end;
-        }
-
-        .chip,
-        .button,
-        .ghost {
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 28px;
             border-radius: 999px;
-            padding: 12px 18px;
             font-weight: 700;
-            transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease;
+            font-size: 0.95rem;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all var(--transition);
+            white-space: nowrap;
+            border: none;
+            outline: none;
         }
 
-        .chip {
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid var(--line);
-            color: var(--muted);
-            box-shadow: 0 12px 30px rgba(24, 31, 26, 0.06);
-        }
-
-        .button {
-            background: linear-gradient(135deg, var(--accent), #0b4b2f);
+        .btn-primary {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
             color: #fff;
-            box-shadow: 0 16px 34px rgba(15, 94, 58, 0.24);
+            box-shadow: 0 8px 28px rgba(10, 92, 54, 0.28);
         }
 
-        .ghost {
-            background: rgba(255, 255, 255, 0.68);
-            border: 1px solid rgba(20, 32, 22, 0.12);
-            color: var(--text);
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 36px rgba(10, 92, 54, 0.36);
         }
 
-        .chip:hover,
-        .button:hover,
-        .ghost:hover,
-        .stat-card:hover,
-        .link-card:hover {
+        .btn-outline {
+            background: var(--color-surface);
+            color: var(--color-primary);
+            border: 2px solid var(--color-border-strong);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--color-primary);
+            background: var(--color-primary-light);
             transform: translateY(-2px);
         }
 
-        .hero {
-            display: grid;
-            grid-template-columns: minmax(0, 1.18fr) minmax(320px, 0.82fr);
-            gap: 24px;
-            align-items: stretch;
+        .btn-ghost {
+            background: transparent;
+            color: var(--color-text-muted);
+            font-weight: 600;
+            padding: 10px 18px;
         }
 
-        .panel {
+        .btn-ghost:hover {
+            color: var(--color-text);
+            background: rgba(10, 92, 54, 0.06);
+        }
+
+        /* ============================================
+             BADGE
+             ============================================ */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 16px;
+            border-radius: 999px;
+            background: var(--color-primary-light);
+            color: var(--color-primary);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .badge::before {
+            content: '';
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.18);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.3); }
+        }
+
+        /* ============================================
+             NAVIGATION
+             ============================================ */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(250, 251, 249, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .navbar-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 14px 28px;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .navbar-logo {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, var(--color-primary), #094828);
+            color: #fff;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 19px;
+            letter-spacing: 0.04em;
+            box-shadow: 0 10px 24px rgba(10, 92, 54, 0.24);
+        }
+
+        .navbar-title {
+            font-weight: 800;
+            font-size: 1.15rem;
+            letter-spacing: 0.04em;
+            color: var(--color-text);
+        }
+
+        .navbar-subtitle {
+            font-size: 0.73rem;
+            color: var(--color-text-muted);
+            font-weight: 500;
+        }
+
+        .navbar-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ============================================
+             HERO SECTION
+             ============================================ */
+        .hero-section {
             position: relative;
-            border: 1px solid rgba(20, 32, 22, 0.08);
-            background: var(--surface);
-            backdrop-filter: blur(16px);
-            border-radius: 28px;
-            box-shadow: var(--shadow);
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 80px 28px 88px;
             overflow: hidden;
         }
 
-        .panel::after {
-            content: '';
+        .hero-bg {
             position: absolute;
-            inset: auto -10% -30% auto;
-            width: 240px;
-            height: 240px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(212, 151, 47, 0.18), transparent 70%);
+            inset: 0;
             pointer-events: none;
+            z-index: 0;
         }
 
-        .hero-main {
-            padding: 36px;
-        }
-
-        .eyebrow {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 14px;
-            border-radius: 999px;
-            background: rgba(15, 94, 58, 0.1);
-            color: var(--accent);
-            font-size: 13px;
-            font-weight: 800;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-        }
-
-        .eyebrow::before {
-            content: '';
-            width: 8px;
-            height: 8px;
+        .hero-bg-orb {
+            position: absolute;
             border-radius: 50%;
-            background: var(--accent-2);
-            box-shadow: 0 0 0 5px rgba(212, 151, 47, 0.16);
+            filter: blur(120px);
+            opacity: 0.45;
         }
 
-        h1 {
-            margin: 18px 0 14px;
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: clamp(2.5rem, 4.8vw, 5rem);
-            line-height: 0.96;
-            letter-spacing: -0.04em;
+        .hero-bg-orb--green {
+            width: 520px;
+            height: 520px;
+            top: -200px;
+            right: -140px;
+            background: radial-gradient(circle, rgba(10, 92, 54, 0.22), transparent);
         }
 
-        .lede {
-            max-width: 58ch;
-            font-size: 1.05rem;
-            line-height: 1.7;
-            color: var(--muted);
-            margin: 0;
+        .hero-bg-orb--gold {
+            width: 420px;
+            height: 420px;
+            bottom: -120px;
+            left: -100px;
+            background: radial-gradient(circle, rgba(212, 151, 47, 0.18), transparent);
         }
 
-        .actions {
+        .hero-bg-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(var(--color-border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--color-border) 1px, transparent 1px);
+            background-size: 56px 56px;
+            mask-image: radial-gradient(ellipse at center, rgba(0,0,0,0.12), transparent 70%);
+            -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,0.12), transparent 70%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 56px;
+            align-items: center;
+        }
+
+        .hero-text {
+            max-width: 600px;
+        }
+
+        .hero-title {
+            font-size: clamp(2.8rem, 5.5vw, 4.2rem);
+            margin: 20px 0 22px;
+            line-height: 1.02;
+        }
+
+        .hero-title span {
+            background: linear-gradient(135deg, var(--color-primary) 20%, #0f7d4a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            line-height: 1.75;
+            color: var(--color-text-muted);
+            margin: 0 0 34px;
+            max-width: 52ch;
+        }
+
+        .hero-actions {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 26px;
+            gap: 14px;
+            margin-bottom: 24px;
         }
 
-        .hero-aside {
-            display: grid;
-            grid-template-rows: auto 1fr;
-            gap: 16px;
-            padding: 24px;
-            background: linear-gradient(180deg, rgba(32, 60, 43, 0.98), rgba(15, 41, 29, 0.98));
-            color: #f5f7f2;
+        .hero-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 22px;
+            font-size: 0.84rem;
+            color: var(--color-text-muted);
         }
 
-        .hero-aside h2,
+        .hero-meta span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .hero-meta .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #22c55e;
+        }
+
+        /* Hero visual — Document management illustration */
+        .hero-visual {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-illustration {
+            position: relative;
+            width: 100%;
+            max-width: 440px;
+        }
+
+        .hero-illustration svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        @keyframes float-slow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        @keyframes float-slower {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        .float-slow { animation: float-slow 4s ease-in-out infinite; }
+        .float-slower { animation: float-slower 5s ease-in-out infinite; }
+
+        /* ============================================
+             FEATURES SECTION
+             ============================================ */
+        .section {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 80px 28px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 56px;
+        }
+
+        .section-label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--color-primary);
+            margin-bottom: 12px;
+        }
+
         .section-title {
-            margin: 0;
+            font-size: clamp(2rem, 3.5vw, 2.8rem);
+            margin: 0 0 16px;
+        }
+
+        .section-description {
+            font-size: 1.08rem;
+            color: var(--color-text-muted);
+            line-height: 1.7;
+            max-width: 56ch;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: 32px 28px;
+            transition: all var(--transition);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--color-border-strong);
+        }
+
+        .feature-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .feature-icon--green {
+            background: var(--color-primary-light);
+            color: var(--color-primary);
+        }
+
+        .feature-icon--gold {
+            background: var(--color-accent-light);
+            color: var(--color-accent);
+        }
+
+        .feature-card h3 {
             font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0 0 10px;
             letter-spacing: -0.02em;
         }
 
-        .hero-aside h2 {
-            font-size: 1.35rem;
+        .feature-card p {
+            color: var(--color-text-muted);
+            line-height: 1.7;
+            margin: 0;
+            font-size: 0.95rem;
         }
 
-        .hero-aside p {
-            margin: 10px 0 0;
-            color: rgba(245, 247, 242, 0.78);
-            line-height: 1.65;
+        .footer-text {
+            font-size: 0.82rem;
+            color: var(--color-text-muted);
         }
 
-        .connection-box {
-            border-radius: 22px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+        /* ============================================
+             RESPONSIVE
+             ============================================ */
+        .cta-section {
+            background: linear-gradient(135deg, var(--color-primary-light), #eef6f0);
+            border-top: 1px solid var(--color-border);
+            border-bottom: 1px solid var(--color-border);
         }
 
-        .connection-label {
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.16em;
-            color: rgba(245, 247, 242, 0.66);
+        .cta-inner {
+            max-width: 640px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 72px 28px;
         }
 
-        .connection-value {
-            margin-top: 10px;
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.45rem;
-            line-height: 1.2;
+        .cta-inner h2 {
+            font-size: clamp(1.8rem, 3vw, 2.4rem);
+            margin: 0 0 14px;
         }
 
-        .connection-meta {
-            margin-top: 12px;
-            display: grid;
-            gap: 8px;
+        .cta-inner p {
+            color: var(--color-text-muted);
+            line-height: 1.7;
+            font-size: 1.05rem;
+            margin: 0 0 28px;
         }
 
-        .meta-row {
+        .cta-actions {
             display: flex;
-            justify-content: space-between;
-            gap: 16px;
-            font-size: 14px;
-            color: rgba(245, 247, 242, 0.78);
+            flex-wrap: wrap;
+            gap: 14px;
+            justify-content: center;
         }
 
-        .meta-row strong {
-            color: #fff;
-            font-weight: 700;
+        /* ============================================
+             FOOTER
+             ============================================ */
+        .footer {
+            background: var(--color-surface);
+            border-top: 1px solid var(--color-border);
         }
 
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            gap: 18px;
-            margin-top: 22px;
-        }
-
-        .stat-card {
-            grid-column: span 4;
-            background: var(--surface-strong);
-            border: 1px solid rgba(20, 32, 22, 0.08);
-            border-radius: 22px;
-            padding: 18px;
-            box-shadow: 0 14px 34px rgba(26, 34, 28, 0.08);
-            transition: transform 180ms ease;
-        }
-
-        .stat-card .label {
-            color: var(--muted);
-            font-size: 13px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-        }
-
-        .stat-card .value {
-            margin-top: 10px;
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 2rem;
-            letter-spacing: -0.04em;
-        }
-
-        .stat-card .hint {
-            margin-top: 8px;
-            color: var(--muted);
-            line-height: 1.5;
-            font-size: 14px;
-        }
-
-        .modules {
-            margin-top: 22px;
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            gap: 18px;
-        }
-
-        .module-head {
-            grid-column: 1 / -1;
+        .footer-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 28px 28px;
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: end;
             gap: 16px;
             flex-wrap: wrap;
         }
 
-        .module-head p {
-            margin: 8px 0 0;
-            color: var(--muted);
-            max-width: 62ch;
-            line-height: 1.6;
-        }
-
-        .link-card {
-            grid-column: span 3;
-            background: rgba(255, 255, 255, 0.84);
-            border: 1px solid rgba(20, 32, 22, 0.09);
-            border-radius: 22px;
-            padding: 18px;
-            box-shadow: 0 12px 30px rgba(26, 34, 28, 0.07);
-            transition: transform 180ms ease;
-        }
-
-        .link-card h3 {
-            margin: 0;
-            font-size: 1rem;
-            font-family: 'Space Grotesk', sans-serif;
-        }
-
-        .link-card p {
-            margin: 10px 0 16px;
-            color: var(--muted);
-            line-height: 1.6;
-            font-size: 14px;
-        }
-
-        .inline-link {
-            display: inline-flex;
+        .footer-brand {
+            display: flex;
             align-items: center;
-            gap: 8px;
-            color: var(--accent);
-            font-weight: 800;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--color-text);
         }
 
-        .inline-link::after {
-            content: '→';
-            transition: transform 180ms ease;
-        }
-
-        .inline-link:hover::after {
-            transform: translateX(3px);
-        }
-
-        .footer-note {
-            margin-top: 22px;
-            color: var(--muted);
+        .footer-logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 9px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+            display: grid;
+            place-items: center;
+            color: #fff;
             font-size: 14px;
-            line-height: 1.6;
+            font-weight: 800;
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: 0.04em;
         }
 
-        @media (max-width: 980px) {
-            .hero {
+        .footer-text {
+            font-size: 0.82rem;
+            color: var(--color-text-muted);
+        }
+
+        /* ============================================
+             RESPONSIVE
+             ============================================ */
+        @media (max-width: 1024px) {
+            .hero-content {
                 grid-template-columns: 1fr;
+                gap: 40px;
             }
 
-            .stat-card,
-            .link-card {
-                grid-column: span 6;
+            .hero-visual {
+                order: -1;
+            }
+
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
 
-        @media (max-width: 700px) {
-            .page {
-                width: min(100% - 20px, 1200px);
-                padding-top: 16px;
+        @media (max-width: 768px) {
+            .navbar-inner {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+                padding: 12px 20px;
             }
 
-            .topbar {
-                align-items: flex-start;
+            .navbar-links {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+
+            .navbar-links .btn {
+                flex: 1;
+                min-width: 110px;
+            }
+
+            .hero-section {
+                padding: 44px 20px 64px;
+            }
+
+            .hero-actions {
                 flex-direction: column;
             }
 
-            .hero-main,
-            .hero-aside {
-                padding: 22px;
-            }
-
-            .stat-card,
-            .link-card {
-                grid-column: 1 / -1;
-            }
-
-            .actions,
-            .nav {
+            .hero-actions .btn {
                 width: 100%;
             }
 
-            .button,
-            .ghost,
-            .chip {
-                width: 100%;
-                justify-content: center;
-                display: inline-flex;
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section {
+                padding: 56px 20px;
+            }
+
+            .footer-inner {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2.2rem;
             }
         }
     </style>
 </head>
 <body>
-    <main class="page">
-        <header class="topbar">
-            <div class="brand">
-                <div class="brand-mark">A</div>
-                <div class="brand-copy">
-                    <span>{{ config('app.name', 'Sistem Daftar Aset JKR') }}</span>
-                    <small>Frontend, backend, and database are live</small>
+    {{-- ========== NAVIGATION ========== --}}
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a href="{{ url('/') }}" class="navbar-brand">
+                <div class="navbar-logo">
+                    <svg viewBox="0 0 44 44" width="44" height="44" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="44" height="44" rx="14" fill="url(#navGrad)"/>
+                        <defs><linearGradient id="navGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="var(--color-primary)"/><stop offset="100%" stop-color="var(--color-primary-dark)"/></linearGradient></defs>
+                        <text x="22" y="29" text-anchor="middle" fill="white" font-family="'Space Grotesk', sans-serif" font-weight="700" font-size="17" letter-spacing="0.06em">JKR</text>
+                    </svg>
                 </div>
-            </div>
+                <div>
+                    <div class="navbar-title">ASPIRA</div>
+                    <div class="navbar-subtitle">Sistem Pengurusan Aset JKR</div>
+                </div>
+            </a>
 
-            <nav class="nav">
-                <a class="chip" href="{{ url('/index.html') }}">index.html</a>
+            <div class="navbar-links">
                 @auth
-                    <a class="chip" href="{{ route('dashboard') }}">Dashboard</a>
+                    <a href="{{ route('dashboard') }}" class="btn btn-ghost">Dashboard</a>
+                    <a href="{{ route('admin.dashboard') }}" class="btn btn-outline">Pentadbiran</a>
                 @else
-                    <a class="chip" href="{{ route('login') }}">Log masuk</a>
-                    <a class="button" href="{{ route('login') }}">Masuk ke sistem</a>
+                    <a href="#features" class="btn btn-ghost">Ciri-Ciri</a>
+                    <a href="{{ route('login') }}" class="btn btn-outline">Log Masuk</a>
+                    <a href="{{ route('login') }}" class="btn btn-primary">Mulakan Sekarang →</a>
                 @endauth
-            </nav>
-        </header>
+            </div>
+        </div>
+    </nav>
 
-        <section class="hero">
-            <article class="panel hero-main">
-                <div class="eyebrow">Laravel application connected</div>
-                <h1>Daftar Aset JKR.</h1>
-                <p class="lede">
-                    Halaman ini menjadi pintu masuk frontend untuk sistem aset, dengan sambungan terus ke backend Laravel dan data pangkalan data yang sedang aktif.
-                    Gunakan pautan di bawah untuk masuk ke modul pengguna atau pentadbir.
+    {{-- ========== HERO SECTION ========== --}}
+    <section class="hero-section">
+        <div class="hero-bg">
+            <div class="hero-bg-orb hero-bg-orb--green"></div>
+            <div class="hero-bg-orb hero-bg-orb--gold"></div>
+            <div class="hero-bg-grid"></div>
+        </div>
+
+        <div class="hero-content">
+            <div class="hero-text">
+                <div class="badge">Platform Pengurusan Aset</div>
+                <h1 class="heading-display hero-title">
+                    <span>ASPIRA</span> —Urus Aset Dengan Lebih Pintar
+                </h1>
+                <p class="hero-description">
+                    Platform komprehensif untuk mengurus, memantau, dan mendokumentasikan 
+                    keseluruhan aset kejuruteraan awam JKR dalam satu sistem bersepadu yang 
+                    direka khas untuk Jabatan Kerja Raya Malaysia.
                 </p>
 
-                <div class="actions">
+                <div class="hero-actions">
                     @auth
-                        <a class="button" href="{{ route('dashboard') }}">Pergi ke Dashboard</a>
-                        <a class="ghost" href="{{ route('admin.dashboard') }}">Admin Dashboard</a>
+                        <a href="{{ route('dashboard') }}" class="btn btn-primary">Pergi ke Dashboard</a>
+                        <a href="{{ route('admin.dashboard') }}" class="btn btn-outline">Panel Pentadbiran</a>
                     @else
-                        <a class="button" href="{{ route('login') }}">Log masuk untuk akses modul</a>
-                        <a class="ghost" href="{{ url('/index.html') }}">Buka index.html</a>
+                        <a href="{{ route('login') }}" class="btn btn-primary">Log Masuk ke ASPIRA</a>
+                        <a href="#features" class="btn btn-outline">Ketahui Lebih Lanjut</a>
                     @endauth
                 </div>
 
-                <div class="footer-note">
-                    Laluan utama yang disediakan: <strong>/</strong>, <strong>/index.html</strong>, <strong>/login</strong>, dan <strong>/dashboard</strong>.
+                <div class="hero-meta">
+                    <span><span class="dot"></span> Sistem aktif & beroperasi</span>
+                    <span>✓ Pangkalan data tersambung</span>
+                    <span>✓ Infrastruktur Laravel</span>
                 </div>
-            </article>
-
-            <aside class="panel hero-aside">
-                <div>
-                    <h2>Connection status</h2>
-                    <p>Data di bawah diambil secara langsung dari model Laravel, jadi ia akan berubah ikut rekod dalam database anda.</p>
-                </div>
-
-                <div class="connection-box">
-                    <div class="connection-label">App URL</div>
-                    <div class="connection-value">{{ config('app.url', 'http://localhost:8000') }}</div>
-
-                    <div class="connection-meta">
-                        <div class="meta-row"><span>Frontend</span><strong>Welcome page</strong></div>
-                        <div class="meta-row"><span>Backend</span><strong>Laravel routes & controllers</strong></div>
-                        <div class="meta-row"><span>Database</span><strong>Connected counts</strong></div>
-                    </div>
-                </div>
-            </aside>
-        </section>
-
-        <section class="stats">
-            @foreach ($stats as $stat)
-                <article class="stat-card">
-                    <div class="label">{{ $stat['label'] }}</div>
-                    <div class="value">{{ number_format($stat['value']) }}</div>
-                    <div class="hint">{{ $stat['hint'] }}</div>
-                </article>
-            @endforeach
-        </section>
-
-        <section class="modules panel" style="padding: 26px; margin-top: 22px;">
-            <div class="module-head">
-                <div>
-                    <h2 class="section-title" style="font-size: 1.7rem;">Quick links</h2>
-                    <p>
-                        Pilih modul yang anda mahu buka. Akses penuh ke komponen, komponen utama, sub komponen, dan pentadbiran adalah melalui log masuk.
-                    </p>
-                </div>
-                <a class="chip" href="{{ route('login') }}">Login screen</a>
             </div>
 
-            <article class="link-card">
-                <h3>Frontend index</h3>
-                <p>Halaman utama untuk pengguna melihat status sambungan sistem dan masuk ke aplikasi.</p>
-                <a class="inline-link" href="{{ url('/index.html') }}">Open index.html</a>
-            </article>
+            <div class="hero-visual">
+                <div class="hero-illustration">
+                    <svg viewBox="0 0 480 380" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        {{-- Background circle --}}
+                        <circle cx="240" cy="190" r="170" fill="var(--color-primary-light)" opacity="0.6"/>
+                        <circle cx="240" cy="190" r="140" fill="var(--color-primary-light)" opacity="0.4"/>
 
-            <article class="link-card">
-                <h3>Authentication</h3>
-                <p>Masuk ke backend Laravel dan gunakan peranan admin atau pengguna biasa.</p>
-                <a class="inline-link" href="{{ route('login') }}">Open login</a>
-            </article>
+                        {{-- Desk / table --}}
+                        <rect x="70" y="240" width="340" height="14" rx="7" fill="#d4d9d5"/>
+                        <rect x="90" y="250" width="12" height="80" rx="4" fill="#c2c8c3"/>
+                        <rect x="378" y="250" width="12" height="80" rx="4" fill="#c2c8c3"/>
 
-            {{-- Hiding user dashboard card --}}
+                        {{-- Clipboard / Borang --}}
+                        <g class="float-slow">
+                            <rect x="160" y="70" width="160" height="190" rx="8" fill="white" stroke="var(--color-primary)" stroke-width="2"/>
+                            {{-- Clipboard clip --}}
+                            <rect x="210" y="62" width="60" height="16" rx="6" fill="var(--color-accent)"/>
+                            <circle cx="240" cy="70" r="3" fill="#fff" opacity="0.8"/>
+                            {{-- Form lines --}}
+                            <rect x="178" y="100" width="60" height="8" rx="4" fill="var(--color-border-strong)"/>
+                            <rect x="178" y="120" width="124" height="6" rx="3" fill="var(--color-border)"/>
+                            <rect x="178" y="136" width="100" height="6" rx="3" fill="var(--color-border)"/>
+                            {{-- Form field boxes --}}
+                            <rect x="178" y="156" width="124" height="22" rx="4" fill="var(--color-surface-alt)" stroke="var(--color-border)" stroke-width="1"/>
+                            <rect x="178" y="188" width="124" height="22" rx="4" fill="var(--color-surface-alt)" stroke="var(--color-border)" stroke-width="1"/>
+                            <rect x="178" y="220" width="80" height="22" rx="4" fill="var(--color-surface-alt)" stroke="var(--color-border)" stroke-width="1"/>
+                            {{-- Checkmark --}}
+                            <circle cx="282" cy="167" r="10" fill="#22c55e"/>
+                            <path d="M278 167l3 3 5-5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </g>
 
-            <article class="link-card">
-                <h3>Admin area</h3>
-                <p>Pautan pengurusan untuk pengguna, sistem, blok, aras, ruang, dan audit log.</p>
-                <a class="inline-link" href="{{ route('admin.dashboard') }}">Open admin dashboard</a>
-            </article>
-        </section>
-    </main>
+                        {{-- Floating document 1 --}}
+                        <g class="float-slower">
+                            <rect x="290" y="120" width="100" height="70" rx="6" fill="white" stroke="var(--color-accent)" stroke-width="1.5" transform="rotate(8 340 155)"/>
+                            <rect x="302" y="133" width="50" height="5" rx="2.5" fill="var(--color-border-strong)" transform="rotate(8 340 155)"/>
+                            <rect x="302" y="145" width="76" height="4" rx="2" fill="var(--color-border)" transform="rotate(8 340 155)"/>
+                            <rect x="302" y="154" width="60" height="4" rx="2" fill="var(--color-border)" transform="rotate(8 340 155)"/>
+                            <rect x="302" y="163" width="40" height="4" rx="2" fill="var(--color-border)" transform="rotate(8 340 155)"/>
+                            <circle cx="380" cy="133" r="7" fill="var(--color-accent)" transform="rotate(8 340 155)"/>
+                            <path d="M377 133l1.5 1.5 3-3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" transform="rotate(8 340 155)"/>
+                        </g>
+
+                        {{-- Pencil --}}
+                        <g class="float-slow">
+                            <rect x="105" y="135" width="8" height="55" rx="3" fill="var(--color-accent)" transform="rotate(-15 109 162)"/>
+                            <polygon points="109,80 105,95 113,95" fill="#f5deb3" transform="rotate(-15 109 162)"/>
+                            <rect x="107" y="78" width="4" height="6" rx="1" fill="#333" transform="rotate(-15 109 162)"/>
+                        </g>
+
+                        {{-- Small floating doc --}}
+                        <g class="float-slower">
+                            <rect x="90" y="85" width="80" height="55" rx="5" fill="white" stroke="var(--color-primary)" stroke-width="1.5" transform="rotate(-5 130 112)"/>
+                            <rect x="100" y="96" width="40" height="4" rx="2" fill="var(--color-border-strong)" transform="rotate(-5 130 112)"/>
+                            <rect x="100" y="106" width="55" height="3" rx="1.5" fill="var(--color-border)" transform="rotate(-5 130 112)"/>
+                            <rect x="100" y="114" width="35" height="3" rx="1.5" fill="var(--color-border)" transform="rotate(-5 130 112)"/>
+                        </g>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- ========== FEATURES SECTION ========== --}}
+    <section class="section" id="features">
+        <div class="section-header">
+            <div class="section-label">Platform ASPIRA</div>
+            <h2 class="heading-section section-title">Ciri-Ciri Utama</h2>
+            <p class="section-description">
+                Direka khas untuk memenuhi keperluan pengurusan aset JKR — menggabungkan 
+                data kejuruteraan dengan antara muka yang intuitif dan profesional.
+            </p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon feature-icon--green">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                </div>
+                <h3>Pengurusan Komponen</h3>
+                <p>
+                    Jejak dan urus komponen, komponen utama, dan sub-komponen 
+                    aset kejuruteraan dengan hierarki yang teratur dan jelas.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon feature-icon--gold">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                </div>
+                <h3>Data Premis & Blok</h3>
+                <p>
+                    Rekod lengkap premis, blok, aras, dan ruang — setiap aset 
+                    mempunyai lokasi yang tepat dalam pangkalan data.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon feature-icon--green">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                </div>
+                <h3>Laporan & Eksport</h3>
+                <p>
+                    Jana laporan terperinci dan eksport ke format PDF serta Excel 
+                    untuk analisis data dan pelaporan lengkap.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon feature-icon--gold">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </div>
+                <h3>Kawalan Akses</h3>
+                <p>
+                    Sistem peranan pentadbir dan pengguna dengan kawalan capaian 
+                    yang ketat untuk keselamatan data di setiap peringkat.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon feature-icon--green">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                </div>
+                <h3>Dokumen Berkaitan</h3>
+                <p>
+                    Lampirkan dokumen sokongan kepada komponen dan sub-komponen — 
+                    semua rekod dalam satu repositori terpusat.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon feature-icon--gold">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
+                <h3>Audit Trail</h3>
+                <p>
+                    Setiap perubahan direkodkan dalam log audit yang komprehensif 
+                    untuk pemantauan, ketelusan, dan pematuhan standard.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    {{-- ========== CTA SECTION ========== --}}
+    <section class="cta-section">
+        <div class="cta-inner">
+            <h2 class="heading-section">Bersedia Untuk Bermula?</h2>
+            <p>
+                Log masuk ke ASPIRA sekarang dan urus aset kejuruteraan 
+                awam anda dengan lebih cekap, teratur, dan profesional.
+            </p>
+            <div class="cta-actions">
+                @auth
+                    <a href="{{ route('dashboard') }}" class="btn btn-primary">Pergi ke Dashboard</a>
+                    <a href="{{ route('admin.dashboard') }}" class="btn btn-outline">Panel Pentadbiran</a>
+                @else
+                    <a href="{{ route('login') }}" class="btn btn-primary">Log Masuk Sekarang</a>
+                    <a href="#features" class="btn btn-outline">Lihat Ciri-Ciri</a>
+                @endauth
+            </div>
+        </div>
+    </section>
+
+    {{-- ========== FOOTER ========== --}}
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <div class="footer-logo">
+                    <svg viewBox="0 0 32 32" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="32" height="32" rx="9" fill="url(#ftrGrad)"/>
+                        <defs><linearGradient id="ftrGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="var(--color-primary)"/><stop offset="100%" stop-color="var(--color-primary-dark)"/></linearGradient></defs>
+                        <text x="16" y="22" text-anchor="middle" fill="white" font-family="'Space Grotesk', sans-serif" font-weight="700" font-size="13" letter-spacing="0.06em">JKR</text>
+                    </svg>
+                </div>
+                ASPIRA — Sistem Pengurusan Aset JKR
+            </div>
+            <div class="footer-text">
+                &copy; {{ date('Y') }} Jabatan Kerja Raya Malaysia. Hak Cipta Terpelihara.
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
