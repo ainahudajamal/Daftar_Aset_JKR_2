@@ -126,7 +126,7 @@
                                 <select name="role" class="form-select @error('role') is-invalid @enderror" required>
                                     <option value="admin" selected>JKR</option>
                                 </select>
-                                <small class="text-muted">Semua pengguna baru didaftarkan dengan akses JKR secara lalai.</small>
+                                <small class="text-muted">Semua pengguna baru akan didaftarkan dengan akses JKR secara automatik.</small>
                                 @error('role')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
