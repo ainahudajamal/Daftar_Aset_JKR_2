@@ -70,9 +70,15 @@
             from { opacity: 0; transform: translateX(-20px); }
             to   { opacity: 1; transform: translateX(0); }
         }
-        @keyframes pulse-dot {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.4); opacity: 0.7; }
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(1);
+                opacity: 0.6;
+            }
+            100% {
+                transform: scale(2.6);
+                opacity: 0;
+            }
         }
         @keyframes shimmer {
             0%   { background-position: -200% 0; }
@@ -196,19 +202,40 @@
         .sidebar.collapsed .user-details { opacity: 0; width: 0; display: none; }
 
         .user-name { font-weight: 600; font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .user-role { font-size: 0.72rem; color: rgba(255,255,255,0.55); white-space: nowrap; display: flex; align-items: center; gap: 6px; margin-top: 2px; }
+        .user-role {
+            font-size: 0.72rem;
+            color: rgba(255,255,255,0.55);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 2px;
+            padding-left: 4px;
+        }
 
         /* Online dot */
         .status-dot {
-            width: 7px; height: 7px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             background: var(--success);
-            box-shadow: 0 0 6px var(--success);
-            animation: pulse-dot 2s ease-in-out infinite;
             display: inline-block;
             flex-shrink: 0;
-            margin-right: 8px;
-            margin-left: 2px;
+            position: relative;
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+        }
+
+        .status-dot::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: var(--success);
+            opacity: 0.6;
+            animation: pulse-ring 2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
         }
 
         /* ========== NAV SECTION LABEL ========== */
