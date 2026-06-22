@@ -641,8 +641,7 @@
 
             <div class="navbar-links">
                 @auth
-                    <a href="{{ route('dashboard') }}" class="btn btn-ghost">Dashboard</a>
-                    <a href="{{ route('admin.dashboard') }}" class="btn btn-outline">Pentadbiran</a>
+                    <a href="{{ route('dashboard') }}" class="btn btn-primary">Akses Sistem</a>
                 @else
                     <a href="#features" class="btn btn-ghost">Ciri-Ciri</a>
                     <a href="{{ route('login') }}" class="btn btn-outline">Log Masuk</a>
@@ -674,8 +673,7 @@
 
                 <div class="hero-actions">
                     @auth
-                        <a href="{{ route('dashboard') }}" class="btn btn-primary">Pergi ke Dashboard</a>
-                        <a href="{{ route('admin.dashboard') }}" class="btn btn-outline">Panel Pentadbiran</a>
+                        <a href="{{ route('dashboard') }}" class="btn btn-primary">Akses Sistem</a>
                     @else
                         <a href="{{ route('login') }}" class="btn btn-primary">Log Masuk ke ASPIRA</a>
                         <a href="#features" class="btn btn-outline">Ketahui Lebih Lanjut</a>
@@ -841,8 +839,7 @@
             </p>
             <div class="cta-actions">
                 @auth
-                    <a href="{{ route('dashboard') }}" class="btn btn-primary">Pergi ke Dashboard</a>
-                    <a href="{{ route('admin.dashboard') }}" class="btn btn-outline">Panel Pentadbiran</a>
+                    <a href="{{ route('dashboard') }}" class="btn btn-primary">Akses Sistem</a>
                 @else
                     <a href="{{ route('login') }}" class="btn btn-primary">Log Masuk Sekarang</a>
                     <a href="#features" class="btn btn-outline">Lihat Ciri-Ciri</a>
