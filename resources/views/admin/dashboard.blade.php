@@ -166,17 +166,160 @@
             </div>
         </div>
 
-        {{-- Bar: Top 5 Users by Component --}}
+        {{-- Horizontal Bar: Components by Sistem --}}
         <div class="col-md-8">
             <div class="card h-100">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h6 class="mb-0 fw-700">
-                        <i class="bi bi-bar-chart-fill text-primary me-2"></i>Top 5 Pengguna Aktif
+                        <i class="bi bi-bar-chart-steps text-primary me-2"></i>Komponen Mengikut Sistem
                     </h6>
-                    <span class="badge" style="background:rgba(37,99,235,0.1);color:#2563eb;">Mengikut Komponen</span>
+                    <span class="badge" style="background:rgba(16,185,129,0.1);color:#059669;">Taburan Sistem</span>
                 </div>
                 <div class="card-body" style="min-height:220px;">
-                    <canvas id="userActivityChart" style="max-height:200px;"></canvas>
+                    @if($componentsBySistem->isEmpty())
+                        <div class="empty-state">
+                            <div class="empty-state-icon"><i class="bi bi-diagram-3"></i></div>
+                            <p>Tiada data sistem</p>
+                        </div>
+                    @else
+                        <div class="sistem-bar-list">
+                            @php $maxComp = $componentsBySistem->max('components_count') ?: 1; @endphp
+                            @foreach($componentsBySistem as $s)
+                            @php
+                                $barColors = ['linear-gradient(90deg,#2563eb,#60a5fa)', 'linear-gradient(90deg,#10b981,#34d399)', 'linear-gradient(90deg,#8b5cf6,#a78bfa)'];
+                                $barGradient = $barColors[$loop->index % 3];
+                                $barWidth = ($maxComp > 0) ? round(($s->components_count / $maxComp) * 100) : 0;
+                            @endphp
+                            <div class="sistem-bar-row">
+                                <div class="sistem-bar-meta">
+                                    <span class="sistem-bar-kod">{{ $s->kod }}</span>
+                                    <span class="sistem-bar-nama">{{ Str::limit($s->nama, 30) }}</span>
+                                    <span class="sistem-bar-count">{{ $s->components_count }}</span>
+                                </div>
+                                <div class="sistem-bar-track">
+                                    <div class="sistem-bar-fill"
+                                         data-width="{{ $barWidth }}"
+                                         data-bg="{{ $barGradient }}">
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- ===== AUDIT LOG + USER OVERVIEW ===== --}}
+    <div class="row g-3 mb-4">
+        {{-- Recent Audit Log --}}
+        <div class="col-md-8">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0 fw-700">
+                        <i class="bi bi-clock-history text-primary me-2"></i>Log Aktiviti Terkini
+                    </h6>
+                    <span class="badge" style="background:rgba(139,92,246,0.1);color:#7c3aed;">Masa Nyata</span>
+                </div>
+                <div class="card-body p-0">
+                    @forelse($recentAuditLogs as $log)
+                    @php
+                        $logTitle = strtolower($log->title ?? '');
+                        $isCreate = str_contains($logTitle, 'tambah') || str_contains($logTitle, 'cipta') || str_contains($logTitle, 'buat');
+                        $isDelete = str_contains($logTitle, 'padam') || str_contains($logTitle, 'buang');
+                        $isEdit   = str_contains($logTitle, 'kemaskini') || str_contains($logTitle, 'edit') || str_contains($logTitle, 'ubah');
+                        $auditBg    = $isCreate ? 'rgba(16,185,129,0.1)' : ($isDelete ? 'rgba(239,68,68,0.1)' : ($isEdit ? 'rgba(245,158,11,0.1)' : 'rgba(37,99,235,0.1)'));
+                        $auditColor = $isCreate ? '#10b981' : ($isDelete ? '#ef4444' : ($isEdit ? '#f59e0b' : '#2563eb'));
+                        $auditIcon  = $isCreate ? 'bi-plus-lg' : ($isDelete ? 'bi-trash3' : ($isEdit ? 'bi-pencil' : 'bi-eye'));
+                    @endphp
+                    <div class="audit-row {{ !$loop->last ? 'audit-row-border' : '' }}">
+                        <div class="audit-icon-wrap" data-bg="{{ $auditBg }}">
+                            <i class="bi {{ $auditIcon }}" data-color="{{ $auditColor }}"></i>
+                        </div>
+                        <div class="audit-info">
+                            <div class="audit-title">{{ $log->title }}</div>
+                            @if($log->description)
+                            <div class="audit-desc">{{ Str::limit($log->description, 60) }}</div>
+                            @endif
+                        </div>
+                        <div class="audit-right">
+                            @if($log->user)
+                            <div class="audit-user">{{ $log->user->name }}</div>
+                            @endif
+                            <div class="audit-time">{{ $log->created_at->diffForHumans() }}</div>
+                        </div>
+                    </div>
+                    @empty
+                    <div class="empty-state py-4">
+                        <div class="empty-state-icon"><i class="bi bi-clock"></i></div>
+                        <p>Tiada log aktiviti</p>
+                    </div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+
+        {{-- User Role Breakdown --}}
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0 fw-700">
+                        <i class="bi bi-people-fill text-primary me-2"></i>Pengguna Sistem
+                    </h6>
+                    <span class="badge" style="background:rgba(37,99,235,0.1);color:#2563eb;">Ringkasan</span>
+                </div>
+                <div class="card-body d-flex flex-column justify-content-center gap-3">
+                    {{-- Admin --}}
+                    <div class="user-role-block">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="role-dot" style="background:#2563eb;"></div>
+                                <span class="fw-600" style="font-size:0.88rem;">Administrator</span>
+                            </div>
+                            <span class="fw-700" style="color:#2563eb;font-size:1rem;">{{ $stats['admin_users'] }}</span>
+                        </div>
+                        <div class="role-progress-track">
+                            <div class="role-progress-fill" style="background:#2563eb;"
+                                 data-width="{{ $stats['total_users'] > 0 ? round(($stats['admin_users'] / $stats['total_users']) * 100) : 0 }}"></div>
+                        </div>
+                    </div>
+                    {{-- Regular User --}}
+                    <div class="user-role-block">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="role-dot" style="background:#10b981;"></div>
+                                <span class="fw-600" style="font-size:0.88rem;">Pengguna Biasa</span>
+                            </div>
+                            <span class="fw-700" style="color:#10b981;font-size:1rem;">{{ $stats['regular_users'] }}</span>
+                        </div>
+                        <div class="role-progress-track">
+                            <div class="role-progress-fill" style="background:#10b981;"
+                                 data-width="{{ $stats['total_users'] > 0 ? round(($stats['regular_users'] / $stats['total_users']) * 100) : 0 }}"></div>
+                        </div>
+                    </div>
+                    {{-- Active --}}
+                    <div class="user-role-block">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="role-dot" style="background:#f59e0b;"></div>
+                                <span class="fw-600" style="font-size:0.88rem;">Pengguna Aktif</span>
+                            </div>
+                            <span class="fw-700" style="color:#f59e0b;font-size:1rem;">{{ $stats['active_users'] }}</span>
+                        </div>
+                        <div class="role-progress-track">
+                            <div class="role-progress-fill" style="background:#f59e0b;"
+                                 data-width="{{ $stats['total_users'] > 0 ? round(($stats['active_users'] / $stats['total_users']) * 100) : 0 }}"></div>
+                        </div>
+                    </div>
+                    <hr class="my-1">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span style="font-size:0.82rem;color:var(--text-secondary);">Jumlah Keseluruhan</span>
+                        <span class="fw-700" style="font-size:1.2rem;color:var(--text-primary);">{{ $stats['total_users'] }}</span>
+                    </div>
+                    <a href="{{ route('admin.users.index') }}" class="btn btn-sm btn-outline-primary mt-1">
+                        <i class="bi bi-arrow-right me-1"></i>Urus Semua Pengguna
+                    </a>
                 </div>
             </div>
         </div>
@@ -463,6 +606,68 @@
     .fw-600 { font-weight: 600; }
     .fw-700 { font-weight: 700; }
 
+    /* ===== SISTEM BAR LIST ===== */
+    .sistem-bar-list { display: flex; flex-direction: column; gap: 10px; padding: 4px 0; }
+    .sistem-bar-row { display: flex; flex-direction: column; gap: 4px; }
+    .sistem-bar-meta {
+        display: flex; align-items: center; gap: 8px;
+    }
+    .sistem-bar-kod {
+        font-size: 0.72rem; font-weight: 700;
+        background: rgba(37,99,235,0.08); color: #2563eb;
+        border-radius: 5px; padding: 1px 7px;
+        white-space: nowrap;
+    }
+    .sistem-bar-nama {
+        font-size: 0.82rem; font-weight: 600; color: var(--text-primary);
+        flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .sistem-bar-count {
+        font-size: 0.8rem; font-weight: 700; color: var(--text-secondary);
+        margin-left: auto; white-space: nowrap;
+    }
+    .sistem-bar-track {
+        height: 8px; border-radius: 8px;
+        background: var(--border-color);
+        overflow: hidden;
+    }
+    .sistem-bar-fill {
+        height: 100%; border-radius: 8px;
+        width: 0;
+        transition: width 1s cubic-bezier(0.22,1,0.36,1);
+    }
+
+    /* ===== AUDIT LOG ===== */
+    .audit-row {
+        display: flex; align-items: center; gap: 12px;
+        padding: 12px 16px;
+        transition: background 0.2s;
+    }
+    .audit-row:hover { background: var(--content-bg); }
+    .audit-row-border { border-bottom: 1px solid var(--border-color); }
+    .audit-icon-wrap {
+        width: 34px; height: 34px; border-radius: 9px; flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.85rem;
+    }
+    .audit-info { flex: 1; min-width: 0; }
+    .audit-title { font-size: 0.85rem; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .audit-desc { font-size: 0.76rem; color: var(--text-secondary); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .audit-right { text-align: right; flex-shrink: 0; }
+    .audit-user { font-size: 0.76rem; font-weight: 600; color: var(--text-primary); }
+    .audit-time { font-size: 0.72rem; color: var(--text-secondary); }
+
+    /* ===== USER ROLE BREAKDOWN ===== */
+    .role-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+    .role-progress-track {
+        height: 6px; border-radius: 6px; background: var(--border-color); overflow: hidden;
+    }
+    .role-progress-fill {
+        height: 100%; border-radius: 6px; width: 0;
+        transition: width 1s cubic-bezier(0.22,1,0.36,1);
+        opacity: 0.75;
+    }
+
     /* ===== CHART CENTER LABEL ===== */
     .chart-center-label {
         position: absolute;
@@ -501,13 +706,6 @@
 @endsection
 
 @section('scripts')
-@php
-    $top5 = $userActivity->take(5);
-    $barLabels = $top5->pluck('name')->map(fn($n) => strlen($n) > 16 ? substr($n, 0, 16).'…' : $n)->toJson();
-    $barData = $top5->pluck('total_components')->toJson();
-@endphp
-<script id="user-activity-labels" type="application/json">{!! $barLabels !!}</script>
-<script id="user-activity-data" type="application/json">{!! $barData !!}</script>
 <script>
 // ===== ANIMATED COUNTERS =====
 document.querySelectorAll('.counter').forEach(el => {
@@ -555,54 +753,33 @@ new Chart(donutCtx, {
     }
 });
 
-// ===== CHART.JS: TOP 5 USER ACTIVITY =====
-const barCtx = document.getElementById('userActivityChart').getContext('2d');
-const barLabels = JSON.parse(document.getElementById('user-activity-labels').textContent);
-const barData = JSON.parse(document.getElementById('user-activity-data').textContent);
+// ===== ANIMATE SISTEM BARS =====
+window.addEventListener('load', () => {
+    document.querySelectorAll('.sistem-bar-fill').forEach(el => {
+        el.style.background = el.dataset.bg;
+        el.style.width = (el.dataset.width || 0) + '%';
+    });
 
-new Chart(barCtx, {
-    type: 'bar',
-    data: {
-        labels: barLabels,
-        datasets: [{
-            label: 'Komponen',
-            data: barData,
-            backgroundColor: 'rgba(37,99,235,0.15)',
-            borderColor: '#2563eb',
-            borderWidth: 2,
-            borderRadius: 8,
-            borderSkipped: false,
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: {
-            legend: { display: false },
-            tooltip: {
-                callbacks: {
-                    label: ctx => ` ${ctx.parsed.y} Komponen`
-                }
-            }
-        },
-        scales: {
-            x: {
-                grid: { display: false },
-                ticks: { font: { size: 11, weight: '600' }, color: '#64748b' }
-            },
-            y: {
-                beginAtZero: true,
-                grid: { color: 'rgba(0,0,0,0.04)' },
-                ticks: { font: { size: 11 }, color: '#64748b', stepSize: 1 }
-            }
-        },
-        animation: { duration: 900, easing: 'easeInOutQuart' }
-    }
-});
+    // ===== APPLY DYNAMIC AUDIT LOG STYLES =====
+    document.querySelectorAll('.audit-icon-wrap').forEach(el => {
+        if (el.dataset.bg) {
+            el.style.background = el.dataset.bg;
+        }
+        const icon = el.querySelector('i');
+        if (icon && icon.dataset.color) {
+            icon.style.color = icon.dataset.color;
+        }
+    });
 
-// ===== SET PROGRESS BAR WIDTHS =====
-document.querySelectorAll('.sistem-progress-bar').forEach(el => {
-    el.style.width = el.dataset.width + '%';
+    // ===== ANIMATE ROLE PROGRESS BARS =====
+    document.querySelectorAll('.role-progress-fill').forEach(el => {
+        el.style.width = (el.dataset.width || 0) + '%';
+    });
+
+    // ===== ANIMATE SISTEM SECTION PROGRESS =====
+    document.querySelectorAll('.sistem-progress-bar').forEach(el => {
+        el.style.width = el.dataset.width + '%';
+    });
 });
 </script>
 @endsection

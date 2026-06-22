@@ -63,7 +63,21 @@ class AdminDashboardController extends Controller
         // Get sistem statistics
         $sistemStats = Sistem::withCount('subsistems')->get();
 
-        return view('admin.dashboard', compact('stats', 'recentUsers', 'userActivity', 'sistemStats'));
+        // Get components grouped by sistem (for chart)
+        $componentsBySistem = Sistem::withCount('components')
+            ->orderBy('components_count', 'desc')
+            ->get();
+
+        // Get recent audit log entries (last 8)
+        $recentAuditLogs = AuditLog::with('user')
+            ->orderBy('created_at', 'desc')
+            ->take(8)
+            ->get();
+
+        return view('admin.dashboard', compact(
+            'stats', 'recentUsers', 'userActivity', 'sistemStats',
+            'componentsBySistem', 'recentAuditLogs'
+        ));
     }
 
     /**
