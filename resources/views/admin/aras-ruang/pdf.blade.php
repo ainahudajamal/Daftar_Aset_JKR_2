@@ -22,17 +22,17 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
 
 /* ===== Input field types ===== */
 /* Full-border box */
-.fb { border: 1px solid #000; height: 22px; width: 100%; box-sizing: border-box; display: block; }
+.fb { border: 1px solid #000; height: 20px; width: 100%; box-sizing: border-box; display: block; }
 /* Bottom-border only (underline field) */
-.fline { border-bottom: 1px solid #000; height: 20px; width: 100%; display: block; }
+.fline { border-bottom: 1px solid #000; height: 16px; width: 100%; display: block; }
 /* Small checkbox box */
-.small-box { border: 1px solid #000; width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-right: 4px; }
+.small-box { border: 1px solid #000; width: 15px; height: 15px; display: inline-block; vertical-align: middle; margin-right: 4px; }
 
 /* ===== Form layout table ===== */
 .ft    { width: 100%; border-collapse: collapse; }
 .ft td { vertical-align: middle; padding: 4px 2px; border: none; font-size: 11px; }
 .lbl   { white-space: nowrap; }
-.cln   { width: 12px; text-align: center; padding: 0 2px !important; white-space: nowrap; }
+.cln   { width: 10px; text-align: center; padding: 0 2px !important; white-space: nowrap; }
 
 /* ===== Data grid table ===== */
 .dt    { width: 100%; border-collapse: collapse; table-layout: fixed; }
@@ -40,15 +40,15 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
     border: 1px solid #000;
     background-color: #d9d9d9;
     font-weight: bold;
-    font-size: 11px;
+    font-size: 10px;
     text-align: center;
     vertical-align: middle;
-    padding: 4px 2px;
+    padding: 10px 8px;
     line-height: 1.25;
 }
 .dt td {
     border: 1px solid #000;
-    font-size: 11px;
+    font-size: 10px;
     vertical-align: middle;
     padding: 0 3px;
     height: 28px;
@@ -59,8 +59,8 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
 .sec { font-weight: bold; text-decoration: underline; font-size: 12px; text-transform: uppercase; margin-bottom: 4px; }
 
 /* ===== Signature ===== */
-.sig-box  { border: 1px solid #000; height: 28px; display: block; }
-.sig-line { border-bottom: 1px solid #000; height: 18px; display: block; }
+.sig-box  { border: 1px solid #000; height: 35px; display: block; }
+.sig-line { border-bottom: 1px solid #000; height: 16px; display: block; }
 .sig-head { font-weight: bold; text-align: center; text-transform: uppercase; margin-bottom: 3px; }
 
 /* ===== Hint text inside boxes ===== */
@@ -122,8 +122,8 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
 @endphp
 
 <div class="h-wrap"><span class="h-badge">helaian 1</span></div>
-<div style="text-align:right; font-weight:bold; font-size:13px; margin-bottom:3px;">D.A. 5 (JKR.PATA.F6/12 rev 1)</div>
-<div style="text-align:center; font-weight:bold; text-decoration:underline; font-size:15px; margin-bottom:12px;">BORANG PENGUMPULAN DATA DAFTAR ASET KHUSUS (DAK)</div>
+<div style="text-align:right; font-weight:bold; font-size:12px; margin-bottom:3px;">D.A. 5 (JKR.PATA.F6/12 rev 1)</div>
+<div style="text-align:center; font-weight:bold; text-decoration:underline; font-size:14px; margin-bottom:12px; text-transform:uppercase;">BORANG PENGUMPULAN DATA DAFTAR ASET KHUSUS (DAK)</div>
 
 {{-- ── MAKLUMAT PREMIS ── --}}
 <div class="sec">MAKLUMAT PREMIS</div>
@@ -653,8 +653,8 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
 <pagebreak orientation="portrait" sheet-size="A4" />
 
 <div class="h-wrap"><span class="h-badge">helaian 2a</span></div>
-<div style="text-align:right; font-weight:bold; font-size:13px; margin-bottom:3px;">D.A. 5 (JKR.PATA.F6/12 rev 1)</div>
-<div style="text-align:center; font-weight:bold; text-decoration:underline; font-size:15px; margin-bottom:20px; text-transform:uppercase;">GAMBAR BLOK / BINAAN LUAR</div>
+<div style="text-align:right; font-weight:bold; font-size:12px; margin-bottom:3px;">D.A. 5 (JKR.PATA.F6/12 rev 1)</div>
+<div style="text-align:center; font-weight:bold; text-decoration:underline; font-size:14px; margin-bottom:20px; text-transform:uppercase;">GAMBAR BLOK / BINAAN LUAR</div>
 
 <table class="dt" style="width:100%; border-collapse:collapse; margin-top:20px; table-layout:fixed;">
   <colgroup>
