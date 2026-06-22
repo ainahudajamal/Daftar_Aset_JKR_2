@@ -924,30 +924,36 @@
 
         <!-- Logout Confirmation Modal -->
         <div class="modal fade" id="logoutConfirmModal" tabindex="-1" aria-labelledby="logoutConfirmModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content border-0 shadow-lg" style="border-radius:16px;overflow:hidden;">
-                    <div class="modal-header border-0 pb-0" style="background:linear-gradient(135deg,#ef4444,#dc2626);padding:1.5rem 1.5rem 1rem;">
-                        <div class="d-flex align-items-center gap-3">
-                            <div style="width:42px;height:42px;background:rgba(255,255,255,0.2);border-radius:12px;display:flex;align-items:center;justify-content:center;">
-                                <i class="bi bi-box-arrow-right text-white fs-5"></i>
-                            </div>
-                            <div>
-                                <h5 class="modal-title text-white mb-0 fw-700" id="logoutConfirmModalLabel">Log Keluar</h5>
-                                <p class="text-white mb-0" style="font-size:0.78rem;opacity:0.8;">Sesi anda akan ditamatkan</p>
-                            </div>
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
+                <div class="modal-content border-0 shadow-lg" style="border-radius:20px;overflow:hidden;background:#ffffff;position:relative;">
+                    <!-- Close button in top-right -->
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup" style="position: absolute; right: 1.25rem; top: 1.25rem; font-size: 0.85rem; z-index: 10;"></button>
+                    
+                    <div class="modal-body text-center p-4" style="margin-top: 0.5rem;">
+                        <!-- Modern Icon Container with Brand Theme -->
+                        <div class="mb-3 d-inline-flex align-items-center justify-content-center" 
+                             style="width:68px;height:68px;background:rgba(37,99,235,0.08);border-radius:50%;color:var(--primary);">
+                            <i class="bi bi-box-arrow-right" style="font-size:1.85rem;"></i>
                         </div>
-                        <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="modal" aria-label="Tutup"></button>
-                    </div>
-                    <div class="modal-body text-center px-4 py-4">
-                        <p class="text-secondary mb-0" style="font-size:0.9rem;">Adakah anda pasti ingin log keluar? Anda perlu log masuk semula untuk mengakses sistem.</p>
-                    </div>
-                    <div class="modal-footer border-0 px-4 pb-4 pt-0 gap-2">
-                        <button type="button" class="btn btn-outline-secondary flex-fill" data-bs-dismiss="modal">
-                            <i class="bi bi-x-circle"></i> Batal
-                        </button>
-                        <button type="button" class="btn btn-danger flex-fill" onclick="document.getElementById('logout-form').submit();">
-                            <i class="bi bi-box-arrow-right"></i> Log Keluar
-                        </button>
+                        
+                        <h4 class="fw-800 text-dark mb-2" style="font-size:1.35rem;letter-spacing:-0.01em;">Log Keluar</h4>
+                        <p class="text-secondary mb-4" style="font-size:0.92rem;line-height:1.55;">
+                            Adakah anda pasti untuk log keluar? Anda perlu log masuk semula untuk mengakses sistem
+                        </p>
+                        
+                        <!-- Action Buttons -->
+                        <div class="d-flex gap-2 w-100">
+                            <button type="button" class="btn btn-light flex-fill fw-600 border-0" 
+                                    style="border-radius:12px;padding:0.7rem;background:#f1f5f9;color:#64748b;font-size:0.95rem;transition:all var(--transition);" 
+                                    data-bs-dismiss="modal">
+                                Batal
+                            </button>
+                            <button type="button" class="btn btn-primary flex-fill fw-600 border-0" 
+                                    style="border-radius:12px;padding:0.7rem;background:linear-gradient(135deg, var(--primary), var(--primary-dark));font-size:0.95rem;transition:all var(--transition);" 
+                                    onclick="document.getElementById('logout-form').submit();">
+                                Log Keluar
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
