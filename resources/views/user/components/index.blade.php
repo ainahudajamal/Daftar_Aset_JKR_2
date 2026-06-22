@@ -13,7 +13,7 @@
         </div>
         <div>
             @if(Auth::user()->role === 'admin')
-                <span class="badge bg-danger fs-6">Administrator</span>
+                <span class="badge bg-danger fs-6">JKR</span>
             @else
                 <span class="badge bg-primary fs-6">Pengguna</span>
             @endif

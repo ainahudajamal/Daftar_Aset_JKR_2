@@ -124,7 +124,7 @@ class User extends Authenticatable
      */
     public function getRoleDisplayAttribute(): string
     {
-        return $this->role === 'admin' ? 'Administrator' : 'Pengguna Biasa';
+        return $this->role === 'admin' ? 'JKR' : 'Pengguna Biasa';
     }
 
     /**

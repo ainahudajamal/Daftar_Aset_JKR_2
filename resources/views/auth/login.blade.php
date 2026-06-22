@@ -497,7 +497,7 @@
                         </div>
                         @else
                         <div class="hint-text">
-                            <i class="bi bi-lightbulb"></i> Contoh: admin atau user
+                            <i class="bi bi-lightbulb"></i> Contoh: admin
                         </div>
                         @enderror
                     </div>

@@ -124,10 +124,9 @@
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Role <span class="text-danger">*</span></label>
                                 <select name="role" class="form-select @error('role') is-invalid @enderror" required>
-                                    <option value="">Pilih Role</option>
-                                    <option value="admin" {{ old('role') === 'admin' ? 'selected' : '' }}>Administrator</option>
-                                    <option value="user" {{ old('role') === 'user' ? 'selected' : '' }}>Pengguna Biasa</option>
+                                    <option value="admin" selected>JKR</option>
                                 </select>
+                                <small class="text-muted">Semua pengguna baru didaftarkan dengan akses JKR secara lalai.</small>
                                 @error('role')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -168,8 +167,7 @@
                 <div class="card-body">
                     <h6>Role Pengguna:</h6>
                     <ul class="small">
-                        <li><strong>Administrator:</strong> Akses penuh ke semua modul termasuk pengurusan pengguna dan sistem</li>
-                        <li><strong>Pengguna Biasa:</strong> Akses standard untuk mendaftar dan menguruskan komponen</li>
+                        <li><strong>JKR:</strong> Akses penuh ke semua modul pengurusan premis, blok, aras, ruang dan komponen fizikal</li>
                     </ul>
 
                     <hr>

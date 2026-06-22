@@ -40,8 +40,8 @@
                     <label class="form-label">Role</label>
                     <select name="role" class="form-select">
                         <option value="">Semua Role</option>
-                        <option value="admin" {{ request('role') === 'admin' ? 'selected' : '' }}>Admin</option>
-                        <option value="user" {{ request('role') === 'user' ? 'selected' : '' }}>User</option>
+                        <option value="admin" {{ request('role') === 'admin' ? 'selected' : '' }}>JKR</option>
+                        <option value="user" {{ request('role') === 'user' ? 'selected' : '' }}>Pengguna Biasa</option>
                     </select>
                 </div>
                 <div class="col-md-3">
@@ -109,9 +109,9 @@
                             <td style="font-size:0.83rem;">{{ $user->email }}</td>
                             <td>
                                 @if($user->role === 'admin')
-                                <span class="badge badge-role-admin">Admin</span>
+                                <span class="badge badge-role-admin">JKR</span>
                                 @else
-                                <span class="badge badge-role-user">User</span>
+                                <span class="badge badge-role-user">Pengguna Biasa</span>
                                 @endif
                             </td>
                             <td style="font-size:0.83rem;">{{ $user->department ?? '—' }}</td>

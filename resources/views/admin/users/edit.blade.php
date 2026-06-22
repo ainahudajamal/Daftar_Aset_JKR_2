@@ -147,16 +147,9 @@
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Role <span class="text-danger">*</span></label>
                                 <select name="role" class="form-select @error('role') is-invalid @enderror" required>
-                                    <option value="">Pilih Role</option>
-
-                                    <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>
-                                        Administrator
-                                    </option>
-
-                                    <option value="user" {{ old('role', $user->role) == 'user' ? 'selected' : '' }}>
-                                        Pengguna Biasa
-                                    </option>
+                                    <option value="admin" selected>JKR</option>
                                 </select>
+                                <small class="text-muted">Peranan ditetapkan sebagai JKR untuk akses penuh sistem.</small>
 
                                 @error('role')
                                 <div class="invalid-feedback">{{ $message }}</div>

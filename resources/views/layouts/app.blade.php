@@ -765,7 +765,7 @@
                         <div class="user-name">{{ auth()->user()->name }}</div>
                         <div class="user-role">
                             <span class="status-dot"></span>
-                            <span>{{ auth()->user()->isAdmin() ? 'Administrator' : 'Pengguna' }}</span>
+                            <span>{{ auth()->user()->isAdmin() ? 'JKR' : 'Pengguna' }}</span>
                         </div>
                     </div>
                 </div>

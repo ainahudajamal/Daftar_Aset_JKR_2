@@ -19,7 +19,7 @@
             </div>
             <div class="welcome-badge">
                 <i class="bi bi-shield-fill-check"></i>
-                <span>Administrator</span>
+                <span>JKR</span>
             </div>
         </div>
     </div>
