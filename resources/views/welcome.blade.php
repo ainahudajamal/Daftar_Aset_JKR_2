@@ -17,26 +17,26 @@
              ASPIRA — DESIGN TOKENS
              ============================================ */
         :root {
-            --color-primary: #0a5c36;
-            --color-primary-dark: #073d24;
-            --color-primary-light: #e8f5ee;
-            --color-accent: #d4972f;
-            --color-accent-dark: #b87d1e;
-            --color-accent-light: #fef7ed;
+            --color-primary: #2563eb;
+            --color-primary-dark: #1d4ed8;
+            --color-primary-light: #eff6ff;
+            --color-accent: #0284c7;
+            --color-accent-dark: #0369a1;
+            --color-accent-light: #f0f9ff;
             --color-surface: #ffffff;
-            --color-surface-alt: #f8faf9;
-            --color-text: #111c15;
-            --color-text-muted: #5b6b60;
-            --color-border: rgba(10, 92, 54, 0.10);
-            --color-border-strong: rgba(10, 92, 54, 0.18);
+            --color-surface-alt: #f8fafc;
+            --color-text: #0f172a;
+            --color-text-muted: #64748b;
+            --color-border: rgba(37, 99, 235, 0.06);
+            --color-border-strong: rgba(37, 99, 235, 0.15);
             --radius-sm: 10px;
             --radius-md: 16px;
             --radius-lg: 24px;
             --radius-xl: 32px;
-            --shadow-sm: 0 1px 3px rgba(17, 28, 21, 0.06);
-            --shadow-md: 0 8px 30px rgba(17, 28, 21, 0.08);
-            --shadow-lg: 0 20px 60px rgba(17, 28, 21, 0.12);
-            --shadow-xl: 0 32px 80px rgba(17, 28, 21, 0.16);
+            --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.04);
+            --shadow-md: 0 8px 30px rgba(15, 23, 42, 0.06);
+            --shadow-lg: 0 20px 60px rgba(15, 23, 42, 0.08);
+            --shadow-xl: 0 32px 80px rgba(15, 23, 42, 0.12);
             --transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -149,8 +149,8 @@
             width: 7px;
             height: 7px;
             border-radius: 50%;
-            background: #22c55e;
-            box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.18);
+            background: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.18);
             animation: pulse-dot 2s ease-in-out infinite;
         }
 
@@ -196,13 +196,13 @@
             border-radius: 14px;
             display: grid;
             place-items: center;
-            background: linear-gradient(135deg, var(--color-primary), #094828);
+            background: linear-gradient(135deg, var(--color-primary), #1e3a8a);
             color: #fff;
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 700;
             font-size: 19px;
             letter-spacing: 0.04em;
-            box-shadow: 0 10px 24px rgba(10, 92, 54, 0.24);
+            box-shadow: 0 10px 24px rgba(37, 99, 235, 0.18);
         }
 
         .navbar-title {
@@ -249,20 +249,20 @@
             opacity: 0.45;
         }
 
-        .hero-bg-orb--green {
+        .hero-bg-orb--blue {
             width: 520px;
             height: 520px;
             top: -200px;
             right: -140px;
-            background: radial-gradient(circle, rgba(10, 92, 54, 0.22), transparent);
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.14), transparent);
         }
 
-        .hero-bg-orb--gold {
+        .hero-bg-orb--cyan {
             width: 420px;
             height: 420px;
             bottom: -120px;
             left: -100px;
-            background: radial-gradient(circle, rgba(212, 151, 47, 0.18), transparent);
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.10), transparent);
         }
 
         .hero-bg-grid {
@@ -296,7 +296,7 @@
         }
 
         .hero-title span {
-            background: linear-gradient(135deg, var(--color-primary) 20%, #0f7d4a);
+            background: linear-gradient(135deg, var(--color-primary) 20%, #1d4ed8);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -473,7 +473,7 @@
              RESPONSIVE
              ============================================ */
         .cta-section {
-            background: linear-gradient(135deg, var(--color-primary-light), #eef6f0);
+            background: linear-gradient(135deg, var(--color-primary-light), #f0f7ff);
             border-top: 1px solid var(--color-border);
             border-bottom: 1px solid var(--color-border);
         }
@@ -655,8 +655,8 @@
     {{-- ========== HERO SECTION ========== --}}
     <section class="hero-section">
         <div class="hero-bg">
-            <div class="hero-bg-orb hero-bg-orb--green"></div>
-            <div class="hero-bg-orb hero-bg-orb--gold"></div>
+            <div class="hero-bg-orb hero-bg-orb--blue"></div>
+            <div class="hero-bg-orb hero-bg-orb--cyan"></div>
             <div class="hero-bg-grid"></div>
         </div>
 
@@ -697,9 +697,9 @@
                         <circle cx="240" cy="190" r="140" fill="var(--color-primary-light)" opacity="0.4"/>
 
                         {{-- Desk / table --}}
-                        <rect x="70" y="240" width="340" height="14" rx="7" fill="#d4d9d5"/>
-                        <rect x="90" y="250" width="12" height="80" rx="4" fill="#c2c8c3"/>
-                        <rect x="378" y="250" width="12" height="80" rx="4" fill="#c2c8c3"/>
+                        <rect x="70" y="240" width="340" height="14" rx="7" fill="#cbd5e1"/>
+                        <rect x="90" y="250" width="12" height="80" rx="4" fill="#94a3b8"/>
+                        <rect x="378" y="250" width="12" height="80" rx="4" fill="#94a3b8"/>
 
                         {{-- Clipboard / Borang --}}
                         <g class="float-slow">
