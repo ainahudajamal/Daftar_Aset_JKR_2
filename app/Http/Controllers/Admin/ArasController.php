@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\KodAras;
-use App\Models\KodBlok;
+use App\Models\Blok;
 use Illuminate\Http\Request;
 use App\Models\AuditLog;
 use Illuminate\Support\Facades\Auth;
@@ -38,22 +38,22 @@ class ArasController extends Controller
             $query->where('is_active', false);
         }
 
-        $aras = $query->orderBy('kod')->paginate(12);
-        $bloks = KodBlok::where('is_active', true)->orderBy('kod')->get();
+        $aras = $query->orderBy('kod', 'asc')->paginate(12);
+        $bloks = Blok::orderBy('kod_blok_myspata', 'asc')->get();
 
         return view('admin.aras.index', compact('aras', 'bloks'));
     }
 
     public function create()
     {
-        $bloks = KodBlok::where('is_active', true)->orderBy('kod')->get();
+        $bloks = Blok::orderBy('kod_blok_myspata', 'asc')->get();
         return view('admin.aras.create', compact('bloks'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'blok_id' => 'required|exists:kod_bloks,id',
+            'blok_id' => 'required|exists:blok,id',
             'kod'     => 'required|string|max:50|unique:kod_aras,kod,NULL,id,blok_id,' . $request->blok_id,
             'nama'    => 'required|string|max:255',
         ], [
@@ -84,14 +84,14 @@ class ArasController extends Controller
 
     public function edit(KodAras $aras)
     {
-        $bloks = KodBlok::where('is_active', true)->orderBy('kod')->get();
+        $bloks = Blok::orderBy('kod_blok_myspata', 'asc')->get();
         return view('admin.aras.edit', compact('aras', 'bloks'));
     }
 
     public function update(Request $request, KodAras $aras)
     {
         $request->validate([
-            'blok_id' => 'required|exists:kod_bloks,id',
+            'blok_id' => 'required|exists:blok,id',
             'kod'     => 'required|string|max:50|unique:kod_aras,kod,' . $aras->id . ',id,blok_id,' . $request->blok_id,
             'nama'    => 'required|string|max:255',
         ], [
@@ -102,12 +102,13 @@ class ArasController extends Controller
             'nama.required'    => 'Nama aras wajib diisi.',
         ]);
 
-        $aras->update([
+        $aras->fill([
             'blok_id'   => $request->blok_id,
             'kod'       => strtoupper($request->kod),
             'nama'      => $request->nama,
             'is_active' => $request->has('is_active'),
         ]);
+        $aras->save();
 
         AuditLog::create([
             'user_id'      => Auth::id(),
@@ -130,7 +131,7 @@ class ArasController extends Controller
         ]);
 
 
-        $aras->delete();
+        KodAras::destroy($aras->id);
 
         return redirect()->back()
             ->with('success', 'Aras berjaya dipadam.');

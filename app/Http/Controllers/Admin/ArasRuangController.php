@@ -63,11 +63,11 @@ class ArasRuangController extends Controller
         $records = $query->latest()->paginate(10);
 
         // Stats calculations
-        $totalRecords = Da5Record::count();
-        $aktifBlok = Da5Record::where('status_blok', 'aktif')->count();
-        $tidakAktifBlok = Da5Record::where('status_blok', 'tidak_aktif')->count();
+        $totalRecords = Da5Record::count('*');
+        $aktifBlok = Da5Record::where('status_blok', '=', 'aktif', 'and')->count('*');
+        $tidakAktifBlok = Da5Record::where('status_blok', '=', 'tidak_aktif', 'and')->count('*');
         
-        $premisList = Premis::orderBy('nama_premis')->get();
+        $premisList = Premis::orderBy('nama_premis', 'asc')->get();
 
         return view('admin.aras-ruang.index', compact(
             'records',
@@ -123,9 +123,9 @@ class ArasRuangController extends Controller
         $ruangsPaginated = $ruangQuery->orderBy('kod')->paginate(10, ['*'], 'ruang_page');
 
         // Shared data for Aras and Ruang
-        $bloks   = KodBlok::where('is_active', true)->orderBy('kod')->get();
-        $arasAll = KodAras::with('blok')->where('is_active', true)->orderBy('kod')->get();
-        $premisList = Premis::orderBy('nama_premis')->get();
+        $bloks   = collect(); // Start empty on create, dynamically loaded via AJAX
+        $arasAll = collect(); // Start empty on create, dynamically loaded via AJAX
+        $premisList = Premis::orderBy('nama_premis', 'asc')->get();
 
         return view('admin.aras-ruang.create', compact(
             'arasPaginated',
@@ -156,7 +156,7 @@ class ArasRuangController extends Controller
             $data['nama_premis'] = $request->nama_premis_manual;
             $data['nama_premis_id'] = null; // Stored as null when manual input
         } elseif ($request->nama_premis_id) {
-            $premis = Premis::find($request->nama_premis_id);
+            $premis = Premis::find($request->nama_premis_id, ['*']);
             if ($premis) {
                 $data['nama_premis'] = $premis->nama_premis;
             }
@@ -238,9 +238,9 @@ class ArasRuangController extends Controller
         $ruangsPaginated = $ruangQuery->orderBy('kod')->paginate(10, ['*'], 'ruang_page');
 
         // Shared data for Aras and Ruang
-        $bloks   = KodBlok::where('is_active', true)->orderBy('kod')->get();
-        $arasAll = KodAras::with('blok')->where('is_active', true)->orderBy('kod')->get();
-        $premisList = Premis::orderBy('nama_premis')->get();
+        $bloks = Blok::where('premis_id', '=', $record->nama_premis_id, 'and')->orderBy('kod_blok_myspata', 'asc')->get();
+        $arasAll = KodAras::whereIn('blok_id', $bloks->pluck('id'), 'and', false)->orderBy('kod', 'asc')->get();
+        $premisList = Premis::orderBy('nama_premis', 'asc')->get();
 
         return view('admin.aras-ruang.edit', compact(
             'record',
@@ -267,7 +267,7 @@ class ArasRuangController extends Controller
         $arasQuery = KodAras::with('blok');
         
         // Default to this record's block if no filter is applied
-        $matchingBlok = KodBlok::where('kod', $record->kod_blok)->first();
+        $matchingBlok = KodBlok::where('kod', '=', $record->kod_blok, 'and')->first();
         if ($matchingBlok && !$request->filled('aras_blok_id')) {
             $arasQuery->where('blok_id', $matchingBlok->id);
             $request->merge(['aras_blok_id' => $matchingBlok->id]);
@@ -315,9 +315,9 @@ class ArasRuangController extends Controller
         $ruangsPaginated = $ruangQuery->orderBy('kod')->paginate(10, ['*'], 'ruang_page');
 
         // Shared data for Aras and Ruang
-        $bloks   = KodBlok::where('is_active', true)->orderBy('kod')->get();
-        $arasAll = KodAras::with('blok')->where('is_active', true)->orderBy('kod')->get();
-        $premisList = Premis::orderBy('nama_premis')->get();
+        $bloks   = KodBlok::where('is_active', '=', true, 'and')->orderBy('kod', 'asc')->get();
+        $arasAll = KodAras::with('blok')->where('is_active', '=', true, 'and')->orderBy('kod', 'asc')->get();
+        $premisList = Premis::orderBy('nama_premis', 'asc')->get();
 
         AuditLog::create([
             'user_id'      => Auth::id(),
@@ -358,7 +358,7 @@ class ArasRuangController extends Controller
             $data['nama_premis'] = $request->nama_premis_manual;
             $data['nama_premis_id'] = null;
         } elseif ($request->nama_premis_id) {
-            $premis = Premis::find($request->nama_premis_id);
+            $premis = Premis::find($request->nama_premis_id, ['*']);
             if ($premis) {
                 $data['nama_premis'] = $premis->nama_premis;
             }
@@ -535,10 +535,28 @@ class ArasRuangController extends Controller
      */
     public function getPremisDetails(int $id)
     {
-        $premis = Premis::with(['blok', 'binaanLuar', 'tanah'])->find($id);
+        $premis = Premis::with(['blok.aras', 'binaanLuar', 'tanah'])->find($id);
         if (!$premis) {
             return response()->json(['error' => 'Premis tidak ditemui'], 404);
         }
-        return response()->json($premis);
+
+        $arasList = [];
+        foreach ($premis->blok as $b) {
+            foreach ($b->aras as $a) {
+                $arasList[] = [
+                    'id' => $a->id,
+                    'kod' => $a->kod,
+                    'nama' => $a->nama,
+                    'blok_id' => $b->id,
+                    'blok_kod' => $b->kod_blok_myspata,
+                    'blok_nama' => $b->nama_blok,
+                ];
+            }
+        }
+
+        $premisArray = $premis->toArray();
+        $premisArray['all_aras'] = $arasList;
+
+        return response()->json($premisArray);
     }
 }

@@ -25,4 +25,9 @@ class Blok extends Model
     {
         return $this->belongsTo(Premis::class);
     }
+
+    public function aras()
+    {
+        return $this->hasMany(KodAras::class, 'blok_id');
+    }
 }

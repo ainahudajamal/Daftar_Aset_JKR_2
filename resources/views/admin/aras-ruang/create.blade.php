@@ -526,7 +526,7 @@
                                 <option value="">Semua Blok</option>
                                 @foreach($bloks as $blok)
                                 <option value="{{ $blok->id }}" {{ request('aras_blok_id') == $blok->id ? 'selected' : '' }}>
-                                    {{ $blok->kod }} - {{ $blok->nama }}
+                                    {{ $blok->kod_blok_myspata }} - {{ $blok->nama_blok }}
                                 </option>
                                 @endforeach
                             </select>
@@ -574,9 +574,9 @@
                                     <td>
                                         @if($item->blok)
                                         <span class="badge rounded-pill bg-primary-subtle text-primary border border-primary-subtle fw-semibold">
-                                            <i class="bi bi-building me-1"></i>{{ $item->blok->kod }}
+                                            <i class="bi bi-building me-1"></i>{{ $item->blok->kod_blok_myspata }}
                                         </span>
-                                        <span class="text-muted ms-1 small">{{ $item->blok->nama }}</span>
+                                        <span class="text-muted ms-1 small">{{ $item->blok->nama_blok }}</span>
                                         @else
                                         <span class="text-muted small fst-italic">—</span>
                                         @endif
@@ -852,11 +852,11 @@
                                         Blok <span class="text-danger">*</span>
                                     </td>
                                     <td>
-                                        <select name="blok_id" class="form-select form-select-sm @error('blok_id') is-invalid @enderror" required>
+                                        <select name="blok_id" id="tambah_aras_blok_id" class="form-select form-select-sm @error('blok_id') is-invalid @enderror" required>
                                             <option value="">— Pilih Blok —</option>
                                             @foreach($bloks as $blok)
                                             <option value="{{ $blok->id }}" {{ old('blok_id') == $blok->id ? 'selected' : '' }}>
-                                                {{ $blok->kod }} — {{ $blok->nama }}
+                                                {{ $blok->kod_blok_myspata }} — {{ $blok->nama_blok }}
                                             </option>
                                             @endforeach
                                         </select>
@@ -955,7 +955,7 @@
                                         <select name="blok_id" id="edit_aras_blok_id" class="form-select form-select-sm" required>
                                             <option value="">— Pilih Blok —</option>
                                             @foreach($bloks as $blok)
-                                            <option value="{{ $blok->id }}">{{ $blok->kod }} — {{ $blok->nama }}</option>
+                                            <option value="{{ $blok->id }}">{{ $blok->kod_blok_myspata }} — {{ $blok->nama_blok }}</option>
                                             @endforeach
                                         </select>
                                     </td>
@@ -1055,12 +1055,12 @@
                                             <option value="">— Pilih Aras —</option>
                                             @foreach($arasAll as $arasItem)
                                             <option value="{{ $arasItem->id }}"
-                                                data-blok-kod="{{ $arasItem->blok ? $arasItem->blok->kod : '' }}"
+                                                data-blok-kod="{{ $arasItem->blok ? $arasItem->blok->kod_blok_myspata : '' }}"
                                                 data-aras-kod="{{ $arasItem->kod }}"
                                                 data-nama="{{ $arasItem->nama }}"
                                                 {{ old('aras_id') == $arasItem->id ? 'selected' : '' }}>
                                                 {{ $arasItem->kod }} — {{ $arasItem->nama }}
-                                                @if($arasItem->blok) (Blok: {{ $arasItem->blok->kod }})@endif
+                                                @if($arasItem->blok) (Blok: {{ $arasItem->blok->kod_blok_myspata }})@endif
                                             </option>
                                             @endforeach
                                         </select>
@@ -1146,8 +1146,7 @@
                                 <tr class="tambah-kemasan-row" style="display:none;">
                                     <td class="bg-light fw-semibold align-middle">Blok</td>
                                     <td>
-                                        <input type="text" name="kemasan_blok" id="tambah_kemasan_blok" class="form-control form-control-sm bg-light"
-                                            placeholder="Auto-isi dari Aras" readonly>
+                                        <input type="text" name="kemasan_blok" id="tambah_kemasan_blok" class="form-control form-control-sm" placeholder="Taip / Auto-isi dari Aras">
                                     </td>
                                 </tr>
                                 <tr class="tambah-kemasan-row" style="display:none;">
@@ -1156,11 +1155,11 @@
                                         <div class="row g-2">
                                             <div class="col-6">
                                                 <label class="form-label text-muted small mb-1">Kod Aras</label>
-                                                <input type="text" name="kemasan_aras" id="tambah_kemasan_aras" class="form-control form-control-sm bg-light" readonly placeholder="Auto-isi">
+                                                <input type="text" name="kemasan_aras" id="tambah_kemasan_aras" class="form-control form-control-sm" placeholder="Auto-isi">
                                             </div>
                                             <div class="col-6">
                                                 <label class="form-label text-muted small mb-1">Nama Aras</label>
-                                                <input type="text" name="kemasan_nama_aras" id="tambah_kemasan_nama_aras" class="form-control form-control-sm bg-light" readonly placeholder="Auto-isi">
+                                                <input type="text" name="kemasan_nama_aras" id="tambah_kemasan_nama_aras" class="form-control form-control-sm" placeholder="Auto-isi">
                                             </div>
                                         </div>
                                     </td>
@@ -1168,7 +1167,7 @@
                                 <tr class="tambah-kemasan-row" style="display:none;">
                                     <td class="bg-light fw-semibold align-middle">Kod Ruang</td>
                                     <td>
-                                        <input type="text" name="kemasan_kod_ruang" id="tambah_kemasan_kod_ruang" class="form-control form-control-sm bg-light" readonly placeholder="Auto-isi dari Kod Ruang">
+                                        <input type="text" name="kemasan_kod_ruang" id="tambah_kemasan_kod_ruang" class="form-control form-control-sm" placeholder="Auto-isi dari Kod Ruang">
                                     </td>
                                 </tr>
                                 <tr class="tambah-kemasan-row" style="display:none;">
@@ -1293,11 +1292,11 @@
                                             <option value="">— Pilih Aras —</option>
                                             @foreach($arasAll as $arasItem)
                                             <option value="{{ $arasItem->id }}"
-                                                data-blok-kod="{{ $arasItem->blok ? $arasItem->blok->kod : '' }}"
+                                                data-blok-kod="{{ $arasItem->blok ? $arasItem->blok->kod_blok_myspata : '' }}"
                                                 data-aras-kod="{{ $arasItem->kod }}"
                                                 data-nama="{{ $arasItem->nama }}">
                                                 {{ $arasItem->kod }} — {{ $arasItem->nama }}
-                                                @if($arasItem->blok) (Blok: {{ $arasItem->blok->kod }})@endif
+                                                @if($arasItem->blok) (Blok: {{ $arasItem->blok->kod_blok_myspata }})@endif
                                             </option>
                                             @endforeach
                                         </select>
@@ -1379,7 +1378,7 @@
                                 <tr class="edit-kemasan-row" style="display:none;">
                                     <td class="bg-light fw-semibold align-middle">Blok</td>
                                     <td>
-                                        <input type="text" name="kemasan_blok" id="edit_kemasan_blok" class="form-control form-control-sm bg-light" readonly placeholder="Auto-isi dari Aras">
+                                        <input type="text" name="kemasan_blok" id="edit_kemasan_blok" class="form-control form-control-sm" placeholder="Taip / Auto-isi dari Aras">
                                     </td>
                                 </tr>
                                 <tr class="edit-kemasan-row" style="display:none;">
@@ -1388,11 +1387,11 @@
                                         <div class="row g-2">
                                             <div class="col-6">
                                                 <label class="form-label text-muted small mb-1">Kod Aras</label>
-                                                <input type="text" name="kemasan_aras" id="edit_kemasan_aras" class="form-control form-control-sm bg-light" readonly placeholder="Auto-isi">
+                                                <input type="text" name="kemasan_aras" id="edit_kemasan_aras" class="form-control form-control-sm" placeholder="Auto-isi">
                                             </div>
                                             <div class="col-6">
                                                 <label class="form-label text-muted small mb-1">Nama Aras</label>
-                                                <input type="text" name="kemasan_nama_aras" id="edit_kemasan_nama_aras" class="form-control form-control-sm bg-light" readonly placeholder="Auto-isi">
+                                                <input type="text" name="kemasan_nama_aras" id="edit_kemasan_nama_aras" class="form-control form-control-sm" placeholder="Auto-isi">
                                             </div>
                                         </div>
                                     </td>
@@ -1400,7 +1399,7 @@
                                 <tr class="edit-kemasan-row" style="display:none;">
                                     <td class="bg-light fw-semibold align-middle">Kod Ruang</td>
                                     <td>
-                                        <input type="text" name="kemasan_kod_ruang" id="edit_kemasan_kod_ruang" class="form-control form-control-sm bg-light" readonly placeholder="Auto-isi dari Kod Ruang">
+                                        <input type="text" name="kemasan_kod_ruang" id="edit_kemasan_kod_ruang" class="form-control form-control-sm" placeholder="Auto-isi dari Kod Ruang">
                                     </td>
                                 </tr>
                                 <tr class="edit-kemasan-row" style="display:none;">
@@ -1781,6 +1780,89 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // ===== D.A.5 FORM JAVASCRIPT LOGIC =====
 document.addEventListener('DOMContentLoaded', function () {
+    function updateModalsDropdowns(data) {
+        // Rebuild blok dropdowns for Aras Modals
+        const tambahArasBlok = document.getElementById('tambah_aras_blok_id');
+        const editArasBlok = document.getElementById('edit_aras_blok_id');
+        
+        // Save current values to restore them after rebuild
+        const currentTambahArasBlokVal = (tambahArasBlok && tambahArasBlok.value) || "{{ old('blok_id') }}";
+        const currentEditArasBlokVal = (editArasBlok && editArasBlok.value) || "";
+        
+        if (tambahArasBlok) {
+            tambahArasBlok.innerHTML = '<option value="">— Pilih Blok —</option>';
+            if (data.blok && data.blok.length > 0) {
+                data.blok.forEach(b => {
+                    const opt = document.createElement('option');
+                    opt.value = b.id;
+                    opt.text = `${b.kod_blok_myspata} — ${b.nama_blok}`;
+                    tambahArasBlok.appendChild(opt);
+                });
+            }
+            if (currentTambahArasBlokVal) {
+                tambahArasBlok.value = currentTambahArasBlokVal;
+            }
+        }
+        
+        if (editArasBlok) {
+            editArasBlok.innerHTML = '<option value="">— Pilih Blok —</option>';
+            if (data.blok && data.blok.length > 0) {
+                data.blok.forEach(b => {
+                    const opt = document.createElement('option');
+                    opt.value = b.id;
+                    opt.text = `${b.kod_blok_myspata} — ${b.nama_blok}`;
+                    editArasBlok.appendChild(opt);
+                });
+            }
+            if (currentEditArasBlokVal) {
+                editArasBlok.value = currentEditArasBlokVal;
+            }
+        }
+
+        // Rebuild aras dropdowns for Ruang Modals
+        const tambahRuangAras = document.getElementById('tambah_ruang_aras_id');
+        const editRuangAras = document.getElementById('edit_ruang_aras_id');
+        
+        const currentTambahRuangArasVal = (tambahRuangAras && tambahRuangAras.value) || "{{ old('aras_id') }}";
+        const currentEditRuangArasVal = (editRuangAras && editRuangAras.value) || "";
+        
+        if (tambahRuangAras) {
+            tambahRuangAras.innerHTML = '<option value="">— Pilih Aras —</option>';
+            if (data.all_aras && data.all_aras.length > 0) {
+                data.all_aras.forEach(a => {
+                    const opt = document.createElement('option');
+                    opt.value = a.id;
+                    opt.text = `${a.kod} — ${a.nama} ${a.blok_kod ? `(Blok: ${a.blok_kod})` : ''}`;
+                    opt.setAttribute('data-blok-kod', a.blok_kod || '');
+                    opt.setAttribute('data-aras-kod', a.kod || '');
+                    opt.setAttribute('data-nama', a.nama || '');
+                    tambahRuangAras.appendChild(opt);
+                });
+            }
+            if (currentTambahRuangArasVal) {
+                tambahRuangAras.value = currentTambahRuangArasVal;
+            }
+        }
+        
+        if (editRuangAras) {
+            editRuangAras.innerHTML = '<option value="">— Pilih Aras —</option>';
+            if (data.all_aras && data.all_aras.length > 0) {
+                data.all_aras.forEach(a => {
+                    const opt = document.createElement('option');
+                    opt.value = a.id;
+                    opt.text = `${a.kod} — ${a.nama} ${a.blok_kod ? `(Blok: ${a.blok_kod})` : ''}`;
+                    opt.setAttribute('data-blok-kod', a.blok_kod || '');
+                    opt.setAttribute('data-aras-kod', a.kod || '');
+                    opt.setAttribute('data-nama', a.nama || '');
+                    editRuangAras.appendChild(opt);
+                });
+            }
+            if (currentEditRuangArasVal) {
+                editRuangAras.value = currentEditRuangArasVal;
+            }
+        }
+    }
+
     const bodyKontraktorList = document.getElementById('bodyKontraktorList');
     const btnTambahRowKontraktor = document.getElementById('btnTambahRowKontraktor');
     const bodyPerundingList = document.getElementById('bodyPerundingList');
@@ -2124,11 +2206,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 hiddenInput.value = manualInput.value;
                 clearAllFields();
                 restoreMasterBlocks();
+                updateModalsDropdowns({ blok: [], all_aras: [] });
             } else if (selectedVal === "") {
                 manualWrapper.classList.add('d-none');
                 hiddenInput.value = "";
                 clearAllFields();
                 restoreMasterBlocks();
+                updateModalsDropdowns({ blok: [], all_aras: [] });
             } else if (!isNaN(selectedVal)) {
                 // Numeric database ID
                 manualWrapper.classList.add('d-none');
@@ -2144,6 +2228,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             alert(data.error);
                             return;
                         }
+                        updateModalsDropdowns(data);
 
                         // Populate D.A.3 premise fields
                         document.getElementById('da5_no_dpa').value = data.no_dpa || '';
@@ -2366,6 +2451,7 @@ document.addEventListener('DOMContentLoaded', function () {
         fetch(`/admin/aras-ruang/premis/${da5_nama_premis.value}`)
             .then(response => response.json())
             .then(data => {
+                updateModalsDropdowns(data);
                 if (da5_kod_blok) {
                     da5_kod_blok.innerHTML = '<option value="">-- Pilih Kod Blok --</option>';
 

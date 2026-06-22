@@ -189,7 +189,7 @@ class KodAras extends Model
      */
     public static function kodExists($kod, $excludeId = null)
     {
-        $query = self::where('kod', $kod);
+        $query = self::where('kod', '=', $kod, 'and');
 
         if ($excludeId) {
             $query->where('id', '!=', $excludeId);
@@ -226,6 +226,6 @@ class KodAras extends Model
     // Relationship dengan Blok
     public function blok()
     {
-        return $this->belongsTo(KodBlok::class, 'blok_id');
+        return $this->belongsTo(Blok::class, 'blok_id');
     }
 }
