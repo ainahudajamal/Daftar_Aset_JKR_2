@@ -27,7 +27,7 @@ class ArasRuangController extends Controller
             'user_id'      => Auth::id(),
             'component_id' => null,
             'title'        => 'Lihat Senarai DAK Borang D.A.5',
-            'description'  => 'Admin melihat senarai Borang D.A.5 (Daftar Aset Khusus)',
+            'description'  => 'Pengguna melihat senarai Borang D.A.5 (Daftar Aset Khusus)',
         ]);
 
         $query = Da5Record::with('premis');
@@ -323,7 +323,7 @@ class ArasRuangController extends Controller
             'user_id'      => Auth::id(),
             'component_id' => null,
             'title'        => 'Lihat Butiran Borang D.A.5',
-            'description'  => 'Admin melihat butiran Borang D.A.5 untuk Premis: ' . ($record->nama_premis ?? 'Manual'),
+            'description'  => 'Pengguna melihat butiran Borang D.A.5 untuk Premis: ' . ($record->nama_premis ?? 'Manual'),
         ]);
 
         return view('admin.aras-ruang.show', compact(
@@ -449,7 +449,7 @@ class ArasRuangController extends Controller
             'user_id'      => Auth::id(),
             'component_id' => null,
             'title'        => 'Export PDF Borang D.A.5',
-            'description'  => 'Admin mengeksport PDF Borang D.A.5 ID: ' . $record->id,
+            'description'  => 'Pengguna mengeksport PDF Borang D.A.5 ID: ' . $record->id,
         ]);
 
         // ===== ARAS QUERY (all records, no pagination) =====

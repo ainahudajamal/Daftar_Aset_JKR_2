@@ -18,7 +18,7 @@ class RuangController extends Controller
             'user_id'      => Auth::id(),
             'component_id' => null,
             'title'        => 'Lihat Konfigurasi Ruang',
-            'description'  => 'Admin melihat konfigurasi ruang',
+            'description'  => 'Pengguna melihat konfigurasi ruang',
         ]);
 
         $query = KodRuang::with('aras');

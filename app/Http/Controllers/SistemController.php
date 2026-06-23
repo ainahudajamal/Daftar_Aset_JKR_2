@@ -17,7 +17,7 @@ class SistemController extends Controller
             'user_id'      => auth()->id(),
             'component_id' => null,
             'title'        => 'Lihat Konfigurasi Sistem',
-            'description'  => 'Admin melihat senarai konfigurasi sistem',
+            'description'  => 'Pengguna melihat senarai konfigurasi sistem',
         ]);
 
         $query = Sistem::withCount('subsistems');

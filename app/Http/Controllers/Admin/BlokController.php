@@ -22,7 +22,7 @@ class BlokController extends Controller
         'user_id'      => auth()->id(),
         'component_id' => null,
         'title'        => 'Lihat Konfigurasi Blok',
-        'description'  => 'Admin melihat konfigurasi blok',
+        'description'  => 'Pengguna melihat konfigurasi blok',
         ]);
 
         $query = KodBlok::query();

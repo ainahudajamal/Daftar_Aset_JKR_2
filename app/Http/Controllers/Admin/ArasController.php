@@ -18,7 +18,7 @@ class ArasController extends Controller
             'user_id'      => Auth::id(),
             'component_id' => null,
             'title'        => 'Lihat Senarai Aras',
-            'description'  => 'Admin melihat senarai aras',
+            'description'  => 'Pengguna melihat senarai aras',
         ]);
 
         $query = KodAras::with('blok');

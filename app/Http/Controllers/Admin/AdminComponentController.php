@@ -80,7 +80,7 @@ class AdminComponentController extends Controller
             'user_id'      => auth()->id(),
             'component_id' => $component->id,
             'title'        => 'Lihat Komponen',
-            'description'  => 'Admin melihat komponen',
+            'description'  => 'Pengguna melihat komponen',
         ]);
 
         $component->load(['user', 'mainComponents.subComponents', 'mainComponents.user']);

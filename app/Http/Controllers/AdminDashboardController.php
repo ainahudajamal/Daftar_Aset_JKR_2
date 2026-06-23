@@ -24,7 +24,7 @@ class AdminDashboardController extends Controller
             'user_id'      => Auth::id(),
             'component_id' => null,
             'title'        => 'Lihat Dashboard',
-            'description'  => 'Lihat dashboard admin',
+            'description'  => 'Lihat dashboard',
         ]);
 
         // Get statistics

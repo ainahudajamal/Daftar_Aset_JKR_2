@@ -17,7 +17,7 @@ class BidangController extends Controller
             'user_id'      => auth()->id(),
             'component_id' => null,
             'title'        => 'Lihat Konfigurasi Bidang',
-            'description'  => 'Admin melihat senarai konfigurasi bidang',
+            'description'  => 'Pengguna melihat senarai konfigurasi bidang',
         ]);
 
         $query = Bidang::query();
