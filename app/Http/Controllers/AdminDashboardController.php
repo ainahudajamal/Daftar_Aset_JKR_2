@@ -10,6 +10,7 @@ use App\Models\Sistem;
 use App\Models\Subsistem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Models\AuditLog;
 
 class AdminDashboardController extends Controller
@@ -20,7 +21,7 @@ class AdminDashboardController extends Controller
     public function index()
     {
         AuditLog::create([
-            'user_id'      => auth()->id(),
+            'user_id'      => Auth::id(),
             'component_id' => null,
             'title'        => 'Lihat Dashboard',
             'description'  => 'Lihat dashboard admin',
@@ -86,7 +87,7 @@ class AdminDashboardController extends Controller
     public function userActivity()
     {
         AuditLog::create([
-            'user_id'      => auth()->id(),
+            'user_id'      => Auth::id(),
             'component_id' => null,
             'title'        => 'Lihat Aktiviti Pengguna',
             'description'  => 'Melihat aktiviti pengguna',
@@ -127,7 +128,7 @@ class AdminDashboardController extends Controller
     public function systemStats()
     {
         AuditLog::create([
-            'user_id'      => auth()->id(),
+            'user_id'      => Auth::id(),
             'component_id' => null,
             'title'        => 'Lihat Statistik Sistem',
             'description'  => 'Melihat statistik sistem',
