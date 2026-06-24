@@ -512,12 +512,16 @@ class MasterDataController extends Controller
                     $kodBlok = request()->input('kod_blok');
 
                     $query = DB::table('kod_aras')
-                        ->where('is_active', 1);  // ← guna is_active sahaja
+                        ->where('is_active', 1);
 
                     if ($kodBlok) {
-                        $blok = DB::table('kod_bloks')->where('kod', $kodBlok)->first();
-                        if ($blok) {
-                            $query->where('blok_id', $blok->id);
+                        // Look up in the real 'blok' table by kod_blok_myspata
+                        $blokRecord = DB::table('blok')->where('kod_blok_myspata', $kodBlok)->first();
+                        if ($blokRecord) {
+                            $query->where('blok_id', $blokRecord->id);
+                        } else {
+                            // Blok not found — return empty, do not fall back to all aras
+                            $query->whereRaw('1 = 0');
                         }
                     }
 
@@ -533,12 +537,32 @@ class MasterDataController extends Controller
                     break;
 
                 case 'ruang':
-                    $data = DB::table('kod_ruangs')
-                        ->where(function ($q) {
-                            $q->where('status', 'aktif')
-                                ->orWhere('is_active', 1);
-                        })
-                        ->orderBy('kod')
+                    $kodBlok = request()->input('kod_blok');
+
+                    $ruangQuery = DB::table('kod_ruangs')
+                        ->where('is_active', 1);
+
+                    if ($kodBlok) {
+                        // Find the Blok record by kod_blok_myspata
+                        $blokRecord = DB::table('blok')->where('kod_blok_myspata', $kodBlok)->first();
+                        if ($blokRecord) {
+                            // Get all aras IDs linked to this blok
+                            $arasIds = DB::table('kod_aras')
+                                ->where('blok_id', $blokRecord->id)
+                                ->pluck('id');
+                            if ($arasIds->isNotEmpty()) {
+                                $ruangQuery->whereIn('aras_id', $arasIds);
+                            } else {
+                                // No aras for this blok — return empty
+                                $ruangQuery->whereRaw('1 = 0');
+                            }
+                        } else {
+                            // Blok not found — return empty
+                            $ruangQuery->whereRaw('1 = 0');
+                        }
+                    }
+
+                    $data = $ruangQuery->orderBy('kod')
                         ->get(['kod', 'nama'])
                         ->map(function ($item) {
                             return [

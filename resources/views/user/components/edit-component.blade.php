@@ -155,36 +155,31 @@
                                     <tr>
                                         <td>
                                             Kod Aras
-                                            <span id="kod-aras-status" class="ms-2"></span>
                                         </td>
                                         <td>
                                             <div class="input-group">
                                                 <select class="form-select select2-aras" name="kod_aras" id="kod_aras">
-                                                    <option value="">-- Pilih atau Taip Kod Aras --</option>
-                                                    @foreach($kodAras as $aras)
-                                                        <option value="{{ $aras->kod }}" 
-                                                                data-nama="{{ $aras->nama }}"
-                                                                {{ old('kod_aras', $component->kod_aras) == $aras->kod ? 'selected' : '' }}>
-                                                            {{ $aras->kod }}
-                                                        </option>
-                                                    @endforeach
+                                                    <option value="">-- Pilih Blok dahulu --</option>
+                                                    @if(old('kod_aras', $component->kod_aras))
+                                                    <option value="{{ old('kod_aras', $component->kod_aras) }}" selected data-nama="{{ old('nama_aras', $component->nama_aras) }}">{{ old('kod_aras', $component->kod_aras) }}</option>
+                                                    @endif
                                                 </select>
                                                 <span class="input-group-text"><i class="bi bi-search"></i></span>
                                             </div>
+                                            <small class="text-muted" id="aras-hint">Sila pilih Blok terlebih dahulu untuk muat aras.</small>
                                         </td>
                                     </tr>
-                                    <tr id="nama-aras-row" style="display: {{ old('nama_aras', $component->nama_aras) ? 'table-row' : 'none' }};">
+                                    <tr>
                                         <td>Nama Aras</td>
                                         <td>
                                             <div class="nama-field-wrapper">
                                                 <input type="text" class="form-control" id="nama_aras" name="nama_aras" 
                                                        value="{{ old('nama_aras', $component->nama_aras) }}"
-                                                       placeholder="Nama akan dijana automatik atau anda boleh edit">
+                                                       placeholder="Akan dijana automatik apabila Kod Aras dipilih" readonly>
                                                 <span class="autofill-indicator" id="autofill-indicator-aras" style="display: none;">
                                                     <i class="bi bi-magic"></i> Auto
                                                 </span>
                                             </div>
-                                            <small class="text-success" id="nama-aras-hint"></small>
                                         </td>
                                     </tr>
                                     <tr>
@@ -192,34 +187,26 @@
                                         <td>
                                             <div class="input-group">
                                                 <select class="form-select select2-ruang" name="kod_ruang" id="kod_ruang">
-                                                    <option value="">-- Pilih atau Taip Kod Ruang --</option>
-                                                    @foreach($kodRuangs as $ruang)
-                                                        <option value="{{ $ruang->kod }}" 
-                                                                data-nama="{{ $ruang->nama }}"
-                                                                {{ old('kod_ruang', $component->kod_ruang) == $ruang->kod ? 'selected' : '' }}>
-                                                            {{ $ruang->kod }}
-                                                        </option>
-                                                    @endforeach
+                                                    <option value="">-- Pilih Blok dahulu --</option>
+                                                    @if(old('kod_ruang', $component->kod_ruang))
+                                                    <option value="{{ old('kod_ruang', $component->kod_ruang) }}" selected data-nama="{{ old('nama_ruang', $component->nama_ruang) }}">{{ old('kod_ruang', $component->kod_ruang) }}</option>
+                                                    @endif
                                                 </select>
                                                 <span class="input-group-text"><i class="bi bi-search"></i></span>
                                             </div>
+                                            <small class="text-muted" id="ruang-hint">Sila pilih Blok terlebih dahulu untuk muat ruang.</small>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Nama Ruang</td>
                                         <td>
-                                            <div class="input-group">
-                                                <select class="form-select select2-nama-ruang" name="nama_ruang" id="nama_ruang">
-                                                    <option value="">-- Pilih atau Taip Nama Ruang --</option>
-                                                    @foreach($namaRuangs as $nama)
-                                                        <option value="{{ $nama->nama }}" 
-                                                                data-kod="{{ $nama->kod }}"
-                                                                {{ old('nama_ruang', $component->nama_ruang) == $nama->nama ? 'selected' : '' }}>
-                                                            {{ $nama->nama }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                            <div class="nama-field-wrapper">
+                                                <input type="text" class="form-control" id="nama_ruang" name="nama_ruang" 
+                                                       value="{{ old('nama_ruang', $component->nama_ruang) }}"
+                                                       placeholder="Akan dijana automatik apabila Kod Ruang dipilih" readonly>
+                                                <span class="autofill-indicator" id="autofill-indicator-ruang" style="display: none;">
+                                                    <i class="bi bi-magic"></i> Auto
+                                                </span>
                                             </div>
                                         </td>
                                     </tr>
@@ -335,34 +322,26 @@
                                         <td>
                                             <div class="input-group">
                                                 <select class="form-select select2-ruang-binaan" name="kod_ruang_binaan" id="kod_ruang_binaan">
-                                                    <option value="">-- Pilih atau Taip Kod Ruang --</option>
-                                                    @foreach($kodRuangs as $ruang)
-                                                        <option value="{{ $ruang->kod }}" 
-                                                                data-nama="{{ $ruang->nama }}"
-                                                                {{ old('kod_ruang_binaan', $component->kod_ruang_binaan) == $ruang->kod ? 'selected' : '' }}>
-                                                            {{ $ruang->kod }}
-                                                        </option>
-                                                    @endforeach
+                                                    <option value="">-- Pilih Blok dahulu --</option>
+                                                    @if(old('kod_ruang_binaan', $component->kod_ruang_binaan))
+                                                    <option value="{{ old('kod_ruang_binaan', $component->kod_ruang_binaan) }}" selected data-nama="{{ old('nama_ruang_binaan', $component->nama_ruang_binaan) }}">{{ old('kod_ruang_binaan', $component->kod_ruang_binaan) }}</option>
+                                                    @endif
                                                 </select>
                                                 <span class="input-group-text"><i class="bi bi-search"></i></span>
                                             </div>
+                                            <small class="text-muted" id="ruang-binaan-hint">Sila pilih Blok terlebih dahulu untuk muat ruang.</small>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Nama Ruang</td>
                                         <td>
-                                            <div class="input-group">
-                                                <select class="form-select select2-nama-ruang-binaan" name="nama_ruang_binaan" id="nama_ruang_binaan">
-                                                    <option value="">-- Pilih atau Taip Nama Ruang --</option>
-                                                    @foreach($namaRuangs as $nama)
-                                                        <option value="{{ $nama->nama }}" 
-                                                                data-kod="{{ $nama->kod }}"
-                                                                {{ old('nama_ruang_binaan', $component->nama_ruang_binaan) == $nama->nama ? 'selected' : '' }}>
-                                                            {{ $nama->nama }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                            <div class="nama-field-wrapper">
+                                                <input type="text" class="form-control" id="nama_ruang_binaan" name="nama_ruang_binaan" 
+                                                       value="{{ old('nama_ruang_binaan', $component->nama_ruang_binaan) }}"
+                                                       placeholder="Akan dijana automatik apabila Kod Ruang dipilih" readonly>
+                                                <span class="autofill-indicator" id="autofill-indicator-ruang-binaan" style="display: none;">
+                                                    <i class="bi bi-magic"></i> Auto
+                                                </span>
                                             </div>
                                         </td>
                                     </tr>
@@ -492,10 +471,24 @@ $(document).ready(function() {
         if (!kodValue) {
             $('#nama-blok-row').hide();
             $('#kod-blok-status').html('');
+            // Reset aras dropdown
+            if ($('#kod_aras').hasClass('select2-hidden-accessible')) {
+                $('#kod_aras').select2('destroy');
+            }
+            $('#kod_aras').empty().append('<option value="">-- Pilih Blok dahulu --</option>');
+            $('#kod_aras').select2({ theme: 'bootstrap-5', placeholder: 'Pilih Kod Aras', allowClear: true });
+            $('#nama_aras').val('').prop('readonly', true);
+            if ($('#aras-hint').length) $('#aras-hint').text('Sila pilih Blok terlebih dahulu untuk muat aras.');
+            // Reset ruang dropdown
+            resetRuangDropdown('blok');
             return;
         }
 
         typingTimerBlok = setTimeout(() => checkKodBlok(kodValue), doneTypingInterval);
+        // Load aras by blok
+        loadArasByBlok(kodValue, null);
+        // Load ruang by blok
+        loadRuangByBlok(kodValue, 'blok');
     });
 
     function checkKodBlok(kod) {
@@ -549,42 +542,6 @@ $(document).ready(function() {
     });
 
     // ========================================
-    // KOD ARAS (Blok Section) - Auto Check & Save
-    // ========================================
-    let typingTimerAras, saveTimerAras;
-
-    $('#kod_aras').on('select2:select select2:unselect change', function(e) {
-        clearTimeout(typingTimerAras);
-        const kodValue = $(this).val();
-        
-        if (!kodValue) {
-            $('#nama-aras-row').hide();
-            $('#kod-aras-status').html('');
-            return;
-        }
-
-        typingTimerAras = setTimeout(() => checkKodAras(kodValue, 'blok'), doneTypingInterval);
-    });
-
-    $('#nama_aras').on('input', function() {
-        const kodValue = $('#kod_aras').val();
-        const namaValue = $(this).val().trim();
-        
-        clearTimeout(saveTimerAras);
-        const isNewCode = $('#kod-aras-status').find('.new-tag-badge').length > 0;
-        
-        if (isNewCode && kodValue && namaValue) {
-            $('#nama-aras-hint').html('⏳ Menyimpan...');
-            saveTimerAras = setTimeout(() => saveToDatabase('aras', kodValue, namaValue, 'blok'), 1000);
-        }
-    });
-
-    $('#nama_aras').on('focus', function() {
-        $(this).prop('readonly', false);
-        $('#autofill-indicator-aras').hide();
-    });
-
-    // ========================================
     // KOD ARAS (Binaan Luar Section) - Auto Check & Save
     // ========================================
     let typingTimerArasBinaan, saveTimerArasBinaan;
@@ -619,6 +576,176 @@ $(document).ready(function() {
         $(this).prop('readonly', false);
         $('#autofill-indicator-aras-binaan').hide();
     });
+
+    // ========================================
+    // HELPER FUNCTIONS — loadArasByBlok
+    // ========================================
+    function loadArasByBlok(kodBlok, preselect) {
+        if ($('#kod_aras').hasClass('select2-hidden-accessible')) {
+            $('#kod_aras').select2('destroy');
+        }
+
+        $('#kod_aras').empty().append('<option value="">Memuatkan aras...</option>');
+        $('#nama_aras').val('').prop('readonly', true);
+
+        $.ajax({
+            url: '/api/master-data/aras',
+            method: 'GET',
+            data: { kod_blok: kodBlok },
+            success: function(response) {
+                $('#kod_aras').empty().append('<option value="">-- Pilih atau Taip Kod Aras --</option>');
+
+                if (response.success && response.data.length > 0) {
+                    $.each(response.data, function(i, aras) {
+                        const opt = $('<option>', {
+                            value: aras.id,
+                            text: aras.text,
+                            'data-nama': aras.nama
+                        });
+                        if (preselect && aras.id === preselect) {
+                            opt.attr('selected', 'selected');
+                        }
+                        $('#kod_aras').append(opt);
+                    });
+                    $('#aras-hint').text(response.data.length + ' aras dijumpai untuk blok ini.');
+
+                    // If preselect found, fill Nama Aras
+                    if (preselect) {
+                        const found = response.data.find(a => a.id === preselect);
+                        if (found) {
+                            $('#nama_aras').val(found.nama);
+                        }
+                    }
+                } else {
+                    $('#kod_aras').append('<option value="" disabled>Tiada aras untuk blok ini</option>');
+                    $('#aras-hint').text('Tiada aras berdaftar untuk blok ini.');
+                }
+
+                $('#kod_aras').select2({
+                    theme: 'bootstrap-5',
+                    placeholder: 'Pilih Kod Aras',
+                    allowClear: true,
+                });
+
+                // Auto-fill Nama Aras bila pilih Kod Aras
+                $('#kod_aras').off('select2:select change.aras').on('select2:select change.aras', function() {
+                    const selected = $(this).find(':selected');
+                    const namaAras = selected.data('nama') || '';
+                    $('#nama_aras').val(namaAras);
+                    if (namaAras) {
+                        $('#autofill-indicator-aras').show();
+                    } else {
+                        $('#autofill-indicator-aras').hide();
+                        $('#nama_aras').val('');
+                    }
+                });
+            },
+            error: function() {
+                $('#kod_aras').empty().append('<option value="">-- Pilih atau Taip Kod Aras --</option>');
+                $('#kod_aras').select2({
+                    theme: 'bootstrap-5',
+                    placeholder: 'Pilih atau taip kod baru',
+                    allowClear: true,
+                });
+                $('#aras-hint').text('Ralat memuatkan aras.');
+            }
+        });
+    }
+
+    // ========================================
+    // HELPER FUNCTIONS — Ruang
+    // ========================================
+    function resetRuangDropdown(context) {
+        const selectId = context === 'binaan' ? '#kod_ruang_binaan' : '#kod_ruang';
+        const namaId = context === 'binaan' ? '#nama_ruang_binaan' : '#nama_ruang';
+        const hintId = context === 'binaan' ? '#ruang-binaan-hint' : '#ruang-hint';
+
+        if ($(selectId).hasClass('select2-hidden-accessible')) {
+            $(selectId).select2('destroy');
+        }
+        $(selectId).empty().append('<option value="">-- Pilih Blok dahulu --</option>');
+        $(selectId).select2({
+            theme: 'bootstrap-5',
+            placeholder: 'Pilih atau taip nilai baru',
+            allowClear: true,
+        });
+        $(namaId).val('').prop('readonly', true);
+        if ($(hintId).length) $(hintId).text('Sila pilih Blok terlebih dahulu untuk muat ruang.');
+    }
+
+    function loadRuangByBlok(kodBlok, context, preselect) {
+        const selectId = context === 'binaan' ? '#kod_ruang_binaan' : '#kod_ruang';
+        const namaId = context === 'binaan' ? '#nama_ruang_binaan' : '#nama_ruang';
+        const hintId = context === 'binaan' ? '#ruang-binaan-hint' : '#ruang-hint';
+
+        // Destroy Select2 first
+        if ($(selectId).hasClass('select2-hidden-accessible')) {
+            $(selectId).select2('destroy');
+        }
+
+        $(selectId).empty().append('<option value="">Memuatkan ruang...</option>');
+
+        $.ajax({
+            url: '/api/master-data/ruang',
+            method: 'GET',
+            data: { kod_blok: kodBlok },
+            success: function(response) {
+                $(selectId).empty().append('<option value="">-- Pilih atau Taip Kod Ruang --</option>');
+
+                if (response.success && response.data.length > 0) {
+                    $.each(response.data, function(i, ruang) {
+                        const opt = $('<option>', {
+                            value: ruang.id,
+                            text: ruang.text,
+                            'data-nama': ruang.nama
+                        });
+                        if (preselect && ruang.id === preselect) {
+                            opt.attr('selected', 'selected');
+                        }
+                        $(selectId).append(opt);
+                    });
+                    if ($(hintId).length) $(hintId).text(response.data.length + ' ruang dijumpai untuk blok ini.');
+
+                    // If preselect found, fill Nama Ruang
+                    if (preselect) {
+                        const found = response.data.find(r => r.id === preselect);
+                        if (found) {
+                            $(namaId).val(found.nama);
+                        }
+                    }
+                } else {
+                    $(selectId).append('<option value="" disabled>Tiada ruang untuk blok ini</option>');
+                    if ($(hintId).length) $(hintId).text('Tiada ruang berdaftar untuk blok ini.');
+                }
+
+                // Reinitialize Select2
+                $(selectId).select2({
+                    theme: 'bootstrap-5',
+                    placeholder: 'Pilih atau taip nilai baru',
+                    allowClear: true,
+                });
+
+                // Auto-fill Nama Ruang bila pilih Kod Ruang
+                $(selectId).off('select2:select change.ruang').on('select2:select change.ruang', function() {
+                    const selected = $(this).find(':selected');
+                    const namaRuang = selected.data('nama') || '';
+                    $(namaId).val(namaRuang);
+                    if (namaRuang) {
+                        $('#autofill-indicator-ruang' + (context === 'binaan' ? '-binaan' : '')).show();
+                    }
+                });
+            },
+            error: function() {
+                $(selectId).empty().append('<option value="">-- Pilih atau Taip Kod Ruang --</option>');
+                $(selectId).select2({
+                    theme: 'bootstrap-5',
+                    placeholder: 'Pilih atau taip nilai baru',
+                    allowClear: true,
+                });
+                if ($(hintId).length) $(hintId).text('Ralat memuatkan ruang.');
+            }
+        });
+    }
 
     // ========================================
     // HELPER FUNCTIONS
@@ -770,10 +897,17 @@ $(document).ready(function() {
         if (kodBlokValue) {
             checkKodBlok(kodBlokValue);
         }
-        
-        const kodArasValue = $('#kod_aras').val();
-        if (kodArasValue) {
-            checkKodAras(kodArasValue, 'blok');
+
+        // Load aras for existing blok (pre-select saved kod_aras)
+        if (kodBlokValue) {
+            const existingKodAras = '{{ old('kod_aras', $component->kod_aras) }}';
+            loadArasByBlok(kodBlokValue, existingKodAras || null);
+        }
+
+        // Load ruang for existing blok (pre-select saved kod_ruang)
+        if (kodBlokValue) {
+            const existingKodRuang = '{{ old('kod_ruang', $component->kod_ruang) }}';
+            loadRuangByBlok(kodBlokValue, 'blok', existingKodRuang || null);
         }
     }
     
