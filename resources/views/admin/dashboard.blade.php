@@ -488,7 +488,7 @@
                                         @if($component->status === 'aktif')
                                         <span class="badge badge-status-active">Aktif</span>
                                         @else
-                                        <span class="badge badge-status-inactive">{{ ucfirst($component->status) }}</span>
+                                        <span class="badge badge-status-inactive">{{ ucwords(str_replace('_', ' ', $component->status)) }}</span>
                                         @endif
                                     </td>
                                 </tr>

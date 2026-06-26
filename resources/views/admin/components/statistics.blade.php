@@ -249,7 +249,7 @@
                                 </small>
                             </div>
                             <span class="badge {{ $component->status === 'aktif' ? 'bg-success' : 'bg-secondary' }}">
-                                {{ ucfirst($component->status) }}
+                                {{ ucwords(str_replace('_', ' ', $component->status)) }}
                             </span>
                         </div>
                         <small class="text-muted">

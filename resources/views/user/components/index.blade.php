@@ -231,24 +231,24 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <span class="badge {{ $component->status == 'aktif' ? 'bg-success' : 'bg-secondary' }}">
+                                            <span class="badge {{ $component->status == 'aktif' ? 'badge-status-active' : 'badge-status-inactive' }}">
                                                 {{ $component->status == 'aktif' ? 'Aktif' : 'Tidak Aktif' }}
                                             </span>
                                         </td>
                                         <td><span class="badge bg-secondary">{{ $component->nombor_dpa }}</span></td>
                                         <td>
                                             <div class="d-flex gap-1">
-                                                <a href="{{ route('components.show', $component) }}" class="btn btn-info btn-sm btn-icon" title="Lihat">
+                                                <a href="{{ route('components.show', $component) }}" class="btn btn-outline-info btn-sm btn-icon" title="Lihat">
                                                     <i class="bi bi-eye"></i>
                                                 </a>
-                                                <a href="{{ route('components.edit', $component) }}" class="btn btn-warning btn-sm btn-icon" title="Edit">
+                                                <a href="{{ route('components.edit', $component) }}" class="btn btn-outline-primary btn-sm btn-icon" title="Edit">
                                                     <i class="bi bi-pencil"></i>
                                                 </a>
                                                 <form action="{{ route('components.delete', $component) }}" method="POST" 
                                                       onsubmit="return confirm('Padam komponen ini?')" class="d-inline">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm btn-icon" title="Padam">
+                                                    <button type="submit" class="btn btn-outline-danger btn-sm btn-icon" title="Padam">
                                                         <i class="bi bi-trash"></i>
                                                     </button>
                                                 </form>
@@ -286,24 +286,24 @@
                                                             </div>
                                                         </td>
                                                         <td width="100">
-                                                            <span class="badge {{ $mainComponent->status == 'aktif' ? 'bg-success' : 'bg-secondary' }} small">
+                                                            <span class="badge {{ $mainComponent->status == 'aktif' ? 'badge-status-active' : 'badge-status-inactive' }} small">
                                                                 {{ $mainComponent->status == 'aktif' ? 'Aktif' : 'Tidak Aktif' }}
                                                             </span>
                                                         </td>
                                                         <td width="120"></td>
                                                         <td width="120">
                                                             <div class="d-flex gap-1">
-                                                                <a href="{{ route('main-components.show', $mainComponent) }}" class="btn btn-info btn-sm btn-icon" title="Lihat">
+                                                                <a href="{{ route('main-components.show', $mainComponent) }}" class="btn btn-outline-info btn-sm btn-icon" title="Lihat">
                                                                     <i class="bi bi-eye"></i>
                                                                 </a>
-                                                                <a href="{{ route('main-components.edit', $mainComponent) }}" class="btn btn-warning btn-sm btn-icon" title="Edit">
+                                                                <a href="{{ route('main-components.edit', $mainComponent) }}" class="btn btn-outline-primary btn-sm btn-icon" title="Edit">
                                                                     <i class="bi bi-pencil"></i>
                                                                 </a>
                                                                 <form action="{{ route('main-components.delete', $mainComponent) }}" method="POST"
                                                                       onsubmit="return confirm('Padam komponen utama ini?')" class="d-inline">
                                                                     @csrf
                                                                     @method('DELETE')
-                                                                    <button type="submit" class="btn btn-danger btn-sm btn-icon" title="Padam">
+                                                                    <button type="submit" class="btn btn-outline-danger btn-sm btn-icon" title="Padam">
                                                                         <i class="bi bi-trash"></i>
                                                                     </button>
                                                                 </form>
@@ -331,24 +331,24 @@
                                                                             </div>
                                                                         </td>
                                                                         <td width="100">
-                                                                            <span class="badge {{ $subComponent->status == 'aktif' ? 'bg-success' : 'bg-secondary' }} small">
+                                                                            <span class="badge {{ $subComponent->status == 'aktif' ? 'badge-status-active' : 'badge-status-inactive' }} small">
                                                                                 {{ $subComponent->status == 'aktif' ? 'Aktif' : 'Tidak Aktif' }}
                                                                             </span>
                                                                         </td>
                                                                         <td width="120"></td>
                                                                         <td width="120">
                                                                             <div class="d-flex gap-1">
-                                                                                <a href="{{ route('sub-components.show', $subComponent) }}" class="btn btn-info btn-sm btn-icon" title="Lihat">
+                                                                                <a href="{{ route('sub-components.show', $subComponent) }}" class="btn btn-outline-info btn-sm btn-icon" title="Lihat">
                                                                                     <i class="bi bi-eye"></i>
                                                                                 </a>
-                                                                                <a href="{{ route('sub-components.edit', $subComponent) }}" class="btn btn-warning btn-sm btn-icon" title="Edit">
+                                                                                <a href="{{ route('sub-components.edit', $subComponent) }}" class="btn btn-outline-primary btn-sm btn-icon" title="Edit">
                                                                                     <i class="bi bi-pencil"></i>
                                                                                 </a>
                                                                                 <form action="{{ route('sub-components.delete', $subComponent) }}" method="POST"
                                                                                       onsubmit="return confirm('Padam sub komponen ini?')" class="d-inline">
                                                                                     @csrf
                                                                                     @method('DELETE')
-                                                                                    <button type="submit" class="btn btn-danger btn-sm btn-icon" title="Padam">
+                                                                                    <button type="submit" class="btn btn-outline-danger btn-sm btn-icon" title="Padam">
                                                                                         <i class="bi bi-trash"></i>
                                                                                     </button>
                                                                                 </form>

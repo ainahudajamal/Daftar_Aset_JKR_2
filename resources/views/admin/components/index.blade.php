@@ -329,12 +329,12 @@
                     <td>
                         <div class="d-flex gap-1 justify-content-end">
                             <a href="{{ route('admin.components.show', $component) }}" 
-                               class="btn btn-info btn-sm btn-icon" 
+                               class="btn btn-outline-info btn-sm btn-icon" 
                                title="Lihat">
                                 <i class="bi bi-eye"></i>
                             </a>
                             <button type="button" 
-                                    class="btn btn-danger btn-sm btn-icon" 
+                                    class="btn btn-outline-danger btn-sm btn-icon" 
                                     onclick="deleteComponent({{ $component->id }})" 
                                     title="Padam">
                                 <i class="bi bi-trash"></i>

@@ -137,7 +137,7 @@
                 <div class="detail-value">
                     <span class="badge {{ $component->status === 'aktif' ? 'bg-success' : 'bg-secondary' }}">
                         <i class="bi bi-{{ $component->status === 'aktif' ? 'check' : 'x' }}-circle"></i>
-                        {{ ucfirst($component->status) }}
+                        {{ ucwords(str_replace('_', ' ', $component->status)) }}
                     </span>
                 </div>
             </div>
