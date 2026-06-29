@@ -98,17 +98,17 @@
                                         <div class="col-md-4">
                                             <label class="form-label fw-semibold">Poskod</label>
                                             <input type="text" name="poskod" class="form-control"
-                                                placeholder="Contoh: 50480" value="{{ old('poskod') }}">
+                                                placeholder="Contoh: 50680" value="{{ old('poskod') }}">
                                         </div>
                                         <div class="col-md-4">
                                             <label class="form-label fw-semibold">Koordinat GPS — X</label>
                                             <input type="text" name="koordinat_x" class="form-control"
-                                                placeholder="Contoh: 3.147" value="{{ old('koordinat_x') }}">
+                                                placeholder="" value="{{ old('koordinat_x') }}">
                                         </div>
                                         <div class="col-md-4">
                                             <label class="form-label fw-semibold">Koordinat GPS — Y</label>
                                             <input type="text" name="koordinat_y" class="form-control"
-                                                placeholder="Contoh: 101.694" value="{{ old('koordinat_y') }}">
+                                                placeholder="" value="{{ old('koordinat_y') }}">
                                         </div>
                                     </div>
 
@@ -167,7 +167,7 @@
                                         <div class="col-md-6">
                                             <label class="form-label fw-semibold">Jumlah Keluasan Premis</label>
                                             <input type="text" name="jumlah_keluasan" class="form-control"
-                                                placeholder="Contoh: 5000" value="{{ old('jumlah_keluasan') }}">
+                                                placeholder="" value="{{ old('jumlah_keluasan') }}">
                                         </div>
                                     </div>
 
