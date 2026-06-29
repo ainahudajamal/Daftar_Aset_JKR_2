@@ -290,7 +290,7 @@
                                 <table class="table table-bordered align-middle" style="min-width:1100px;">
                                     <thead style="background-color: #334155; color: white;">
                                         <tr>
-                                            <th style="width:40px;">Bil</th>
+                                            <th class="text-center" style="width:40px;">Bil</th>
                                                 <th style="min-width:90px;">No. Lot</th>
                                                 <th style="min-width:170px;">Status Hak Milik Tanah</th>
                                                 <th style="min-width:120px;">Keluasan Tanah</th>
@@ -299,7 +299,7 @@
                                                 <th style="min-width:120px;">Kegunaan Tanah</th>
                                                 <th style="min-width:130px;">Harga Perolehan (RM)</th>
                                                 <th style="min-width:120px;">Harga Semasa (RM)</th>
-                                                <th style="width:60px;">Tindakan</th>
+                                                <th class="text-center" style="width:60px;">Tindakan</th>
                                             </tr>
                                         </thead>
                                         <tbody id="tanah-body">
@@ -385,12 +385,12 @@
                                     <table class="table table-bordered align-middle" style="min-width:700px;">
                                         <thead style="background-color: #4a5568; color: white;">
                                             <tr>
-                                                <th style="width:40px;">Bil</th>
+                                                <th class="text-center" style="width:40px;">Bil</th>
                                                 <th style="min-width:130px;">Bidang</th>
                                                 <th style="min-width:180px;">Tajuk Lukisan</th>
                                                 <th style="min-width:140px;">No. Rujukan</th>
                                                 <th style="min-width:180px;">Catatan</th>
-                                                <th style="width:60px;">Tindakan</th>
+                                                <th class="text-center" style="width:60px;">Tindakan</th>
                                             </tr>
                                         </thead>
                                         <tbody id="lukisan-body">
@@ -509,12 +509,12 @@ function addLukisanRow() {
     const tbody = document.getElementById('lukisan-body');
     const row = `
         <tr>
-            <td>${lukisanCount + 1}</td>
+            <td class="text-center">${lukisanCount + 1}</td>
             <td><input type="text" name="lukisan[${lukisanCount}][bidang]" class="form-control form-control-sm"></td>
             <td><input type="text" name="lukisan[${lukisanCount}][tajuk_lukisan]" class="form-control form-control-sm"></td>
             <td><input type="text" name="lukisan[${lukisanCount}][no_rujukan]" class="form-control form-control-sm"></td>
             <td><input type="text" name="lukisan[${lukisanCount}][catatan]" class="form-control form-control-sm"></td>
-            <td><button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)"><i class="bi bi-trash"></i></button></td>
+            <td class="text-center"><button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)"><i class="bi bi-trash"></i></button></td>
         </tr>`;
     tbody.insertAdjacentHTML('beforeend', row);
     lukisanCount++;

@@ -57,9 +57,9 @@
                             <p class="text-muted mb-0 small">{{ $sistem->nama }}</p>
                         </div>
                         @if($sistem->is_active)
-                        <span class="badge bg-success">Aktif</span>
+                        <span class="badge badge-status-active">Aktif</span>
                         @else
-                        <span class="badge bg-secondary">Tidak Aktif</span>
+                        <span class="badge badge-status-inactive">Tidak Aktif</span>
                         @endif
                     </div>
 
@@ -74,16 +74,16 @@
                             <i class="bi bi-diagram-2 text-primary"></i>
                             <span class="fw-semibold">{{ $sistem->subsistems_count }}</span> Subsistem
                         </div>
-                        <a href="{{ route('admin.sistem.subsistems', $sistem) }}" class="btn btn-sm btn-outline-primary">
+                        <a href="{{ route('admin.sistem.subsistems', $sistem) }}" class="btn btn-sm btn-outline-info">
                             Lihat Subsistem
                         </a>
                     </div>
 
                     <div class="d-flex gap-2">
-                        <a href="{{ route('admin.sistem.edit', $sistem) }}" class="btn btn-sm btn-warning flex-fill">
+                        <a href="{{ route('admin.sistem.edit', $sistem) }}" class="btn btn-sm btn-outline-primary flex-fill">
                             <i class="bi bi-pencil"></i> Edit
                         </a>
-                        <button type="button" class="btn btn-sm btn-danger" onclick="deleteSistem({{ $sistem->id }})">
+                        <button type="button" class="btn btn-sm btn-outline-danger flex-fill" onclick="deleteSistem({{ $sistem->id }})">
                             <i class="bi bi-trash"></i> Padam
                         </button>
                     </div>
