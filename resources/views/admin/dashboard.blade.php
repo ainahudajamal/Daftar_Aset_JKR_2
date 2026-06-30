@@ -275,7 +275,7 @@
                         <div class="d-flex justify-content-between align-items-center mb-1">
                             <div class="d-flex align-items-center gap-2">
                                 <div class="role-dot" style="background:#2563eb;"></div>
-                                <span class="fw-600" style="font-size:0.88rem;">Administrator</span>
+                                <span class="fw-600" style="font-size:0.88rem;">JKR</span>
                             </div>
                             <span class="fw-700" style="color:#2563eb;font-size:1rem;">{{ $stats['admin_users'] }}</span>
                         </div>
@@ -342,7 +342,6 @@
                             <thead>
                                 <tr>
                                     <th>Pengguna</th>
-                                    <th>Username</th>
                                     <th>Role</th>
                                     <th class="text-center">Komponen</th>
                                 </tr>
@@ -358,12 +357,11 @@
                                             <span class="fw-600">{{ $activity->name }}</span>
                                         </div>
                                     </td>
-                                    <td><code class="text-primary">{{ $activity->username }}</code></td>
                                     <td>
                                         @if($activity->role === 'admin')
-                                        <span class="badge badge-role-admin">Admin</span>
+                                        <span class="badge badge-role-admin">JKR</span>
                                         @else
-                                        <span class="badge badge-role-user">User</span>
+                                        <span class="badge badge-role-user">Pengguna Biasa</span>
                                         @endif
                                     </td>
                                     <td class="text-center">
@@ -372,7 +370,7 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="4">
+                                    <td colspan="3">
                                         <div class="empty-state">
                                             <div class="empty-state-icon"><i class="bi bi-inbox"></i></div>
                                             <h6>Tiada Data</h6>

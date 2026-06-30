@@ -792,9 +792,9 @@
                     <div class="nav-item">
                         <a href="{{ route('admin.dashboard') }}"
                             class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
-                            data-title="Admin Dashboard">
+                            data-title="Dashboard">
                             <i class="bi bi-speedometer2"></i>
-                            <span class="nav-link-text">Admin Dashboard</span>
+                            <span class="nav-link-text">Dashboard</span>
                         </a>
                     </div>
                 @endif

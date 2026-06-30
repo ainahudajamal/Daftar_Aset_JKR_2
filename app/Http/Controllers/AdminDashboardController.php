@@ -52,7 +52,7 @@ class AdminDashboardController extends Controller
 
         // ✅ UBAH INI - Get user activity menggunakan relationship user_id
         $userActivity = User::withCount('components')
-            ->orderBy('components_count', 'desc')
+            ->orderBy('created_at', 'desc')
             ->take(10)
             ->get()
             ->map(function($user) {
