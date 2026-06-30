@@ -877,11 +877,6 @@
                             data-title="Komponen">
                             <i class="bi bi-building"></i>
                             <span class="nav-link-text">Pendaftaran Komponen</span>
-                            @if (\App\Models\Component::onlyTrashed()->count() > 0)
-                                <span class="badge bg-danger ms-auto">
-                                    {{ \App\Models\Component::onlyTrashed()->count() }}
-                                </span>
-                            @endif
                         </a>
                     </div>
 
