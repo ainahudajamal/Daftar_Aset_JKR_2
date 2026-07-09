@@ -723,6 +723,16 @@
         .sidebar.collapsed .sidebar-brand { display: none !important; }
         .sidebar.collapsed .sidebar-header { justify-content: center; padding: 0 0.5rem; }
 
+        /* Fix Pagination SVGs from ever rendering oversized */
+        nav[role="navigation"] svg,
+        .pagination svg,
+        svg.w-5.h-5 {
+            max-width: 1.25rem !important;
+            max-height: 1.25rem !important;
+            width: 1.25rem !important;
+            height: 1.25rem !important;
+        }
+
         /* ========================================
    END OF DESIGN SYSTEM
 ======================================== */

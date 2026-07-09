@@ -54,6 +54,22 @@
             </div>
             @endif
 
+            {{-- Toast Notification for File Upload Errors --}}
+            <div class="position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+                <div id="uploadErrorToast" class="toast align-items-center border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="6000">
+                    <div class="d-flex">
+                        <div class="toast-body d-flex align-items-start gap-2 p-3">
+                            <div id="toastIcon" class="fs-4 mt-1">⚠️</div>
+                            <div>
+                                <div class="fw-bold mb-1" id="toastTitle">Ralat Muat Naik</div>
+                                <div id="toastMessage" class="small"></div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            </div>
+
             <form action="{{ route('admin.premis.update', $premis->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
@@ -260,8 +276,13 @@
                                         @else
                                             <input type="hidden" name="padam_gambar" id="padam_gambar" value="0">
                                         @endif
-                                        <input type="file" name="gambar_premis" class="form-control" accept="image/*">
-                                        <small class="text-muted">Kosongkan jika tidak mahu tukar gambar</small>
+                                        <input type="file" name="gambar_premis" id="gambar_premis" class="form-control" accept="image/jpeg,image/jpg,image/png" onchange="validateImageSize(this)">
+                                        <small class="text-muted">
+                                            <i class="bi bi-info-circle-fill text-primary"></i>
+                                            Format yang diterima: <strong>JPG, JPEG, PNG</strong> &nbsp;|&nbsp; Saiz maksimum: <strong>5MB</strong>
+                                        </small>
+                                        <div id="gambar_premis_error" class="text-danger small mt-1" style="display:none;"></div>
+                                        <small class="text-muted d-block">Kosongkan jika tidak mahu tukar gambar</small>
                                     </div>
                                 </div>
 
@@ -550,6 +571,71 @@ function padamGambar() {
         // Sorok gambar dan button, tunjuk mesej
         const wrapper = document.querySelector('#previewGambar').closest('.position-relative');
         wrapper.innerHTML = '<p class="text-muted fst-italic mt-1"><i class="bi bi-image"></i> Gambar akan dipadam selepas simpan</p>';
+    }
+}
+
+function showUploadToast(title, message, type) {
+    const toast = document.getElementById('uploadErrorToast');
+    const toastTitle = document.getElementById('toastTitle');
+    const toastMessage = document.getElementById('toastMessage');
+    const toastIcon = document.getElementById('toastIcon');
+
+    toastTitle.textContent = title;
+    toastMessage.textContent = message;
+
+    // Style based on type
+    toast.classList.remove('text-bg-danger', 'text-bg-warning', 'text-bg-success');
+    if (type === 'danger') {
+        toast.classList.add('text-bg-danger');
+        toastIcon.textContent = '🚫';
+    } else if (type === 'warning') {
+        toast.classList.add('text-bg-warning');
+        toastIcon.textContent = '⚠️';
+    } else {
+        toast.classList.add('text-bg-success');
+        toastIcon.textContent = '✅';
+    }
+
+    const bsToast = new bootstrap.Toast(toast);
+    bsToast.show();
+}
+
+function validateImageSize(input) {
+    const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+    const errorDiv = document.getElementById('gambar_premis_error');
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+
+    // Reset error state
+    errorDiv.style.display = 'none';
+    errorDiv.textContent = '';
+    input.classList.remove('is-invalid');
+
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const fileSizeMB = (file.size / 1024 / 1024).toFixed(2);
+
+        if (!allowedTypes.includes(file.type)) {
+            const msg = 'Format fail tidak disokong. Sila muat naik fail JPG, JPEG atau PNG sahaja.';
+            errorDiv.textContent = msg;
+            errorDiv.style.display = 'block';
+            input.classList.add('is-invalid');
+            input.value = '';
+            showUploadToast('Format Fail Tidak Disokong', msg, 'danger');
+            return;
+        }
+
+        if (file.size > maxSize) {
+            const msg = 'Saiz fail (' + fileSizeMB + 'MB) melebihi had maksimum 5MB. Sila mampat gambar atau pilih fail lain.';
+            errorDiv.textContent = msg;
+            errorDiv.style.display = 'block';
+            input.classList.add('is-invalid');
+            input.value = '';
+            showUploadToast('Saiz Fail Terlalu Besar', msg, 'danger');
+            return;
+        }
+
+        errorDiv.style.display = 'none';
+        input.classList.remove('is-invalid');
     }
 }
 </script>

@@ -436,7 +436,7 @@
                                 <option value="">Semua Blok</option>
                                 @foreach($bloks as $blok)
                                     <option value="{{ $blok->id }}" {{ request('aras_blok_id') == $blok->id ? 'selected' : '' }}>
-                                        {{ $blok->kod }} - {{ $blok->nama }}
+                                        {{ $blok->kod_blok_myspata ?? $blok->kod }} - {{ $blok->nama_blok ?? $blok->nama }}
                                     </option>
                                 @endforeach
                             </select>

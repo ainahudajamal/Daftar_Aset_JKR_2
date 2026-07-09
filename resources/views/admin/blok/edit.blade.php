@@ -49,21 +49,10 @@
                     <div class="card-body pt-3">
                         <div class="row g-3">
                             <div class="col-md-7">
-                                <label class="form-label fw-semibold">Nama Premis <span class="text-danger">*</span></label>
-                                <select name="premis_id" id="selectPremis"
-                                    class="form-select @error('premis_id') is-invalid @enderror" required>
-                                    <option value="">-- Pilih Premis --</option>
-                                    @foreach($allPremis as $p)
-                                    <option value="{{ $p->id }}"
-                                        data-dpa="{{ $p->no_dpa }}"
-                                        {{ old('premis_id', $premis->id) == $p->id ? 'selected' : '' }}>
-                                        {{ $p->nama_premis }}
-                                    </option>
-                                    @endforeach
-                                </select>
-                                @error('premis_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <label class="form-label fw-semibold">Nama Premis</label>
+                                <input type="text" class="form-control bg-light fw-semibold"
+                                    value="{{ $premis->nama_premis }}" readonly>
+                                <input type="hidden" name="premis_id" value="{{ $premis->id }}">
                             </div>
                             <div class="col-md-5">
                                 <label class="form-label fw-semibold">Nombor DPA</label>
@@ -250,23 +239,6 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-
-    // Initialize Select2 on the premise dropdown
-    const selectPremis = $('#selectPremis');
-    if (selectPremis.length) {
-        selectPremis.select2({
-            theme: 'bootstrap-5',
-            placeholder: '-- Pilih Premis --',
-            allowClear: true
-        });
-
-        // Auto-fill No. DPA
-        selectPremis.on('change', function () {
-            const selectedOpt = this.options[this.selectedIndex];
-            const dpa = selectedOpt ? selectedOpt.getAttribute('data-dpa') || '' : '';
-            document.getElementById('inputNoDpa').value = dpa;
-        });
-    }
 
     // Toggle checkbox
     function bindToggle(checkboxId, seksyenId) {

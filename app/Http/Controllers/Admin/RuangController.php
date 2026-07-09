@@ -79,6 +79,8 @@ class RuangController extends Controller
             'is_active'    => $request->has('is_active'),
         ]);
 
+        session()->push('recent_da5_ruang_ids', $ruang->id);
+
         // Create Kemasan record if selected
         if ($request->ada_kemasan === 'ada') {
             KemasanRuang::create([
