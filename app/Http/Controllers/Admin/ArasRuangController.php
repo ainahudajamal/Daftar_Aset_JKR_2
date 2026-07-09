@@ -88,43 +88,39 @@ class ArasRuangController extends Controller
 
         // ===== ARAS QUERY =====
         $arasQuery = KodAras::with('blok');
-        if ($request->aras_search) {
+        if ($request->filled('aras_blok_id') && $request->aras_blok_id !== 'all') {
+            $arasQuery->where('blok_id', $request->aras_blok_id);
+        } elseif (!$request->filled('aras_search')) {
+            $arasQuery->whereIn('id', session('recent_da5_aras_ids', []));
+        }
+
+        if ($request->filled('aras_search')) {
             $arasQuery->where(function ($q) use ($request) {
                 $q->where('kod', 'like', '%' . $request->aras_search . '%')
                   ->orWhere('nama', 'like', '%' . $request->aras_search . '%');
             });
         }
-        if ($request->aras_blok_id) {
-            $arasQuery->where('blok_id', $request->aras_blok_id);
-        }
-        if ($request->aras_status === 'active') {
-            $arasQuery->where('is_active', true);
-        } elseif ($request->aras_status === 'inactive') {
-            $arasQuery->where('is_active', false);
-        }
-        $arasPaginated = $arasQuery->orderBy('kod')->paginate(10, ['*'], 'aras_page');
+        $arasPaginated = $arasQuery->latest('id')->paginate(10, ['*'], 'aras_page');
 
         // ===== RUANG QUERY =====
         $ruangQuery = KodRuang::with(['aras.blok', 'latestKemasan']);
-        if ($request->ruang_search) {
+        if ($request->filled('ruang_aras_id') && $request->ruang_aras_id !== 'all') {
+            $ruangQuery->where('aras_id', $request->ruang_aras_id);
+        } elseif (!$request->filled('ruang_search')) {
+            $ruangQuery->whereIn('id', session('recent_da5_ruang_ids', []));
+        }
+
+        if ($request->filled('ruang_search')) {
             $ruangQuery->where(function ($q) use ($request) {
                 $q->where('kod', 'like', '%' . $request->ruang_search . '%')
                   ->orWhere('nama', 'like', '%' . $request->ruang_search . '%');
             });
         }
-        if ($request->ruang_aras_id) {
-            $ruangQuery->where('aras_id', $request->ruang_aras_id);
-        }
-        if ($request->ruang_status === 'active') {
-            $ruangQuery->where('is_active', true);
-        } elseif ($request->ruang_status === 'inactive') {
-            $ruangQuery->where('is_active', false);
-        }
-        $ruangsPaginated = $ruangQuery->orderBy('kod')->paginate(10, ['*'], 'ruang_page');
+        $ruangsPaginated = $ruangQuery->latest('id')->paginate(10, ['*'], 'ruang_page');
 
         // Shared data for Aras and Ruang
-        $bloks   = collect(); // Start empty on create, dynamically loaded via AJAX
-        $arasAll = collect(); // Start empty on create, dynamically loaded via AJAX
+        $bloks   = Blok::orderBy('kod_blok_myspata', 'asc')->get();
+        $arasAll = KodAras::with('blok')->orderBy('kod', 'asc')->get();
         $premisList = Premis::orderBy('nama_premis', 'asc')->get();
 
         return view('admin.aras-ruang.create', compact(
@@ -187,6 +183,8 @@ class ArasRuangController extends Controller
             'description'  => 'Pendaftaran D.A.5 Baru untuk Premis: ' . ($record->nama_premis ?? 'Manual') . ', Blok: ' . ($record->nama_blok ?? 'N/A'),
         ]);
 
+        session()->forget(['recent_da5_aras_ids', 'recent_da5_ruang_ids']);
+
         return redirect()->route('admin.aras-ruang.edit', $record->id)
             ->with('success', 'Borang D.A.5 berjaya disimpan. Anda boleh mengurus aras dan ruang sekarang.');
     }
@@ -201,34 +199,64 @@ class ArasRuangController extends Controller
         // Tab logic for Aras and Ruang
         $activeTab = $request->get('tab', 'aras');
 
+        // Filter strictly to this DA5 record's block so old/unrelated data is excluded
+        $matchingBlok = null;
+        if ($record->kod_blok && $record->nama_premis_id) {
+            $matchingBlok = Blok::where('kod_blok_myspata', '=', $record->kod_blok)
+                ->where('premis_id', '=', $record->nama_premis_id)
+                ->first();
+        }
+        if (!$matchingBlok && $record->nama_premis_id && $record->nama_blok) {
+            $matchingBlok = Blok::where('premis_id', '=', $record->nama_premis_id)
+                ->where('nama_blok', '=', $record->nama_blok)
+                ->first();
+        }
+        if (!$matchingBlok && $record->kod_blok) {
+            $matchingBlok = Blok::where('kod_blok_myspata', '=', $record->kod_blok)->first();
+        }
+
         // ===== ARAS QUERY =====
         $arasQuery = KodAras::with('blok');
-        if ($request->aras_search) {
+        if ($request->filled('aras_blok_id') && $request->aras_blok_id !== 'all') {
+            $arasQuery->where('blok_id', $request->aras_blok_id);
+        } elseif ($record->nama_premis_id) {
+            $premisBlokIds = Blok::where('premis_id', $record->nama_premis_id)->pluck('id');
+            if ($premisBlokIds->isNotEmpty()) {
+                $arasQuery->whereIn('blok_id', $premisBlokIds);
+            }
+        }
+
+        if ($request->filled('aras_search')) {
             $arasQuery->where(function ($q) use ($request) {
                 $q->where('kod', 'like', '%' . $request->aras_search . '%')
                   ->orWhere('nama', 'like', '%' . $request->aras_search . '%');
             });
-        }
-        if ($request->aras_blok_id) {
-            $arasQuery->where('blok_id', $request->aras_blok_id);
         }
         if ($request->aras_status === 'active') {
             $arasQuery->where('is_active', true);
         } elseif ($request->aras_status === 'inactive') {
             $arasQuery->where('is_active', false);
         }
-        $arasPaginated = $arasQuery->orderBy('kod')->paginate(10, ['*'], 'aras_page');
+        $arasPaginated = $arasQuery->latest('id')->paginate(10, ['*'], 'aras_page');
 
         // ===== RUANG QUERY =====
         $ruangQuery = KodRuang::with(['aras.blok', 'latestKemasan']);
-        if ($request->ruang_search) {
+        if ($request->filled('ruang_aras_id') && $request->ruang_aras_id !== 'all') {
+            $ruangQuery->where('aras_id', $request->ruang_aras_id);
+        } elseif ($record->nama_premis_id) {
+            $premisBlokIds = Blok::where('premis_id', $record->nama_premis_id)->pluck('id');
+            if ($premisBlokIds->isNotEmpty()) {
+                $ruangQuery->whereHas('aras', function($q) use ($premisBlokIds) {
+                    $q->whereIn('blok_id', $premisBlokIds);
+                });
+            }
+        }
+
+        if ($request->filled('ruang_search')) {
             $ruangQuery->where(function ($q) use ($request) {
                 $q->where('kod', 'like', '%' . $request->ruang_search . '%')
                   ->orWhere('nama', 'like', '%' . $request->ruang_search . '%');
             });
-        }
-        if ($request->ruang_aras_id) {
-            $ruangQuery->where('aras_id', $request->ruang_aras_id);
         }
         if ($request->ruang_status === 'active') {
             $ruangQuery->where('is_active', true);
@@ -266,8 +294,22 @@ class ArasRuangController extends Controller
         // ===== ARAS QUERY =====
         $arasQuery = KodAras::with('blok');
         
-        // Default to this record's block if no filter is applied
-        $matchingBlok = KodBlok::where('kod', '=', $record->kod_blok, 'and')->first();
+        // Match the Blok for this DA5 record
+        $matchingBlok = null;
+        if ($record->kod_blok && $record->nama_premis_id) {
+            $matchingBlok = Blok::where('kod_blok_myspata', '=', $record->kod_blok)
+                ->where('premis_id', '=', $record->nama_premis_id)
+                ->first();
+        }
+        if (!$matchingBlok && $record->nama_premis_id && $record->nama_blok) {
+            $matchingBlok = Blok::where('premis_id', '=', $record->nama_premis_id)
+                ->where('nama_blok', '=', $record->nama_blok)
+                ->first();
+        }
+        if (!$matchingBlok && $record->kod_blok) {
+            $matchingBlok = Blok::where('kod_blok_myspata', '=', $record->kod_blok)->first();
+        }
+
         if ($matchingBlok && !$request->filled('aras_blok_id')) {
             $arasQuery->where('blok_id', $matchingBlok->id);
             $request->merge(['aras_blok_id' => $matchingBlok->id]);

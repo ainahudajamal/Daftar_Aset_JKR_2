@@ -506,51 +506,12 @@
                 id="aras-panel" role="tabpanel" aria-labelledby="aras-tab">
 
                 <div class="card-body">
-                    {{-- Filter Form --}}
-                    <form action="{{ route('admin.aras-ruang.index') }}" method="GET" class="row g-3 mb-4" id="arasFilterForm">
-                        <input type="hidden" name="tab" value="aras">
-                        <div class="col-md-3">
-                            <label class="form-label text-muted small fw-semibold">CARI ARAS</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0">
-                                    <i class="bi bi-search text-muted"></i>
-                                </span>
-                                <input type="text" name="aras_search" class="form-control border-start-0 ps-0"
-                                    placeholder="Kod atau nama aras..."
-                                    value="{{ request('aras_search') }}">
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label text-muted small fw-semibold">BLOK</label>
-                            <select name="aras_blok_id" class="form-select">
-                                <option value="">Semua Blok</option>
-                                @foreach($bloks as $blok)
-                                <option value="{{ $blok->id }}" {{ request('aras_blok_id') == $blok->id ? 'selected' : '' }}>
-                                    {{ $blok->kod_blok_myspata }} - {{ $blok->nama_blok }}
-                                </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <label class="form-label text-muted small fw-semibold">STATUS</label>
-                            <select name="aras_status" class="form-select">
-                                <option value="">Semua</option>
-                                <option value="active" {{ request('aras_status') === 'active' ? 'selected' : '' }}>Aktif</option>
-                                <option value="inactive" {{ request('aras_status') === 'inactive' ? 'selected' : '' }}>Tidak Aktif</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4 d-flex align-items-end gap-2">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-search me-1"></i> Cari
-                            </button>
-                            <a href="{{ route('admin.aras-ruang.index') }}" class="btn btn-outline-secondary">
-                                <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
-                            </a>
-                            <button type="button" class="btn btn-primary ms-auto" data-bs-toggle="modal" data-bs-target="#modalTambahAras">
-                                <i class="bi bi-plus-circle me-1"></i> Tambah Aras
-                            </button>
-                        </div>
-                    </form>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="mb-0 fw-bold text-dark"><i class="bi bi-layers me-2 text-primary"></i>Senarai Aras yang Ditambah</h6>
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalTambahAras">
+                            <i class="bi bi-plus-circle me-1"></i> Tambah Aras
+                        </button>
+                    </div>
 
                     {{-- Aras Table --}}
                     <div class="table-responsive">
@@ -653,51 +614,12 @@
                 id="ruang-panel" role="tabpanel" aria-labelledby="ruang-tab">
 
                 <div class="card-body">
-                    {{-- Filter Form --}}
-                    <form action="{{ route('admin.aras-ruang.index') }}" method="GET" class="row g-3 mb-4" id="ruangFilterForm">
-                        <input type="hidden" name="tab" value="ruang">
-                        <div class="col-md-3">
-                            <label class="form-label text-muted small fw-semibold">CARI RUANG</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0">
-                                    <i class="bi bi-search text-muted"></i>
-                                </span>
-                                <input type="text" name="ruang_search" class="form-control border-start-0 ps-0"
-                                    placeholder="Kod atau nama ruang..."
-                                    value="{{ request('ruang_search') }}">
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label text-muted small fw-semibold">ARAS</label>
-                            <select name="ruang_aras_id" class="form-select">
-                                <option value="">Semua Aras</option>
-                                @foreach($arasAll as $arasItem)
-                                <option value="{{ $arasItem->id }}" {{ request('ruang_aras_id') == $arasItem->id ? 'selected' : '' }}>
-                                    {{ $arasItem->kod }} - {{ $arasItem->nama }}
-                                </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <label class="form-label text-muted small fw-semibold">STATUS</label>
-                            <select name="ruang_status" class="form-select">
-                                <option value="">Semua</option>
-                                <option value="active" {{ request('ruang_status') === 'active' ? 'selected' : '' }}>Aktif</option>
-                                <option value="inactive" {{ request('ruang_status') === 'inactive' ? 'selected' : '' }}>Tidak Aktif</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4 d-flex align-items-end gap-2">
-                            <button type="submit" class="btn btn-success">
-                                <i class="bi bi-search me-1"></i> Cari
-                            </button>
-                            <a href="{{ route('admin.aras-ruang.index') }}?tab=ruang" class="btn btn-outline-secondary">
-                                <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
-                            </a>
-                            <button type="button" class="btn btn-success ms-auto" data-bs-toggle="modal" data-bs-target="#modalTambahRuang">
-                                <i class="bi bi-plus-circle me-1"></i> Tambah Ruang
-                            </button>
-                        </div>
-                    </form>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="mb-0 fw-bold text-dark"><i class="bi bi-door-open me-2 text-success"></i>Senarai Ruang yang Ditambah</h6>
+                        <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalTambahRuang">
+                            <i class="bi bi-plus-circle me-1"></i> Tambah Ruang
+                        </button>
+                    </div>
 
                     {{-- Ruang Table --}}
                     <div class="table-responsive">
@@ -853,12 +775,7 @@
                                     </td>
                                     <td>
                                         <select name="blok_id" id="tambah_aras_blok_id" class="form-select form-select-sm @error('blok_id') is-invalid @enderror" required>
-                                            <option value="">— Pilih Blok —</option>
-                                            @foreach($bloks as $blok)
-                                            <option value="{{ $blok->id }}" {{ old('blok_id') == $blok->id ? 'selected' : '' }}>
-                                                {{ $blok->kod_blok_myspata }} — {{ $blok->nama_blok }}
-                                            </option>
-                                            @endforeach
+                                            <option value="">— Sila Pilih Kod Blok Terlebih Dahulu —</option>
                                         </select>
                                         @error('blok_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </td>
@@ -953,10 +870,7 @@
                                     </td>
                                     <td>
                                         <select name="blok_id" id="edit_aras_blok_id" class="form-select form-select-sm" required>
-                                            <option value="">— Pilih Blok —</option>
-                                            @foreach($bloks as $blok)
-                                            <option value="{{ $blok->id }}">{{ $blok->kod_blok_myspata }} — {{ $blok->nama_blok }}</option>
-                                            @endforeach
+                                            <option value="">— Sila Pilih Kod Blok Terlebih Dahulu —</option>
                                         </select>
                                     </td>
                                 </tr>
@@ -1060,7 +974,6 @@
                                                 data-nama="{{ $arasItem->nama }}"
                                                 {{ old('aras_id') == $arasItem->id ? 'selected' : '' }}>
                                                 {{ $arasItem->kod }} — {{ $arasItem->nama }}
-                                                @if($arasItem->blok) (Blok: {{ $arasItem->blok->kod_blok_myspata }})@endif
                                             </option>
                                             @endforeach
                                         </select>
@@ -1296,7 +1209,6 @@
                                                 data-aras-kod="{{ $arasItem->kod }}"
                                                 data-nama="{{ $arasItem->nama }}">
                                                 {{ $arasItem->kod }} — {{ $arasItem->nama }}
-                                                @if($arasItem->blok) (Blok: {{ $arasItem->blok->kod_blok_myspata }})@endif
                                             </option>
                                             @endforeach
                                         </select>
@@ -1790,32 +1702,36 @@ document.addEventListener('DOMContentLoaded', function () {
         const currentEditArasBlokVal = (editArasBlok && editArasBlok.value) || "";
         
         if (tambahArasBlok) {
-            tambahArasBlok.innerHTML = '<option value="">— Pilih Blok —</option>';
             if (data.blok && data.blok.length > 0) {
+                tambahArasBlok.innerHTML = '<option value="">— Pilih Blok —</option>';
                 data.blok.forEach(b => {
                     const opt = document.createElement('option');
                     opt.value = b.id;
                     opt.text = `${b.kod_blok_myspata} — ${b.nama_blok}`;
                     tambahArasBlok.appendChild(opt);
                 });
-            }
-            if (currentTambahArasBlokVal) {
-                tambahArasBlok.value = currentTambahArasBlokVal;
+                if (currentTambahArasBlokVal) {
+                    tambahArasBlok.value = currentTambahArasBlokVal;
+                }
+            } else {
+                tambahArasBlok.innerHTML = '<option value="">— Sila Pilih Premis Terlebih Dahulu —</option>';
             }
         }
         
         if (editArasBlok) {
-            editArasBlok.innerHTML = '<option value="">— Pilih Blok —</option>';
             if (data.blok && data.blok.length > 0) {
+                editArasBlok.innerHTML = '<option value="">— Pilih Blok —</option>';
                 data.blok.forEach(b => {
                     const opt = document.createElement('option');
                     opt.value = b.id;
                     opt.text = `${b.kod_blok_myspata} — ${b.nama_blok}`;
                     editArasBlok.appendChild(opt);
                 });
-            }
-            if (currentEditArasBlokVal) {
-                editArasBlok.value = currentEditArasBlokVal;
+                if (currentEditArasBlokVal) {
+                    editArasBlok.value = currentEditArasBlokVal;
+                }
+            } else {
+                editArasBlok.innerHTML = '<option value="">— Sila Pilih Premis Terlebih Dahulu —</option>';
             }
         }
 
@@ -1832,7 +1748,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 data.all_aras.forEach(a => {
                     const opt = document.createElement('option');
                     opt.value = a.id;
-                    opt.text = `${a.kod} — ${a.nama} ${a.blok_kod ? `(Blok: ${a.blok_kod})` : ''}`;
+                    opt.text = `${a.kod} — ${a.nama}`;
                     opt.setAttribute('data-blok-kod', a.blok_kod || '');
                     opt.setAttribute('data-aras-kod', a.kod || '');
                     opt.setAttribute('data-nama', a.nama || '');
@@ -1850,7 +1766,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 data.all_aras.forEach(a => {
                     const opt = document.createElement('option');
                     opt.value = a.id;
-                    opt.text = `${a.kod} — ${a.nama} ${a.blok_kod ? `(Blok: ${a.blok_kod})` : ''}`;
+                    opt.text = `${a.kod} — ${a.nama}`;
                     opt.setAttribute('data-blok-kod', a.blok_kod || '');
                     opt.setAttribute('data-aras-kod', a.kod || '');
                     opt.setAttribute('data-nama', a.nama || '');

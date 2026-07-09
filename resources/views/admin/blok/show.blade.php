@@ -165,8 +165,12 @@
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body p-0 bg-secondary">
-                <iframe id="pdfFrame" src="" width="100%" style="border:none; height:65vh; min-height:450px;"></iframe>
+            <div class="modal-body p-0 bg-secondary position-relative">
+                <div id="pdfLoading" class="position-absolute top-50 start-50 translate-middle text-center text-white" style="z-index: 5;">
+                    <div class="spinner-border text-light mb-2" role="status"></div>
+                    <div>Menjana pratonton PDF...</div>
+                </div>
+                <iframe id="pdfFrame" src="" width="100%" style="border:none; height:65vh; min-height:450px; position: relative; z-index: 10;" onload="const loader = document.getElementById('pdfLoading'); if(loader) loader.style.display='none';"></iframe>
             </div>
             <div class="modal-footer bg-light">
                 <a id="pdfDownload" href="#" class="btn btn-danger">
@@ -181,17 +185,30 @@
 
 @push('scripts')
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const modalEl = document.getElementById('modalPDF');
+    if (modalEl) {
+        document.body.appendChild(modalEl);
+        modalEl.addEventListener('hidden.bs.modal', function() {
+            const frame = document.getElementById('pdfFrame');
+            if (frame) frame.src = '';
+        });
+    }
+});
+
 function previewPdf(id, nama) {
     const base = '{{ rtrim(url("/"), "/") }}';
     const url = `${base}/admin/blok/${id}/export-pdf`;
+    const loader = document.getElementById('pdfLoading');
+    if (loader) loader.style.display = 'block';
     document.getElementById('pdfFrame').src = url;
     document.getElementById('pdfDownload').href = url;
     document.getElementById('modalPremisNama').textContent = nama;
-    const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalPDF'));
-    modal.show();
+    const modalEl = document.getElementById('modalPDF');
+    if (modalEl) {
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modal.show();
+    }
 }
-document.getElementById('modalPDF').addEventListener('hidden.bs.modal', function() {
-    document.getElementById('pdfFrame').src = '';
-});
 </script>
 @endpush

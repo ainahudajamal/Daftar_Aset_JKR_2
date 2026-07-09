@@ -71,10 +71,11 @@ $totalBinaanLuar = Premis::sum('bil_binaan_luar');
     public function store(Request $request)
     {
         $request->validate([
-            'nama_premis'  => 'required|string|max:255',
-            'no_dpa'       => 'required|string|unique:premis,no_dpa',
-            'koordinat_x'  => 'nullable|string',
-            'koordinat_y'  => 'nullable|string',
+            'nama_premis'   => 'required|string|max:255',
+            'no_dpa'        => 'required|string|unique:premis,no_dpa',
+            'koordinat_x'   => 'nullable|string',
+            'koordinat_y'   => 'nullable|string',
+            'gambar_premis' => 'nullable|image|mimes:jpeg,jpg,png|max:5120',
         ]);
 
         $data = $request->except(['tanah', 'lukisan', '_token', 'gambar_premis']);
@@ -126,8 +127,9 @@ $totalBinaanLuar = Premis::sum('bil_binaan_luar');
         $premis = Premis::findOrFail($id);
 
         $request->validate([
-            'nama_premis' => 'required|string|max:255',
-            'no_dpa'      => 'required|string|unique:premis,no_dpa,' . $id,
+            'nama_premis'   => 'required|string|max:255',
+            'no_dpa'        => 'required|string|unique:premis,no_dpa,' . $id,
+            'gambar_premis' => 'nullable|image|mimes:jpeg,jpg,png|max:5120',
         ]);
 
         $data = $request->except(['tanah', 'lukisan', '_token', '_method', 'gambar_premis']);

@@ -539,7 +539,7 @@
 
                 <div class="card-body">
                     {{-- Filter Form --}}
-                    <form action="{{ route('admin.aras-ruang.index') }}" method="GET" class="row g-3 mb-4" id="arasFilterForm">
+                    <form action="{{ route('admin.aras-ruang.edit', $record->id) }}" method="GET" class="row g-3 mb-4" id="arasFilterForm">
                         <input type="hidden" name="tab" value="aras">
                         <div class="col-md-3">
                             <label class="form-label text-muted small fw-semibold">CARI ARAS</label>
@@ -575,7 +575,7 @@
                             <button type="submit" class="btn btn-primary">
                                 <i class="bi bi-search me-1"></i> Cari
                             </button>
-                            <a href="{{ route('admin.aras-ruang.index') }}" class="btn btn-outline-secondary">
+                            <a href="{{ route('admin.aras-ruang.edit', $record->id) }}?tab=aras" class="btn btn-outline-secondary">
                                 <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
                             </a>
                             <button type="button" class="btn btn-primary ms-auto" data-bs-toggle="modal" data-bs-target="#modalTambahAras">
@@ -686,7 +686,7 @@
 
                 <div class="card-body">
                     {{-- Filter Form --}}
-                    <form action="{{ route('admin.aras-ruang.index') }}" method="GET" class="row g-3 mb-4" id="ruangFilterForm">
+                    <form action="{{ route('admin.aras-ruang.edit', $record->id) }}" method="GET" class="row g-3 mb-4" id="ruangFilterForm">
                         <input type="hidden" name="tab" value="ruang">
                         <div class="col-md-3">
                             <label class="form-label text-muted small fw-semibold">CARI RUANG</label>
@@ -722,7 +722,7 @@
                             <button type="submit" class="btn btn-success">
                                 <i class="bi bi-search me-1"></i> Cari
                             </button>
-                            <a href="{{ route('admin.aras-ruang.index') }}?tab=ruang" class="btn btn-outline-secondary">
+                            <a href="{{ route('admin.aras-ruang.edit', $record->id) }}?tab=ruang" class="btn btn-outline-secondary">
                                 <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
                             </a>
                             <button type="button" class="btn btn-success ms-auto" data-bs-toggle="modal" data-bs-target="#modalTambahRuang">
@@ -888,7 +888,7 @@
                                             <option value="">— Pilih Blok —</option>
                                             @foreach($bloks as $blok)
                                             <option value="{{ $blok->id }}" {{ old('blok_id') == $blok->id ? 'selected' : '' }}>
-                                                {{ $blok->kod }} — {{ $blok->nama }}
+                                                {{ $blok->kod_blok_myspata ?? $blok->kod }} — {{ $blok->nama_blok ?? $blok->nama }}
                                             </option>
                                             @endforeach
                                         </select>
@@ -987,7 +987,7 @@
                                         <select name="blok_id" id="edit_aras_blok_id" class="form-select form-select-sm" required>
                                             <option value="">— Pilih Blok —</option>
                                             @foreach($bloks as $blok)
-                                            <option value="{{ $blok->id }}">{{ $blok->kod }} — {{ $blok->nama }}</option>
+                                            <option value="{{ $blok->id }}">{{ $blok->kod_blok_myspata ?? $blok->kod }} — {{ $blok->nama_blok ?? $blok->nama }}</option>
                                             @endforeach
                                         </select>
                                     </td>
@@ -1092,7 +1092,6 @@
                                                 data-nama="{{ $arasItem->nama }}"
                                                 {{ old('aras_id') == $arasItem->id ? 'selected' : '' }}>
                                                 {{ $arasItem->kod }} — {{ $arasItem->nama }}
-                                                @if($arasItem->blok) (Blok: {{ $arasItem->blok->kod_blok_myspata }})@endif
                                             </option>
                                             @endforeach
                                         </select>
@@ -1329,7 +1328,6 @@
                                                 data-aras-kod="{{ $arasItem->kod }}"
                                                 data-nama="{{ $arasItem->nama }}">
                                                 {{ $arasItem->kod }} — {{ $arasItem->nama }}
-                                                @if($arasItem->blok) (Blok: {{ $arasItem->blok->kod_blok_myspata }})@endif
                                             </option>
                                             @endforeach
                                         </select>
@@ -1869,7 +1867,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 data.all_aras.forEach(a => {
                     const opt = document.createElement('option');
                     opt.value = a.id;
-                    opt.text = `${a.kod} — ${a.nama} ${a.blok_kod ? `(Blok: ${a.blok_kod})` : ''}`;
+                    opt.text = `${a.kod} — ${a.nama}`;
                     opt.setAttribute('data-blok-kod', a.blok_kod || '');
                     opt.setAttribute('data-aras-kod', a.kod || '');
                     opt.setAttribute('data-nama', a.nama || '');
@@ -1887,7 +1885,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 data.all_aras.forEach(a => {
                     const opt = document.createElement('option');
                     opt.value = a.id;
-                    opt.text = `${a.kod} — ${a.nama} ${a.blok_kod ? `(Blok: ${a.blok_kod})` : ''}`;
+                    opt.text = `${a.kod} — ${a.nama}`;
                     opt.setAttribute('data-blok-kod', a.blok_kod || '');
                     opt.setAttribute('data-aras-kod', a.kod || '');
                     opt.setAttribute('data-nama', a.nama || '');

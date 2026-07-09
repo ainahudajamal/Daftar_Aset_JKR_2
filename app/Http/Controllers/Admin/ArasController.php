@@ -71,6 +71,8 @@ class ArasController extends Controller
             'is_active' => $request->has('is_active'),
         ]);
 
+        session()->push('recent_da5_aras_ids', $aras->id);
+
         AuditLog::create([
             'user_id'      => Auth::id(),
             'component_id' => null,
