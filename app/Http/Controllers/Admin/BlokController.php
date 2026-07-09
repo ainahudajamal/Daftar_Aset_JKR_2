@@ -152,6 +152,8 @@ $mpdf = new Mpdf([
 
     'default_font' => 'fredoka',
 
+    'tempDir'       => storage_path('mpdf/tmp'),
+
     'fontDir' => array_merge(
         (new \Mpdf\Config\ConfigVariables())->getDefaults()['fontDir'],
         [

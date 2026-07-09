@@ -508,6 +508,7 @@ class ArasRuangController extends Controller
             'margin_left'   => 15,
             'margin_right'  => 15,
             'default_font'  => 'arial',
+            'tempDir'       => storage_path('mpdf/tmp'),
         ]);
 
         $html = view('admin.aras-ruang.pdf', compact(
