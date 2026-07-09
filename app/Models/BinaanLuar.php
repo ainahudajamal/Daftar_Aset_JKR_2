@@ -25,4 +25,9 @@ class BinaanLuar extends Model
     {
         return $this->belongsTo(Premis::class);
     }
+
+    public function aras()
+    {
+        return $this->hasMany(KodAras::class, 'binaan_luar_id');
+    }
 }

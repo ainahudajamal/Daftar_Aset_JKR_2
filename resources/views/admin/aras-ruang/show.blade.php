@@ -431,14 +431,27 @@
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <label class="form-label text-muted small fw-semibold">BLOK</label>
+                            <label class="form-label text-muted small fw-semibold">BLOK / BINAAN LUAR</label>
                             <select name="aras_blok_id" class="form-select">
-                                <option value="">Semua Blok</option>
-                                @foreach($bloks as $blok)
-                                    <option value="{{ $blok->id }}" {{ request('aras_blok_id') == $blok->id ? 'selected' : '' }}>
-                                        {{ $blok->kod_blok_myspata ?? $blok->kod }} - {{ $blok->nama_blok ?? $blok->nama }}
-                                    </option>
-                                @endforeach
+                                <option value="">Semua</option>
+                                @if($bloks->isNotEmpty())
+                                <optgroup label="── Blok ──">
+                                    @foreach($bloks as $blok)
+                                        <option value="blok_{{ $blok->id }}" {{ request('aras_blok_id') == 'blok_'.$blok->id ? 'selected' : '' }}>
+                                            {{ $blok->kod_blok_myspata ?? $blok->kod }} - {{ $blok->nama_blok ?? $blok->nama }}
+                                        </option>
+                                    @endforeach
+                                </optgroup>
+                                @endif
+                                @if($binaanLuars->isNotEmpty())
+                                <optgroup label="── Binaan Luar ──">
+                                    @foreach($binaanLuars as $bl)
+                                        <option value="binaan_luar_{{ $bl->id }}" {{ request('aras_blok_id') == 'binaan_luar_'.$bl->id ? 'selected' : '' }}>
+                                            {{ $bl->kod_binaan_luar_myspata }} - {{ $bl->nama_binaan_luar }}
+                                        </option>
+                                    @endforeach
+                                </optgroup>
+                                @endif
                             </select>
                         </div>
                         <div class="col-md-2">
@@ -480,9 +493,14 @@
                                     <td>
                                         @if($item->blok)
                                             <span class="badge rounded-pill bg-primary-subtle text-primary border border-primary-subtle fw-semibold">
-                                                <i class="bi bi-building me-1"></i>{{ $item->blok->kod }}
+                                                <i class="bi bi-building me-1"></i>{{ $item->blok->kod_blok_myspata ?? $item->blok->kod }}
                                             </span>
-                                            <span class="text-muted ms-1 small">{{ $item->blok->nama }}</span>
+                                            <span class="text-muted ms-1 small">{{ $item->blok->nama_blok ?? $item->blok->nama }}</span>
+                                        @elseif($item->binaanLuar)
+                                            <span class="badge rounded-pill bg-info-subtle text-info border border-info-subtle fw-semibold">
+                                                <i class="bi bi-tree me-1"></i>{{ $item->binaanLuar->kod_binaan_luar_myspata }}
+                                            </span>
+                                            <span class="text-muted ms-1 small">{{ $item->binaanLuar->nama_binaan_luar }}</span>
                                         @else
                                             <span class="text-muted small fst-italic">—</span>
                                         @endif
@@ -595,6 +613,15 @@
                                     </td>
                                     <td>
                                         @if($ruang->aras)
+                                            @if($ruang->aras->blok)
+                                                <span class="badge rounded-pill bg-primary-subtle text-primary border border-primary-subtle fw-semibold">
+                                                    <i class="bi bi-building me-1"></i>{{ $ruang->aras->blok->kod_blok_myspata ?? '' }}
+                                                </span>
+                                            @elseif($ruang->aras->binaanLuar)
+                                                <span class="badge rounded-pill bg-info-subtle text-info border border-info-subtle fw-semibold">
+                                                    <i class="bi bi-tree me-1"></i>{{ $ruang->aras->binaanLuar->kod_binaan_luar_myspata ?? '' }}
+                                                </span>
+                                            @endif
                                             <span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle fw-semibold">
                                                 <i class="bi bi-layers me-1"></i>{{ $ruang->aras->kod }}
                                             </span>

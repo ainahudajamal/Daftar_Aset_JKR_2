@@ -22,7 +22,7 @@
                 </ol>
             </nav>
         </div>
-        <a href="{{ route('admin.aras-ruang.create') }}" class="btn btn-primary d-flex align-items-center gap-2 shadow-sm">
+        <a href="{{ route('admin.aras-ruang.create', ['fresh' => 1]) }}" class="btn btn-primary d-flex align-items-center gap-2 shadow-sm">
             <i class="bi bi-plus-circle-fill"></i>
             <span>Tambah Maklumat</span>
         </a>
@@ -284,7 +284,7 @@
                 <h5 class="text-muted fw-semibold">Tiada rekod DAK dijumpai</h5>
                 <p class="text-muted mb-4 small">Sila ubah carian anda atau tambah maklumat baru.</p>
                 @if(!request()->anyFilled(['search','premis_id','status','tarikh_dari','tarikh_hingga']))
-                    <a href="{{ route('admin.aras-ruang.create') }}" class="btn btn-primary">
+                    <a href="{{ route('admin.aras-ruang.create', ['fresh' => 1]) }}" class="btn btn-primary">
                         <i class="bi bi-plus-circle me-1"></i> Tambah Maklumat
                     </a>
                 @else

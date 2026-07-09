@@ -28,15 +28,8 @@
                 </ol>
             </nav>
         </div>
-        {{-- Dynamic Add button + Export PDF button --}}
+        {{-- Export PDF button --}}
         <div id="headerButtons" class="d-flex gap-2 align-items-center">
-            <button class="btn btn-primary" id="btnTambahAras" data-bs-toggle="modal" data-bs-target="#modalTambahAras">
-                <i class="bi bi-plus-circle me-1"></i> Tambah Aras
-            </button>
-            <button class="btn btn-success d-none" id="btnTambahRuang" data-bs-toggle="modal" data-bs-target="#modalTambahRuang">
-                <i class="bi bi-plus-circle me-1"></i> Tambah Ruang
-            </button>
-
             {{-- Preview PDF Button --}}
             <button type="button" class="btn btn-danger" 
                 data-id="{{ $record->id }}" 
@@ -98,10 +91,27 @@
                                 <label class="form-label text-muted small fw-semibold">Kod Blok / Binaan Luar (Daripada Master Blok)</label>
                                 <select name="kod_blok" id="da5_kod_blok" class="form-select">
                                     <option value="">-- Pilih Kod Blok --</option>
+                                    @php
+                                        $curKod = old('kod_blok', $da5_data['kod_blok'] ?? '');
+                                        $curNama = old('nama_blok', $da5_data['nama_blok'] ?? '');
+                                    @endphp
                                     @foreach($bloks as $b)
-                                    <option value="{{ $b->kod }}" data-nama="{{ $b->nama }}" {{ old('kod_blok', $da5_data['kod_blok'] ?? '') === $b->kod ? 'selected' : '' }}>
-                                        {{ $b->kod }} - {{ $b->nama }}
-                                    </option>
+                                        @php
+                                            $bKod = $b->kod_blok_myspata ?? $b->bil ?? 'Blok';
+                                            $isSelected = ($curNama !== '') ? ($b->nama_blok === $curNama && $bKod === $curKod) : ($bKod === $curKod);
+                                        @endphp
+                                        <option value="{{ $bKod }}" data-nama="{{ $b->nama_blok }}" data-type="blok" data-fungsi="{{ $b->fungsi_binaan }}" data-luas="{{ $b->luas_tapak }}" {{ $isSelected ? 'selected' : '' }}>
+                                            {{ $bKod }} - {{ $b->nama_blok }}
+                                        </option>
+                                    @endforeach
+                                    @foreach($binaanLuars as $bl)
+                                        @php
+                                            $blKod = $bl->kod_binaan_luar_myspata ?? $bl->bil ?? 'BL';
+                                            $isSelected = ($curNama !== '') ? ($bl->nama_binaan_luar === $curNama && $blKod === $curKod) : ($blKod === $curKod);
+                                        @endphp
+                                        <option value="{{ $blKod }}" data-nama="{{ $bl->nama_binaan_luar }}" data-type="binaan_luar" data-jenis="{{ $bl->jenis_binaan_luar }}" data-luas="{{ $bl->luas_tapak }}" {{ $isSelected ? 'selected' : '' }}>
+                                            {{ $blKod }} - {{ $bl->nama_binaan_luar }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -609,6 +619,11 @@
                                             <i class="bi bi-building me-1"></i>{{ $item->blok->kod_blok_myspata }}
                                         </span>
                                         <span class="text-muted ms-1 small">{{ $item->blok->nama_blok }}</span>
+                                        @elseif($item->binaanLuar)
+                                        <span class="badge rounded-pill bg-info-subtle text-info border border-info-subtle fw-semibold">
+                                            <i class="bi bi-tree me-1"></i>{{ $item->binaanLuar->kod_binaan_luar_myspata }}
+                                        </span>
+                                        <span class="text-muted ms-1 small">{{ $item->binaanLuar->nama_binaan_luar }}</span>
                                         @else
                                         <span class="text-muted small fst-italic">—</span>
                                         @endif
@@ -631,7 +646,7 @@
                                     <td class="text-center">
                                          <button type="button" class="btn btn-sm btn-outline-warning me-1"
                                              data-id="{{ $item->id }}"
-                                             data-blok-id="{{ $item->blok_id }}"
+                                             data-blok-id="{{ $item->blok_id ? 'blok_' . $item->blok_id : ($item->binaan_luar_id ? 'binaan_luar_' . $item->binaan_luar_id : '') }}"
                                              data-kod="{{ $item->kod }}"
                                              data-nama="{{ $item->nama }}"
                                              data-active="{{ $item->is_active ? '1' : '0' }}"
@@ -884,14 +899,30 @@
                                         Blok <span class="text-danger">*</span>
                                     </td>
                                     <td>
-                                        <select name="blok_id" class="form-select form-select-sm @error('blok_id') is-invalid @enderror" required>
-                                            <option value="">— Pilih Blok —</option>
-                                            @foreach($bloks as $blok)
-                                            <option value="{{ $blok->id }}" {{ old('blok_id') == $blok->id ? 'selected' : '' }}>
-                                                {{ $blok->kod_blok_myspata ?? $blok->kod }} — {{ $blok->nama_blok ?? $blok->nama }}
-                                            </option>
-                                            @endforeach
-                                        </select>
+                                        <select id="tambah_aras_blok_id" class="form-select form-select-sm">
+    <option value="">— Pilih Blok / Binaan Luar —</option>
+    @if($bloks->isNotEmpty())
+    <optgroup label="── Blok ──">
+        @foreach($bloks as $b)
+        <option value="blok_{{ $b->id }}" data-type="blok" data-id="{{ $b->id }}" {{ (isset($matchingBlok) && $matchingBlok && $matchingBlok->id == $b->id) ? 'selected' : '' }}>
+            {{ $b->kod_blok_myspata }} — {{ $b->nama_blok }}
+        </option>
+        @endforeach
+    </optgroup>
+    @endif
+    @if($binaanLuars->isNotEmpty())
+    <optgroup label="── Binaan Luar ──">
+        @foreach($binaanLuars as $bl)
+        <option value="binaan_luar_{{ $bl->id }}" data-type="binaan_luar" data-id="{{ $bl->id }}" {{ (isset($matchingBinaanLuar) && $matchingBinaanLuar && $matchingBinaanLuar->id == $bl->id) ? 'selected' : '' }}>
+            {{ $bl->kod_binaan_luar_myspata }} — {{ $bl->nama_binaan_luar }}
+        </option>
+        @endforeach
+    </optgroup>
+    @endif
+</select>
+{{-- Hidden inputs untuk hantar nilai sebenar --}}
+<input type="hidden" name="blok_id" id="tambah_aras_blok_id_hidden" value="{{ (isset($matchingBlok) && $matchingBlok) ? $matchingBlok->id : '' }}">
+<input type="hidden" name="binaan_luar_id" id="tambah_aras_binaan_luar_id_hidden" value="{{ (isset($matchingBinaanLuar) && $matchingBinaanLuar) ? $matchingBinaanLuar->id : '' }}">
                                         @error('blok_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </td>
                                 </tr>
@@ -984,12 +1015,29 @@
                                         Blok <span class="text-danger">*</span>
                                     </td>
                                     <td>
-                                        <select name="blok_id" id="edit_aras_blok_id" class="form-select form-select-sm" required>
-                                            <option value="">— Pilih Blok —</option>
-                                            @foreach($bloks as $blok)
-                                            <option value="{{ $blok->id }}">{{ $blok->kod_blok_myspata ?? $blok->kod }} — {{ $blok->nama_blok ?? $blok->nama }}</option>
-                                            @endforeach
+                                        <select id="edit_aras_blok_id" class="form-select form-select-sm" required>
+                                            <option value="">— Pilih Blok / Binaan Luar —</option>
+                                            @if($bloks->isNotEmpty())
+                                            <optgroup label="── Blok ──">
+                                                @foreach($bloks as $b)
+                                                <option value="blok_{{ $b->id }}" data-type="blok" data-id="{{ $b->id }}">
+                                                    {{ $b->kod_blok_myspata }} — {{ $b->nama_blok }}
+                                                </option>
+                                                @endforeach
+                                            </optgroup>
+                                            @endif
+                                            @if($binaanLuars->isNotEmpty())
+                                            <optgroup label="── Binaan Luar ──">
+                                                @foreach($binaanLuars as $bl)
+                                                <option value="binaan_luar_{{ $bl->id }}" data-type="binaan_luar" data-id="{{ $bl->id }}">
+                                                    {{ $bl->kod_binaan_luar_myspata }} — {{ $bl->nama_binaan_luar }}
+                                                </option>
+                                                @endforeach
+                                            </optgroup>
+                                            @endif
                                         </select>
+                                        <input type="hidden" name="blok_id" id="edit_aras_blok_id_hidden" value="">
+                                        <input type="hidden" name="binaan_luar_id" id="edit_aras_binaan_luar_id_hidden" value="">
                                     </td>
                                 </tr>
                                 <tr>
@@ -1555,26 +1603,32 @@ const ruangTab   = document.getElementById('ruang-tab');
 const btnTambahAras  = document.getElementById('btnTambahAras');
 const btnTambahRuang = document.getElementById('btnTambahRuang');
 
-arasTab.addEventListener('shown.bs.tab', function () {
-    btnTambahAras.classList.remove('d-none');
-    btnTambahRuang.classList.add('d-none');
-});
-ruangTab.addEventListener('shown.bs.tab', function () {
-    btnTambahAras.classList.add('d-none');
-    btnTambahRuang.classList.remove('d-none');
-});
+if (arasTab && ruangTab) {
+    arasTab.addEventListener('shown.bs.tab', function () {
+        if (btnTambahAras) btnTambahAras.classList.remove('d-none');
+        if (btnTambahRuang) btnTambahRuang.classList.add('d-none');
+    });
+    ruangTab.addEventListener('shown.bs.tab', function () {
+        if (btnTambahAras) btnTambahAras.classList.add('d-none');
+        if (btnTambahRuang) btnTambahRuang.classList.remove('d-none');
+    });
+}
 
 // Init button state
 const activeTab = "{{ $activeTab }}";
 if (activeTab === 'ruang') {
-    btnTambahAras.classList.add('d-none');
-    btnTambahRuang.classList.remove('d-none');
+    if (btnTambahAras) btnTambahAras.classList.add('d-none');
+    if (btnTambahRuang) btnTambahRuang.classList.remove('d-none');
 }
 
 // ===== EDIT ARAS =====
 function editAras(id, blokId, kod, nama, isActive) {
     document.getElementById('formEditAras').action = '/admin/aras/' + id;
-    document.getElementById('edit_aras_blok_id').value = blokId;
+    const editSel = document.getElementById('edit_aras_blok_id');
+    if (editSel) {
+        editSel.value = blokId;
+        editSel.dispatchEvent(new Event('change'));
+    }
     document.getElementById('edit_aras_kod').value = kod;
     document.getElementById('edit_aras_nama').value = nama;
     document.getElementById('edit_aras_is_active').checked = isActive;
@@ -1760,6 +1814,44 @@ document.querySelectorAll('input[name="kod"]').forEach(function(el) {
 
 // ===== KEMASAN TOGGLE LISTENERS =====
 document.addEventListener('DOMContentLoaded', function() {
+
+    // Handle dropdown Blok / Binaan Luar dalam modal Tambah Aras dan Edit Aras
+    function syncBlokBinaanLuarSelect(selId, blokHiddenId, blHiddenId) {
+        const sel = document.getElementById(selId);
+        if (!sel) return;
+        const selected = sel.options[sel.selectedIndex];
+        if (!selected) return;
+        const type = selected.getAttribute('data-type');
+        const id = selected.getAttribute('data-id');
+
+        const blokHidden = document.getElementById(blokHiddenId);
+        const blHidden = document.getElementById(blHiddenId);
+
+        if (type === 'blok') {
+            if (blokHidden) blokHidden.value = id || '';
+            if (blHidden) blHidden.value = '';
+        } else if (type === 'binaan_luar') {
+            if (blokHidden) blokHidden.value = '';
+            if (blHidden) blHidden.value = id || '';
+        } else {
+            if (blokHidden) blokHidden.value = '';
+            if (blHidden) blHidden.value = '';
+        }
+    }
+
+    const tambahArasBlokEl = document.getElementById('tambah_aras_blok_id');
+    if (tambahArasBlokEl) {
+        tambahArasBlokEl.addEventListener('change', function() {
+            syncBlokBinaanLuarSelect('tambah_aras_blok_id', 'tambah_aras_blok_id_hidden', 'tambah_aras_binaan_luar_id_hidden');
+        });
+    }
+
+    const editArasBlokEl = document.getElementById('edit_aras_blok_id');
+    if (editArasBlokEl) {
+        editArasBlokEl.addEventListener('change', function() {
+            syncBlokBinaanLuarSelect('edit_aras_blok_id', 'edit_aras_blok_id_hidden', 'edit_aras_binaan_luar_id_hidden');
+        });
+    }
     // Tambah modal – Kemasan select
     var tambahKemasan = document.getElementById('tambah_ada_kemasan');
     if (tambahKemasan) {
@@ -1824,35 +1916,39 @@ document.addEventListener('DOMContentLoaded', function () {
         const currentTambahArasBlokVal = (tambahArasBlok && tambahArasBlok.value) || "{{ old('blok_id') }}";
         const currentEditArasBlokVal = (editArasBlok && editArasBlok.value) || "";
         
-        if (tambahArasBlok) {
-            tambahArasBlok.innerHTML = '<option value="">— Pilih Blok —</option>';
+        function populateBlokBinaanLuarSelect(sel, data, currentVal) {
+            if (!sel) return;
+            sel.innerHTML = '<option value="">— Pilih Blok / Binaan Luar —</option>';
             if (data.blok && data.blok.length > 0) {
+                const grp = document.createElement('optgroup');
+                grp.label = '── Blok ──';
                 data.blok.forEach(b => {
                     const opt = document.createElement('option');
-                    opt.value = b.id;
-                    opt.text = `${b.kod_blok_myspata} — ${b.nama_blok}`;
-                    tambahArasBlok.appendChild(opt);
+                    opt.value = `blok_${b.id}`;
+                    opt.setAttribute('data-type', 'blok');
+                    opt.setAttribute('data-id', b.id);
+                    opt.text = `${b.kod_blok_myspata || ''} — ${b.nama_blok || ''}`;
+                    grp.appendChild(opt);
                 });
+                sel.appendChild(grp);
             }
-            if (currentTambahArasBlokVal) {
-                tambahArasBlok.value = currentTambahArasBlokVal;
-            }
-        }
-        
-        if (editArasBlok) {
-            editArasBlok.innerHTML = '<option value="">— Pilih Blok —</option>';
-            if (data.blok && data.blok.length > 0) {
-                data.blok.forEach(b => {
+            if (data.binaan_luar && data.binaan_luar.length > 0) {
+                const grpBL = document.createElement('optgroup');
+                grpBL.label = '── Binaan Luar ──';
+                data.binaan_luar.forEach(bl => {
                     const opt = document.createElement('option');
-                    opt.value = b.id;
-                    opt.text = `${b.kod_blok_myspata} — ${b.nama_blok}`;
-                    editArasBlok.appendChild(opt);
+                    opt.value = `binaan_luar_${bl.id}`;
+                    opt.setAttribute('data-type', 'binaan_luar');
+                    opt.setAttribute('data-id', bl.id);
+                    opt.text = `${bl.kod_binaan_luar_myspata || ''} — ${bl.nama_binaan_luar || ''}`;
+                    grpBL.appendChild(opt);
                 });
+                sel.appendChild(grpBL);
             }
-            if (currentEditArasBlokVal) {
-                editArasBlok.value = currentEditArasBlokVal;
-            }
+            if (currentVal) sel.value = currentVal;
         }
+        populateBlokBinaanLuarSelect(tambahArasBlok, data, currentTambahArasBlokVal);
+        populateBlokBinaanLuarSelect(editArasBlok, data, currentEditArasBlokVal);
 
         // Rebuild aras dropdowns for Ruang Modals
         const tambahRuangAras = document.getElementById('tambah_ruang_aras_id');
@@ -2482,13 +2578,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // On page load, check if a database premise is selected and fetch its blocks
     if (da5_nama_premis && da5_nama_premis.value && da5_nama_premis.value !== "manual" && !isNaN(da5_nama_premis.value)) {
-        const selectedBlockVal = "{{ old('kod_blok', $da5_data['kod_blok'] ?? '') }}";
+        const selectedBlockVal = {!! json_encode(old('kod_blok', $da5_data['kod_blok'] ?? '')) !!};
+        const selectedNamaVal  = {!! json_encode(old('nama_blok', $da5_data['nama_blok'] ?? '')) !!};
         fetch(`/admin/aras-ruang/premis/${da5_nama_premis.value}`)
             .then(response => response.json())
             .then(data => {
-                updateModalsDropdowns(data);
+                //updateModalsDropdowns(data);
                 if (da5_kod_blok) {
                     da5_kod_blok.innerHTML = '<option value="">-- Pilih Kod Blok --</option>';
+                    let matchedOption = false;
 
                     // Add blocks
                     if (data.blok && data.blok.length > 0) {
@@ -2501,8 +2599,14 @@ document.addEventListener('DOMContentLoaded', function () {
                             opt.setAttribute('data-type', 'blok');
                             opt.setAttribute('data-fungsi', b.fungsi_binaan || '');
                             opt.setAttribute('data-luas', b.luas_tapak || '');
-                            if (kod === selectedBlockVal) {
+                            
+                            const isExactMatch = (selectedNamaVal !== '') 
+                                ? (b.nama_blok === selectedNamaVal && kod === selectedBlockVal)
+                                : (kod === selectedBlockVal);
+
+                            if (isExactMatch && !matchedOption) {
                                 opt.selected = true;
+                                matchedOption = true;
                             }
                             da5_kod_blok.appendChild(opt);
                         });
@@ -2519,8 +2623,14 @@ document.addEventListener('DOMContentLoaded', function () {
                             opt.setAttribute('data-type', 'binaan_luar');
                             opt.setAttribute('data-jenis', bl.jenis_binaan_luar || '');
                             opt.setAttribute('data-luas', bl.luas_tapak || '');
-                            if (kod === selectedBlockVal) {
+                            
+                            const isExactMatch = (selectedNamaVal !== '') 
+                                ? (bl.nama_binaan_luar === selectedNamaVal && kod === selectedBlockVal)
+                                : (kod === selectedBlockVal);
+
+                            if (isExactMatch && !matchedOption) {
                                 opt.selected = true;
+                                matchedOption = true;
                             }
                             da5_kod_blok.appendChild(opt);
                         });

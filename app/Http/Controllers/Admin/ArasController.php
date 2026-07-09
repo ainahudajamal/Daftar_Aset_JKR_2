@@ -50,39 +50,58 @@ class ArasController extends Controller
         return view('admin.aras.create', compact('bloks'));
     }
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'blok_id' => 'required|exists:blok,id',
-            'kod'     => 'required|string|max:50|unique:kod_aras,kod,NULL,id,blok_id,' . $request->blok_id,
-            'nama'    => 'required|string|max:255',
-        ], [
-            'blok_id.required' => 'Sila pilih blok.',
-            'blok_id.exists'   => 'Blok tidak sah.',
-            'kod.required'     => 'Kod aras wajib diisi.',
-            'kod.unique'       => 'Kod aras ini telah digunakan untuk blok ini.',
-            'nama.required'    => 'Nama aras wajib diisi.',
-        ]);
+   public function store(Request $request)
+{
+    $request->validate([
+        'blok_id'        => 'nullable|exists:blok,id',
+        'binaan_luar_id' => 'nullable|exists:binaan_luar,id',
+        'kod'            => 'required|string|max:50',
+        'nama'           => 'required|string|max:255',
+    ], [
+        'kod.required'  => 'Kod aras wajib diisi.',
+        'nama.required' => 'Nama aras wajib diisi.',
+    ]);
 
-        $aras = KodAras::create([
-            'blok_id'   => $request->blok_id,
-            'kod'       => strtoupper($request->kod),
-            'nama'      => $request->nama,
-            'is_active' => $request->has('is_active'),
-        ]);
-
-        session()->push('recent_da5_aras_ids', $aras->id);
-
-        AuditLog::create([
-            'user_id'      => Auth::id(),
-            'component_id' => null,
-            'title'        => 'Tambah Aras',
-            'description'  => 'Aras baru ditambah - Kod: ' . $aras->kod . ', Nama: ' . $aras->nama,
-        ]);
-
+    // Pastikan salah satu (blok_id ATAU binaan_luar_id) mesti dipilih
+    if (empty($request->blok_id) && empty($request->binaan_luar_id)) {
         return redirect()->back()
-            ->with('success', 'Aras berjaya ditambah.');
+            ->withInput()
+            ->withErrors(['blok_id' => 'Sila pilih Blok atau Binaan Luar.']);
     }
+
+    // Semak duplicate kod dalam scope Blok/Binaan Luar yang sama
+    $existingQuery = KodAras::where('kod', strtoupper($request->kod));
+    if ($request->blok_id) {
+        $existingQuery->where('blok_id', $request->blok_id);
+    } else {
+        $existingQuery->where('binaan_luar_id', $request->binaan_luar_id);
+    }
+    if ($existingQuery->exists()) {
+        return redirect()->back()
+            ->withInput()
+            ->withErrors(['kod' => 'Kod aras ini telah digunakan untuk pilihan ini.']);
+    }
+
+    $aras = KodAras::create([
+        'blok_id'        => $request->blok_id ?: null,
+        'binaan_luar_id' => $request->binaan_luar_id ?: null,
+        'kod'            => strtoupper($request->kod),
+        'nama'           => $request->nama,
+        'is_active'      => $request->has('is_active'),
+    ]);
+
+    session()->push('recent_da5_aras_ids', $aras->id);
+
+    AuditLog::create([
+        'user_id'      => Auth::id(),
+        'component_id' => null,
+        'title'        => 'Tambah Aras',
+        'description'  => 'Aras baru ditambah - Kod: ' . $aras->kod . ', Nama: ' . $aras->nama,
+    ]);
+
+    return redirect()->back()
+        ->with('success', 'Aras berjaya ditambah.');
+}
 
     public function edit(KodAras $aras)
     {
@@ -93,22 +112,39 @@ class ArasController extends Controller
     public function update(Request $request, KodAras $aras)
     {
         $request->validate([
-            'blok_id' => 'required|exists:blok,id',
-            'kod'     => 'required|string|max:50|unique:kod_aras,kod,' . $aras->id . ',id,blok_id,' . $request->blok_id,
-            'nama'    => 'required|string|max:255',
+            'blok_id'        => 'nullable|exists:blok,id',
+            'binaan_luar_id' => 'nullable|exists:binaan_luar,id',
+            'kod'            => 'required|string|max:50',
+            'nama'           => 'required|string|max:255',
         ], [
-            'blok_id.required' => 'Sila pilih blok.',
-            'blok_id.exists'   => 'Blok tidak sah.',
-            'kod.required'     => 'Kod aras wajib diisi.',
-            'kod.unique'       => 'Kod aras ini telah digunakan untuk blok ini.',
-            'nama.required'    => 'Nama aras wajib diisi.',
+            'kod.required'  => 'Kod aras wajib diisi.',
+            'nama.required' => 'Nama aras wajib diisi.',
         ]);
 
+        if (empty($request->blok_id) && empty($request->binaan_luar_id)) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['blok_id' => 'Sila pilih Blok atau Binaan Luar.']);
+        }
+
+        $existingQuery = KodAras::where('kod', strtoupper($request->kod))->where('id', '!=', $aras->id);
+        if ($request->blok_id) {
+            $existingQuery->where('blok_id', $request->blok_id);
+        } else {
+            $existingQuery->where('binaan_luar_id', $request->binaan_luar_id);
+        }
+        if ($existingQuery->exists()) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['kod' => 'Kod aras ini telah digunakan untuk pilihan ini.']);
+        }
+
         $aras->fill([
-            'blok_id'   => $request->blok_id,
-            'kod'       => strtoupper($request->kod),
-            'nama'      => $request->nama,
-            'is_active' => $request->has('is_active'),
+            'blok_id'        => $request->blok_id ?: null,
+            'binaan_luar_id' => $request->binaan_luar_id ?: null,
+            'kod'            => strtoupper($request->kod),
+            'nama'           => $request->nama,
+            'is_active'      => $request->has('is_active'),
         ]);
         $aras->save();
 

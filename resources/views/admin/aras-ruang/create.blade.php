@@ -22,15 +22,8 @@
                 </ol>
             </nav>
         </div>
-        {{-- Dynamic Add button + Export PDF button --}}
+        {{-- Export PDF button --}}
         <div id="headerButtons" class="d-flex gap-2 align-items-center">
-            <button class="btn btn-primary" id="btnTambahAras" data-bs-toggle="modal" data-bs-target="#modalTambahAras">
-                <i class="bi bi-plus-circle me-1"></i> Tambah Aras
-            </button>
-            <button class="btn btn-success d-none" id="btnTambahRuang" data-bs-toggle="modal" data-bs-target="#modalTambahRuang">
-                <i class="bi bi-plus-circle me-1"></i> Tambah Ruang
-            </button>
-
             {{-- Preview PDF Button (Hidden on Create) --}}
             <button type="button" class="btn btn-danger d-none" data-bs-toggle="modal" data-bs-target="#modalPDF">
                 <i class="bi bi-file-pdf"></i> Preview PDF
@@ -88,10 +81,27 @@
                                 <label class="form-label text-muted small fw-semibold">Kod Blok / Binaan Luar (Daripada Master Blok)</label>
                                 <select name="kod_blok" id="da5_kod_blok" class="form-select">
                                     <option value="">-- Pilih Kod Blok --</option>
+                                    @php
+                                        $curKod = old('kod_blok', $da5_data['kod_blok'] ?? '');
+                                        $curNama = old('nama_blok', $da5_data['nama_blok'] ?? '');
+                                    @endphp
                                     @foreach($bloks as $b)
-                                    <option value="{{ $b->kod }}" data-nama="{{ $b->nama }}" {{ old('kod_blok', $da5_data['kod_blok'] ?? '') === $b->kod ? 'selected' : '' }}>
-                                        {{ $b->kod }} - {{ $b->nama }}
-                                    </option>
+                                        @php
+                                            $bKod = $b->kod_blok_myspata ?? $b->bil ?? 'Blok';
+                                            $isSelected = ($curNama !== '') ? ($b->nama_blok === $curNama && $bKod === $curKod) : ($bKod === $curKod);
+                                        @endphp
+                                        <option value="{{ $bKod }}" data-nama="{{ $b->nama_blok }}" data-type="blok" data-fungsi="{{ $b->fungsi_binaan }}" data-luas="{{ $b->luas_tapak }}" {{ $isSelected ? 'selected' : '' }}>
+                                            {{ $bKod }} - {{ $b->nama_blok }}
+                                        </option>
+                                    @endforeach
+                                    @foreach($binaanLuars as $bl)
+                                        @php
+                                            $blKod = $bl->kod_binaan_luar_myspata ?? $bl->bil ?? 'BL';
+                                            $isSelected = ($curNama !== '') ? ($bl->nama_binaan_luar === $curNama && $blKod === $curKod) : ($blKod === $curKod);
+                                        @endphp
+                                        <option value="{{ $blKod }}" data-nama="{{ $bl->nama_binaan_luar }}" data-type="binaan_luar" data-jenis="{{ $bl->jenis_binaan_luar }}" data-luas="{{ $bl->luas_tapak }}" {{ $isSelected ? 'selected' : '' }}>
+                                            {{ $blKod }} - {{ $bl->nama_binaan_luar }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -506,9 +516,15 @@
                 id="aras-panel" role="tabpanel" aria-labelledby="aras-tab">
 
                 <div class="card-body">
+                    {{-- OPSYEN A: Notis amaran - D.A.5 mesti disimpan dahulu --}}
+                    <div class="alert alert-warning d-flex align-items-center mb-3" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <div>Sila <strong>simpan Borang D.A.5</strong> di bahagian atas terlebih dahulu sebelum menambah Aras.</div>
+                    </div>
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h6 class="mb-0 fw-bold text-dark"><i class="bi bi-layers me-2 text-primary"></i>Senarai Aras yang Ditambah</h6>
-                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalTambahAras">
+                        <button type="button" class="btn btn-primary btn-sm" disabled
+                            data-bs-toggle="tooltip" title="Sila simpan Borang D.A.5 terlebih dahulu sebelum menambah Aras">
                             <i class="bi bi-plus-circle me-1"></i> Tambah Aras
                         </button>
                     </div>
@@ -614,9 +630,15 @@
                 id="ruang-panel" role="tabpanel" aria-labelledby="ruang-tab">
 
                 <div class="card-body">
+                    {{-- OPSYEN A: Notis amaran - D.A.5 mesti disimpan dahulu --}}
+                    <div class="alert alert-warning d-flex align-items-center mb-3" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <div>Sila <strong>simpan Borang D.A.5</strong> di bahagian atas terlebih dahulu sebelum menambah Ruang.</div>
+                    </div>
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h6 class="mb-0 fw-bold text-dark"><i class="bi bi-door-open me-2 text-success"></i>Senarai Ruang yang Ditambah</h6>
-                        <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalTambahRuang">
+                        <button type="button" class="btn btn-success btn-sm" disabled
+                            data-bs-toggle="tooltip" title="Sila simpan Borang D.A.5 terlebih dahulu sebelum menambah Ruang">
                             <i class="bi bi-plus-circle me-1"></i> Tambah Ruang
                         </button>
                     </div>
@@ -774,9 +796,11 @@
                                         Blok <span class="text-danger">*</span>
                                     </td>
                                     <td>
-                                        <select name="blok_id" id="tambah_aras_blok_id" class="form-select form-select-sm @error('blok_id') is-invalid @enderror" required>
+                                        <select id="tambah_aras_blok_id" class="form-select form-select-sm @error('blok_id') is-invalid @enderror" required>
                                             <option value="">— Sila Pilih Kod Blok Terlebih Dahulu —</option>
                                         </select>
+                                        <input type="hidden" name="blok_id" id="tambah_aras_blok_id_hidden" value="">
+                                        <input type="hidden" name="binaan_luar_id" id="tambah_aras_binaan_luar_id_hidden" value="">
                                         @error('blok_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </td>
                                 </tr>
@@ -966,16 +990,7 @@
                                     </td>
                                     <td>
                                         <select name="aras_id" id="tambah_ruang_aras_id" class="form-select form-select-sm @error('aras_id') is-invalid @enderror" required>
-                                            <option value="">— Pilih Aras —</option>
-                                            @foreach($arasAll as $arasItem)
-                                            <option value="{{ $arasItem->id }}"
-                                                data-blok-kod="{{ $arasItem->blok ? $arasItem->blok->kod_blok_myspata : '' }}"
-                                                data-aras-kod="{{ $arasItem->kod }}"
-                                                data-nama="{{ $arasItem->nama }}"
-                                                {{ old('aras_id') == $arasItem->id ? 'selected' : '' }}>
-                                                {{ $arasItem->kod }} — {{ $arasItem->nama }}
-                                            </option>
-                                            @endforeach
+                                            <option value="">— Sila Pilih Premis Terlebih Dahulu —</option>
                                         </select>
                                         @error('aras_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </td>
@@ -1418,11 +1433,17 @@
     </div>
 </div>
 
-@endsection
+
 
 @section('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // OPSYEN A: Enable Bootstrap tooltips for disabled buttons
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.forEach(function (el) {
+        new bootstrap.Tooltip(el);
+    });
+
     const modals = ['modalTambahAras', 'modalTambahRuang', 'modalEditAras', 'modalEditRuang', 'modalPDF'];
     modals.forEach(id => {
         const el = document.getElementById(id);
@@ -1436,20 +1457,22 @@ const ruangTab   = document.getElementById('ruang-tab');
 const btnTambahAras  = document.getElementById('btnTambahAras');
 const btnTambahRuang = document.getElementById('btnTambahRuang');
 
-arasTab.addEventListener('shown.bs.tab', function () {
-    btnTambahAras.classList.remove('d-none');
-    btnTambahRuang.classList.add('d-none');
-});
-ruangTab.addEventListener('shown.bs.tab', function () {
-    btnTambahAras.classList.add('d-none');
-    btnTambahRuang.classList.remove('d-none');
-});
+if (arasTab && ruangTab) {
+    arasTab.addEventListener('shown.bs.tab', function () {
+        if (btnTambahAras) btnTambahAras.classList.remove('d-none');
+        if (btnTambahRuang) btnTambahRuang.classList.add('d-none');
+    });
+    ruangTab.addEventListener('shown.bs.tab', function () {
+        if (btnTambahAras) btnTambahAras.classList.add('d-none');
+        if (btnTambahRuang) btnTambahRuang.classList.remove('d-none');
+    });
+}
 
 // Init button state
 const activeTab = "{{ $activeTab }}";
 if (activeTab === 'ruang') {
-    btnTambahAras.classList.add('d-none');
-    btnTambahRuang.classList.remove('d-none');
+    if (btnTambahAras) btnTambahAras.classList.add('d-none');
+    if (btnTambahRuang) btnTambahRuang.classList.remove('d-none');
 }
 
 // ===== EDIT ARAS =====
@@ -1693,7 +1716,6 @@ document.addEventListener('DOMContentLoaded', function() {
 // ===== D.A.5 FORM JAVASCRIPT LOGIC =====
 document.addEventListener('DOMContentLoaded', function () {
     function updateModalsDropdowns(data) {
-        // Rebuild blok dropdowns for Aras Modals
         const tambahArasBlok = document.getElementById('tambah_aras_blok_id');
         const editArasBlok = document.getElementById('edit_aras_blok_id');
         
@@ -1701,39 +1723,39 @@ document.addEventListener('DOMContentLoaded', function () {
         const currentTambahArasBlokVal = (tambahArasBlok && tambahArasBlok.value) || "{{ old('blok_id') }}";
         const currentEditArasBlokVal = (editArasBlok && editArasBlok.value) || "";
         
-        if (tambahArasBlok) {
+        function populateBlokBinaanLuarSelect(sel, data, currentVal) {
+            if (!sel) return;
+            sel.innerHTML = '<option value="">— Pilih Blok / Binaan Luar —</option>';
             if (data.blok && data.blok.length > 0) {
-                tambahArasBlok.innerHTML = '<option value="">— Pilih Blok —</option>';
+                const grp = document.createElement('optgroup');
+                grp.label = '── Blok ──';
                 data.blok.forEach(b => {
                     const opt = document.createElement('option');
-                    opt.value = b.id;
-                    opt.text = `${b.kod_blok_myspata} — ${b.nama_blok}`;
-                    tambahArasBlok.appendChild(opt);
+                    opt.value = `blok_${b.id}`;
+                    opt.setAttribute('data-type', 'blok');
+                    opt.setAttribute('data-id', b.id);
+                    opt.text = `${b.kod_blok_myspata || ''} — ${b.nama_blok || ''}`;
+                    grp.appendChild(opt);
                 });
-                if (currentTambahArasBlokVal) {
-                    tambahArasBlok.value = currentTambahArasBlokVal;
-                }
-            } else {
-                tambahArasBlok.innerHTML = '<option value="">— Sila Pilih Premis Terlebih Dahulu —</option>';
+                sel.appendChild(grp);
             }
-        }
-        
-        if (editArasBlok) {
-            if (data.blok && data.blok.length > 0) {
-                editArasBlok.innerHTML = '<option value="">— Pilih Blok —</option>';
-                data.blok.forEach(b => {
+            if (data.binaan_luar && data.binaan_luar.length > 0) {
+                const grpBL = document.createElement('optgroup');
+                grpBL.label = '── Binaan Luar ──';
+                data.binaan_luar.forEach(bl => {
                     const opt = document.createElement('option');
-                    opt.value = b.id;
-                    opt.text = `${b.kod_blok_myspata} — ${b.nama_blok}`;
-                    editArasBlok.appendChild(opt);
+                    opt.value = `binaan_luar_${bl.id}`;
+                    opt.setAttribute('data-type', 'binaan_luar');
+                    opt.setAttribute('data-id', bl.id);
+                    opt.text = `${bl.kod_binaan_luar_myspata || ''} — ${bl.nama_binaan_luar || ''}`;
+                    grpBL.appendChild(opt);
                 });
-                if (currentEditArasBlokVal) {
-                    editArasBlok.value = currentEditArasBlokVal;
-                }
-            } else {
-                editArasBlok.innerHTML = '<option value="">— Sila Pilih Premis Terlebih Dahulu —</option>';
+                sel.appendChild(grpBL);
             }
+            if (currentVal) sel.value = currentVal;
         }
+        populateBlokBinaanLuarSelect(tambahArasBlok, data, currentTambahArasBlokVal);
+        populateBlokBinaanLuarSelect(editArasBlok, data, currentEditArasBlokVal);
 
         // Rebuild aras dropdowns for Ruang Modals
         const tambahRuangAras = document.getElementById('tambah_ruang_aras_id');
@@ -1743,8 +1765,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const currentEditRuangArasVal = (editRuangAras && editRuangAras.value) || "";
         
         if (tambahRuangAras) {
-            tambahRuangAras.innerHTML = '<option value="">— Pilih Aras —</option>';
             if (data.all_aras && data.all_aras.length > 0) {
+                tambahRuangAras.innerHTML = '<option value="">— Pilih Aras —</option>';
                 data.all_aras.forEach(a => {
                     const opt = document.createElement('option');
                     opt.value = a.id;
@@ -1754,6 +1776,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     opt.setAttribute('data-nama', a.nama || '');
                     tambahRuangAras.appendChild(opt);
                 });
+            } else {
+                tambahRuangAras.innerHTML = '<option value="">— Tiada Aras Dijumpai (Sila Tambah Aras Terlebih Dahulu) —</option>';
             }
             if (currentTambahRuangArasVal) {
                 tambahRuangAras.value = currentTambahRuangArasVal;
@@ -1761,8 +1785,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         
         if (editRuangAras) {
-            editRuangAras.innerHTML = '<option value="">— Pilih Aras —</option>';
             if (data.all_aras && data.all_aras.length > 0) {
+                editRuangAras.innerHTML = '<option value="">— Pilih Aras —</option>';
                 data.all_aras.forEach(a => {
                     const opt = document.createElement('option');
                     opt.value = a.id;
@@ -1772,6 +1796,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     opt.setAttribute('data-nama', a.nama || '');
                     editRuangAras.appendChild(opt);
                 });
+            } else {
+                editRuangAras.innerHTML = '<option value="">— Tiada Aras Dijumpai (Sila Tambah Aras Terlebih Dahulu) —</option>';
             }
             if (currentEditRuangArasVal) {
                 editRuangAras.value = currentEditRuangArasVal;
@@ -2363,13 +2389,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // On page load, check if a database premise is selected and fetch its blocks
     if (da5_nama_premis && da5_nama_premis.value && da5_nama_premis.value !== "manual" && !isNaN(da5_nama_premis.value)) {
-        const selectedBlockVal = "{{ old('kod_blok', $da5_data['kod_blok'] ?? '') }}";
+        const selectedBlockVal = {!! json_encode(old('kod_blok', $da5_data['kod_blok'] ?? '')) !!};
+        const selectedNamaVal  = {!! json_encode(old('nama_blok', $da5_data['nama_blok'] ?? '')) !!};
         fetch(`/admin/aras-ruang/premis/${da5_nama_premis.value}`)
             .then(response => response.json())
             .then(data => {
                 updateModalsDropdowns(data);
                 if (da5_kod_blok) {
                     da5_kod_blok.innerHTML = '<option value="">-- Pilih Kod Blok --</option>';
+                    let matchedOption = false;
 
                     // Add blocks
                     if (data.blok && data.blok.length > 0) {
@@ -2382,8 +2410,14 @@ document.addEventListener('DOMContentLoaded', function () {
                             opt.setAttribute('data-type', 'blok');
                             opt.setAttribute('data-fungsi', b.fungsi_binaan || '');
                             opt.setAttribute('data-luas', b.luas_tapak || '');
-                            if (kod === selectedBlockVal) {
+                            
+                            const isExactMatch = (selectedNamaVal !== '') 
+                                ? (b.nama_blok === selectedNamaVal && kod === selectedBlockVal)
+                                : (kod === selectedBlockVal);
+
+                            if (isExactMatch && !matchedOption) {
                                 opt.selected = true;
+                                matchedOption = true;
                             }
                             da5_kod_blok.appendChild(opt);
                         });
@@ -2400,8 +2434,14 @@ document.addEventListener('DOMContentLoaded', function () {
                             opt.setAttribute('data-type', 'binaan_luar');
                             opt.setAttribute('data-jenis', bl.jenis_binaan_luar || '');
                             opt.setAttribute('data-luas', bl.luas_tapak || '');
-                            if (kod === selectedBlockVal) {
+                            
+                            const isExactMatch = (selectedNamaVal !== '') 
+                                ? (bl.nama_binaan_luar === selectedNamaVal && kod === selectedBlockVal)
+                                : (kod === selectedBlockVal);
+
+                            if (isExactMatch && !matchedOption) {
                                 opt.selected = true;
+                                matchedOption = true;
                             }
                             da5_kod_blok.appendChild(opt);
                         });
@@ -2542,4 +2582,5 @@ function previewPdf(id, nama) {
 .border-success-subtle  { border-color: #6ee7b7 !important; }
 .border-secondary-subtle { border-color: #cbd5e1 !important; }
 </style>
+@endsection
 @endsection

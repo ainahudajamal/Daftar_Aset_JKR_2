@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Schema;
 use App\Models\KodBlok;
+use App\Models\BinaanLuar;
 
 class KodAras extends Model
 {
@@ -31,6 +32,7 @@ class KodAras extends Model
         'is_active',
         'status',
         'blok_id',
+        'binaan_luar_id',
     ];
 
     /**
@@ -223,9 +225,15 @@ class KodAras extends Model
         }
         return $this->is_active ? 'Aktif' : 'Tidak Aktif';
     }
-    // Relationship dengan Blok
+ // Relationship dengan Blok
     public function blok()
     {
         return $this->belongsTo(Blok::class, 'blok_id');
+    }
+
+    // Relationship dengan Binaan Luar
+    public function binaanLuar()
+    {
+        return $this->belongsTo(BinaanLuar::class, 'binaan_luar_id');
     }
 }
