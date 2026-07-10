@@ -705,6 +705,7 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
      HELAIAN 3  —  Landscape A4
      MAKLUMAT ARAS — 12-row table + signatures
 ================================================================ --}}
+@forelse($arasAll as $aras)
 <pagebreak orientation="landscape" sheet-size="A4-L" />
 
 <div class="h-wrap"><span class="h-badge">helaian 3</span></div>
@@ -716,7 +717,159 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
   <tr>
     <td class="lbl bold" style="width:28px;">Blok</td>
     <td class="cln">:</td>
-    <td style="width:62px;"><div class="fb"></div></td>
+    <td style="width:62px;"><div class="fb" style="padding-left:5px; line-height:20px; font-weight:bold;">{{ $da5_data['kod_blok'] ?: ($aras->blok->kod_blok_myspata ?? ($aras->binaanLuar->kod_binaan_luar_myspata ?? '')) }}</div></td>
+    <td style="width:14px;"></td>
+    <td class="lbl bold" style="width:28px;">Aras</td>
+    <td class="cln">:</td>
+    <td style="width:126px;"><div class="fb" style="padding-left:5px; line-height:20px; font-weight:bold;">{{ $aras->kod }}</div></td>
+    <td style="width:18px;"></td>
+    <td class="lbl bold" style="width:62px;">Nama Aras</td>
+    <td class="cln">:</td>
+    <td><div class="fb" style="padding-left:5px; line-height:20px; font-weight:bold;">{{ $aras->nama }}</div></td>
+  </tr>
+</table>
+
+{{-- Main data table — 2-row header --}}
+<table class="dt">
+  <colgroup>
+    <col style="width:9%;">
+    <col style="width:9%;">
+    <col style="width:27%;">
+    <col style="width:9%;">
+    <col style="width:8%;">
+    <col style="width:25%;">
+    <col style="width:13%;">
+  </colgroup>
+  <thead>
+    <tr>
+      <th rowspan="2">KOD<br>RUANG</th>
+      <th rowspan="2">KOD<br>SUB<br>RUANG</th>
+      <th rowspan="2">NAMA RUANG</th>
+      <th colspan="2">UKURAN RUANG</th>
+      <th rowspan="2">FUNGSI RUANG</th>
+      <th rowspan="2" style="font-size:10.5px; line-height:1.3;">
+        KEMASAN<br>
+        <span style="font-size:9px; font-weight:normal; font-style:italic;">(Jika ADA,<br>perlu diisi<br>helaian 4)</span>
+      </th>
+    </tr>
+    <tr>
+      <th>LUAS (m&#178;)</th>
+      <th>TINGGI<br>(m)</th>
+    </tr>
+  </thead>
+  <tbody>
+    @php
+      $ruangs = $ruangsAll->where('aras_id', $aras->id)->values();
+      $rowCount = max(12, $ruangs->count());
+    @endphp
+    @for ($i = 0; $i < $rowCount; $i++)
+      @php
+        $ruang = $ruangs->get($i);
+      @endphp
+      <tr>
+        <td style="height:28px; padding-left: 5px; font-weight: bold;" class="c">{{ $ruang ? $ruang->kod : '' }}</td>
+        <td style="padding-left: 5px; font-weight: bold;" class="c">{{ $ruang ? $ruang->kod_sub_ruang : '' }}</td>
+        <td style="padding-left: 5px; font-weight: bold;">{{ $ruang ? $ruang->nama : '' }}</td>
+        <td style="padding-left: 5px; font-weight: bold;" class="c">{{ $ruang && isset($ruang->luas) ? number_format($ruang->luas, 2) : '' }}</td>
+        <td style="padding-left: 5px; font-weight: bold;" class="c">{{ $ruang && isset($ruang->tinggi) ? number_format($ruang->tinggi, 2) : '' }}</td>
+        <td style="padding-left: 5px; font-weight: bold;">{{ $ruang ? $ruang->fungsi_ruang : '' }}</td>
+        <td class="c" style="font-size:10px; white-space:nowrap; font-weight: bold;">
+          @if ($ruang)
+            {{ strtoupper($ruang->ada_kemasan) === 'ADA' ? 'ADA' : 'TIADA' }}
+          @else
+            ADA / TIADA
+          @endif
+        </td>
+      </tr>
+    @endfor
+  </tbody>
+</table>
+
+{{-- Signature section --}}
+<table class="ft" style="margin-top:14px;">
+  <tr>
+    <td style="width:10%;"></td>
+    <td style="width:38%; vertical-align:top;">
+      <div class="sig-head">PENGUMPUL DATA :</div>
+      <table class="ft">
+        <tr>
+          <td class="lbl" style="width:80px; text-align:left; padding-right:4px;">Tandatangan</td>
+          <td class="cln">:</td>
+          <td style="width:120px;"><div class="sig-box"></div></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="lbl" style="width:80px; text-align:left; padding-right:4px;">Nama</td>
+          <td class="cln">:</td>
+          <td colspan="2"><div class="sig-line"></div></td>
+        </tr>
+        <tr>
+          <td class="lbl" style="width:80px; text-align:left; padding-right:4px;">Jawatan</td>
+          <td class="cln">:</td>
+          <td colspan="2"><div class="sig-line"></div></td>
+        </tr>
+        <tr>
+          <td class="lbl" style="width:80px; text-align:left; padding-right:4px;">Tarikh</td>
+          <td class="cln">:</td>
+          <td colspan="2"><div class="sig-line"></div></td>
+        </tr>
+      </table>
+    </td>
+    <td style="width:4%;"></td>
+    <td style="width:38%; vertical-align:top;">
+      <div class="sig-head">PENGESAH DATA :</div>
+      <table class="ft">
+        <tr>
+          <td class="lbl" style="width:80px; text-align:left; padding-right:4px;">Tandatangan</td>
+          <td class="cln">:</td>
+          <td style="width:120px;"><div class="sig-box"></div></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="lbl" style="width:80px; text-align:left; padding-right:4px;">Nama</td>
+          <td class="cln">:</td>
+          <td colspan="2"><div class="sig-line"></div></td>
+        </tr>
+        <tr>
+          <td class="lbl" style="width:80px; text-align:left; padding-right:4px;">Jawatan</td>
+          <td class="cln">:</td>
+          <td colspan="2"><div class="sig-line"></div></td>
+        </tr>
+        <tr>
+          <td class="lbl" style="width:80px; text-align:left; padding-right:4px;">Tarikh</td>
+          <td class="cln">:</td>
+          <td colspan="2"><div class="sig-line"></div></td>
+        </tr>
+      </table>
+    </td>
+    <td style="width:10%;"></td>
+  </tr>
+</table>
+
+<table class="ft" style="margin-top:10px;">
+  <tr>
+    <td></td>
+    <td style="text-align:right; font-size:10px; white-space:nowrap; width:auto;">
+      Muka surat
+      <span style="display:inline-block; border-bottom:1px solid #000; width:28px; height:14px; vertical-align:bottom;">&nbsp;</span>
+      dari
+      <span style="display:inline-block; border-bottom:1px solid #000; width:28px; height:14px; vertical-align:bottom;">&nbsp;</span>
+    </td>
+  </tr>
+</table>
+@empty
+<pagebreak orientation="landscape" sheet-size="A4-L" />
+
+<div class="h-wrap"><span class="h-badge">helaian 3</span></div>
+
+<div class="sec">MAKLUMAT ARAS</div>
+
+{{-- Blok / Aras / Nama Aras header row --}}
+<table class="ft" style="margin-bottom:5px;">
+  <tr>
+    <td class="lbl bold" style="width:28px;">Blok</td>
+    <td class="cln">:</td>
+    <td style="width:62px;"><div class="fb" style="padding-left:5px; line-height:20px; font-weight:bold;">{{ $da5_data['kod_blok'] ?? '' }}</div></td>
     <td style="width:14px;"></td>
     <td class="lbl bold" style="width:28px;">Aras</td>
     <td class="cln">:</td>
@@ -843,12 +996,22 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
     </td>
   </tr>
 </table>
+@endforelse
 
 
 {{-- ================================================================
      HELAIAN 4  —  Landscape A4
      *MAKLUMAT KEMASAN DALAM RUANG — 13-row table + signatures
 ================================================================ --}}
+@php
+  $arasWithFinishes = $arasAll->filter(function($aras) use ($ruangsAll) {
+      return $ruangsAll->where('aras_id', $aras->id)->contains(function($r) {
+          return strtoupper($r->ada_kemasan) === 'ADA';
+      });
+  });
+@endphp
+
+@forelse($arasWithFinishes as $aras)
 <pagebreak orientation="landscape" sheet-size="A4-L" />
 
 <div class="h-wrap"><span class="h-badge">helaian 4</span></div>
@@ -860,7 +1023,148 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
   <tr>
     <td class="lbl bold" style="width:28px;">Blok</td>
     <td class="cln">:</td>
-    <td style="width:62px;"><div class="fb"></div></td>
+    <td style="width:62px;"><div class="fb" style="padding-left:5px; line-height:20px; font-weight:bold;">{{ $da5_data['kod_blok'] ?: ($aras->blok->kod_blok_myspata ?? ($aras->binaanLuar->kod_binaan_luar_myspata ?? '')) }}</div></td>
+    <td style="width:14px;"></td>
+    <td class="lbl bold" style="width:28px;">Aras</td>
+    <td class="cln">:</td>
+    <td style="width:126px;"><div class="fb" style="padding-left:5px; line-height:20px; font-weight:bold;">{{ $aras->kod }}</div></td>
+    <td style="width:18px;"></td>
+    <td class="lbl bold" style="width:62px;">Nama Aras</td>
+    <td class="cln">:</td>
+    <td><div class="fb" style="padding-left:5px; line-height:20px; font-weight:bold;">{{ $aras->nama }}</div></td>
+  </tr>
+</table>
+
+{{-- Main data table — single header row --}}
+<table class="dt">
+  <colgroup>
+    <col style="width:8%;">
+    <col style="width:23%;">
+    <col style="width:9%;">
+    <col style="width:22%;">
+    <col style="width:9%;">
+    <col style="width:21%;">
+    <col style="width:8%;">
+  </colgroup>
+  <thead>
+    <tr>
+      <th>KOD<br>RUANG</th>
+      <th>KEMASAN LANTAI</th>
+      <th>LUAS (m&#178;)</th>
+      <th>KEMASAN DINDING</th>
+      <th>LUAS (m&#178;)</th>
+      <th>KEMASAN SILING</th>
+      <th>LUAS<br>(m&#178;)</th>
+    </tr>
+  </thead>
+  <tbody>
+    @php
+      $ruangs = $ruangsAll->where('aras_id', $aras->id)->where('ada_kemasan', 'ada')->values();
+      $rowCount = max(13, $ruangs->count());
+    @endphp
+    @for ($i = 0; $i < $rowCount; $i++)
+      @php
+        $ruang = $ruangs->get($i);
+        $kemasan = $ruang ? $ruang->latestKemasan : null;
+      @endphp
+      <tr>
+        <td style="height:28px; padding-left: 5px; font-weight: bold;" class="c">{{ $ruang ? $ruang->kod : '' }}</td>
+        <td style="padding-left: 5px; font-weight: bold;">{{ $kemasan ? $kemasan->kemasan_lantai : '' }}</td>
+        <td style="padding-left: 5px; font-weight: bold;" class="c">{{ $kemasan && isset($kemasan->luas_lantai) ? number_format($kemasan->luas_lantai, 2) : '' }}</td>
+        <td style="padding-left: 5px; font-weight: bold;">{{ $kemasan ? $kemasan->kemasan_dinding : '' }}</td>
+        <td style="padding-left: 5px; font-weight: bold;" class="c">{{ $kemasan && isset($kemasan->luas_dinding) ? number_format($kemasan->luas_dinding, 2) : '' }}</td>
+        <td style="padding-left: 5px; font-weight: bold;">{{ $kemasan ? $kemasan->kemasan_siling : '' }}</td>
+        <td style="padding-left: 5px; font-weight: bold;" class="c">{{ $kemasan && isset($kemasan->luas_siling) ? number_format($kemasan->luas_siling, 2) : '' }}</td>
+      </tr>
+    @endfor
+  </tbody>
+</table>
+
+{{-- Signature section (identical to page 3) --}}
+<table class="ft" style="margin-top:14px;">
+  <tr>
+    <td style="width:10%;"></td>
+    <td style="width:38%; vertical-align:top;">
+      <div class="sig-head">PENGUMPUL DATA :</div>
+      <table class="ft">
+        <tr>
+          <td class="lbl" style="width:80px; text-align:left; padding-right:4px;">Tandatangan</td>
+          <td class="cln">:</td>
+          <td style="width:120px;"><div class="sig-box"></div></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="lbl" style="width:80px; text-align:left; padding-right:4px;">Nama</td>
+          <td class="cln">:</td>
+          <td colspan="2"><div class="sig-line"></div></td>
+        </tr>
+        <tr>
+          <td class="lbl" style="width:80px; text-align:left; padding-right:4px;">Jawatan</td>
+          <td class="cln">:</td>
+          <td colspan="2"><div class="sig-line"></div></td>
+        </tr>
+        <tr>
+          <td class="lbl" style="width:80px; text-align:left; padding-right:4px;">Tarikh</td>
+          <td class="cln">:</td>
+          <td colspan="2"><div class="sig-line"></div></td>
+        </tr>
+      </table>
+    </td>
+    <td style="width:4%;"></td>
+    <td style="width:38%; vertical-align:top;">
+      <div class="sig-head">PENGESAH DATA :</div>
+      <table class="ft">
+        <tr>
+          <td class="lbl" style="width:80px; text-align:left; padding-right:4px;">Tandatangan</td>
+          <td class="cln">:</td>
+          <td style="width:120px;"><div class="sig-box"></div></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="lbl" style="width:80px; text-align:left; padding-right:4px;">Nama</td>
+          <td class="cln">:</td>
+          <td colspan="2"><div class="sig-line"></div></td>
+        </tr>
+        <tr>
+          <td class="lbl" style="width:80px; text-align:left; padding-right:4px;">Jawatan</td>
+          <td class="cln">:</td>
+          <td colspan="2"><div class="sig-line"></div></td>
+        </tr>
+        <tr>
+          <td class="lbl" style="width:80px; text-align:left; padding-right:4px;">Tarikh</td>
+          <td class="cln">:</td>
+          <td colspan="2"><div class="sig-line"></div></td>
+        </tr>
+      </table>
+    </td>
+    <td style="width:10%;"></td>
+  </tr>
+</table>
+
+<table class="ft" style="margin-top:10px;">
+  <tr>
+    <td></td>
+    <td style="text-align:right; font-size:10px; white-space:nowrap; width:auto;">
+      Muka surat
+      <span style="display:inline-block; border-bottom:1px solid #000; width:28px; height:14px; vertical-align:bottom;">&nbsp;</span>
+      dari
+      <span style="display:inline-block; border-bottom:1px solid #000; width:28px; height:14px; vertical-align:bottom;">&nbsp;</span>
+    </td>
+  </tr>
+</table>
+@empty
+<pagebreak orientation="landscape" sheet-size="A4-L" />
+
+<div class="h-wrap"><span class="h-badge">helaian 4</span></div>
+
+<div class="sec">*MAKLUMAT KEMASAN DALAM RUANG</div>
+
+{{-- Blok / Aras / Nama Aras header row (same as page 3) --}}
+<table class="ft" style="margin-bottom:5px;">
+  <tr>
+    <td class="lbl bold" style="width:28px;">Blok</td>
+    <td class="cln">:</td>
+    <td style="width:62px;"><div class="fb" style="padding-left:5px; line-height:20px; font-weight:bold;">{{ $da5_data['kod_blok'] ?? '' }}</div></td>
     <td style="width:14px;"></td>
     <td class="lbl bold" style="width:28px;">Aras</td>
     <td class="cln">:</td>
@@ -981,6 +1285,7 @@ body { font-family: Arial, sans-serif; font-size: 11px; color: #000; line-height
     </td>
   </tr>
 </table>
+@endforelse
 
 </body>
 </html>

@@ -218,39 +218,39 @@ $premisList = Premis::orderBy('nama_premis', 'asc')->get();
         if ($record->nama_premis_id) {
             // 1. First priority: Match exact NAME (nama_blok) against Blok or Binaan Luar
             if ($nama !== '') {
-                $matchingBlok = Blok::where('premis_id', $record->nama_premis_id)
-                    ->where('nama_blok', $nama)
+                $matchingBlok = Blok::where('premis_id', '=', $record->nama_premis_id, 'and')
+                    ->where('nama_blok', '=', $nama, 'and')
                     ->first();
 
                 if (!$matchingBlok) {
-                    $matchingBinaanLuar = BinaanLuar::where('premis_id', $record->nama_premis_id)
-                        ->where('nama_binaan_luar', $nama)
+                    $matchingBinaanLuar = BinaanLuar::where('premis_id', '=', $record->nama_premis_id, 'and')
+                        ->where('nama_binaan_luar', '=', $nama, 'and')
                         ->first();
                 }
             }
 
             // 2. Second priority: Match CONCAT string or full string
             if (!$matchingBlok && !$matchingBinaanLuar && $kod !== '') {
-                $matchingBlok = Blok::where('premis_id', $record->nama_premis_id)
-                    ->whereRaw("TRIM(CONCAT(IFNULL(kod_blok_myspata,''), ' - ', IFNULL(nama_blok,''))) = ?", [$kod])
+                $matchingBlok = Blok::where('premis_id', '=', $record->nama_premis_id, 'and')
+                    ->whereRaw("TRIM(CONCAT(IFNULL(kod_blok_myspata,''), ' - ', IFNULL(nama_blok,''))) = ?", [$kod], 'and')
                     ->first();
 
                 if (!$matchingBlok) {
-                    $matchingBinaanLuar = BinaanLuar::where('premis_id', $record->nama_premis_id)
-                        ->whereRaw("TRIM(CONCAT(IFNULL(kod_binaan_luar_myspata,''), ' - ', IFNULL(nama_binaan_luar,''))) = ?", [$kod])
+                    $matchingBinaanLuar = BinaanLuar::where('premis_id', '=', $record->nama_premis_id, 'and')
+                        ->whereRaw("TRIM(CONCAT(IFNULL(kod_binaan_luar_myspata,''), ' - ', IFNULL(nama_binaan_luar,''))) = ?", [$kod], 'and')
                         ->first();
                 }
             }
 
             // 3. Third priority: Match by kod_blok_myspata ONLY IF nama_blok is empty
             if (!$matchingBlok && !$matchingBinaanLuar && $nama === '' && $kod !== '') {
-                $matchingBlok = Blok::where('premis_id', $record->nama_premis_id)
-                    ->where('kod_blok_myspata', $kod)
+                $matchingBlok = Blok::where('premis_id', '=', $record->nama_premis_id, 'and')
+                    ->where('kod_blok_myspata', '=', $kod, 'and')
                     ->first();
 
                 if (!$matchingBlok) {
-                    $matchingBinaanLuar = BinaanLuar::where('premis_id', $record->nama_premis_id)
-                        ->where('kod_binaan_luar_myspata', $kod)
+                    $matchingBinaanLuar = BinaanLuar::where('premis_id', '=', $record->nama_premis_id, 'and')
+                        ->where('kod_binaan_luar_myspata', '=', $kod, 'and')
                         ->first();
                 }
             }
@@ -261,33 +261,33 @@ $premisList = Premis::orderBy('nama_premis', 'asc')->get();
         if ($request->filled('aras_blok_id') && $request->aras_blok_id !== 'all') {
             if (str_starts_with($request->aras_blok_id, 'binaan_luar_')) {
                 $blId = (int) str_replace('binaan_luar_', '', $request->aras_blok_id);
-                $arasQuery->where('binaan_luar_id', $blId);
+                $arasQuery->where('binaan_luar_id', '=', $blId, 'and');
             } elseif (str_starts_with($request->aras_blok_id, 'blok_')) {
                 $bId = (int) str_replace('blok_', '', $request->aras_blok_id);
-                $arasQuery->where('blok_id', $bId);
+                $arasQuery->where('blok_id', '=', $bId, 'and');
             } else {
-                $arasQuery->where('blok_id', $request->aras_blok_id);
+                $arasQuery->where('blok_id', '=', $request->aras_blok_id, 'and');
             }
         } elseif ($matchingBlok) {
-            $arasQuery->where('blok_id', $matchingBlok->id);
+            $arasQuery->where('blok_id', '=', $matchingBlok->id, 'and');
         } elseif ($matchingBinaanLuar) {
-            $arasQuery->where('binaan_luar_id', $matchingBinaanLuar->id);
+            $arasQuery->where('binaan_luar_id', '=', $matchingBinaanLuar->id, 'and');
         } elseif ($record->nama_premis_id) {
-            $premisBlokIds = Blok::where('premis_id', $record->nama_premis_id)->pluck('id');
-            $premisBLIds = BinaanLuar::where('premis_id', $record->nama_premis_id)->pluck('id');
+            $premisBlokIds = Blok::where('premis_id', '=', $record->nama_premis_id, 'and')->pluck('id');
+            $premisBLIds = BinaanLuar::where('premis_id', '=', $record->nama_premis_id, 'and')->pluck('id');
             $arasQuery->where(function ($q) use ($premisBlokIds, $premisBLIds) {
                 if ($premisBlokIds->isNotEmpty()) {
-                    $q->whereIn('blok_id', $premisBlokIds);
+                    $q->whereIn('blok_id', $premisBlokIds, 'and', false);
                 }
                 if ($premisBLIds->isNotEmpty()) {
-                    $q->orWhereIn('binaan_luar_id', $premisBLIds);
+                    $q->whereIn('binaan_luar_id', $premisBLIds, 'or', false);
                 }
                 if ($premisBlokIds->isEmpty() && $premisBLIds->isEmpty()) {
-                    $q->whereRaw('1 = 0');
+                    $q->whereRaw('1 = 0', [], 'and');
                 }
-            });
+            }, null, null, 'and');
         } else {
-            $arasQuery->whereRaw('1 = 0');
+            $arasQuery->whereRaw('1 = 0', [], 'and');
         }
 
         if ($request->filled('aras_search')) {
@@ -306,30 +306,30 @@ $premisList = Premis::orderBy('nama_premis', 'asc')->get();
         // ===== RUANG QUERY =====
         $ruangQuery = KodRuang::with(['aras.blok', 'aras.binaanLuar', 'latestKemasan']);
         if ($request->filled('ruang_aras_id') && $request->ruang_aras_id !== 'all') {
-            $ruangQuery->where('aras_id', $request->ruang_aras_id);
+            $ruangQuery->where('aras_id', '=', $request->ruang_aras_id, 'and');
         } elseif ($matchingBlok) {
             $ruangQuery->whereHas('aras', function($q) use ($matchingBlok) {
-                $q->where('blok_id', $matchingBlok->id);
+                $q->where('blok_id', '=', $matchingBlok->id, 'and');
             });
         } elseif ($matchingBinaanLuar) {
             $ruangQuery->whereHas('aras', function($q) use ($matchingBinaanLuar) {
-                $q->where('binaan_luar_id', $matchingBinaanLuar->id);
+                $q->where('binaan_luar_id', '=', $matchingBinaanLuar->id, 'and');
             });
         } elseif ($record->nama_premis_id) {
-            $premisBlokIds = Blok::where('premis_id', $record->nama_premis_id)->pluck('id');
-            $premisBLIds = BinaanLuar::where('premis_id', $record->nama_premis_id)->pluck('id');
+            $premisBlokIds = Blok::where('premis_id', '=', $record->nama_premis_id, 'and')->pluck('id');
+            $premisBLIds = BinaanLuar::where('premis_id', '=', $record->nama_premis_id, 'and')->pluck('id');
             $ruangQuery->whereHas('aras', function ($q) use ($premisBlokIds, $premisBLIds) {
                 $q->where(function ($sub) use ($premisBlokIds, $premisBLIds) {
                     if ($premisBlokIds->isNotEmpty()) {
-                        $sub->whereIn('blok_id', $premisBlokIds);
+                        $sub->whereIn('blok_id', $premisBlokIds, 'and', false);
                     }
                     if ($premisBLIds->isNotEmpty()) {
-                        $sub->orWhereIn('binaan_luar_id', $premisBLIds);
+                        $sub->whereIn('binaan_luar_id', $premisBLIds, 'or', false);
                     }
-                });
+                }, null, null, 'and');
             });
         } else {
-            $ruangQuery->whereRaw('1 = 0');
+            $ruangQuery->whereRaw('1 = 0', [], 'and');
         }
 
         if ($request->filled('ruang_search')) {
@@ -350,20 +350,20 @@ $bloks = Blok::where('premis_id', '=', $record->nama_premis_id, 'and')->orderBy(
 $binaanLuars = BinaanLuar::where('premis_id', $record->nama_premis_id)->orderBy('kod_binaan_luar_myspata', 'asc')->get();
 
 if ($matchingBlok) {
-    $arasAll = KodAras::where('blok_id', $matchingBlok->id)->orderBy('kod', 'asc')->get();
+    $arasAll = KodAras::where('blok_id', '=', $matchingBlok->id, 'and')->orderBy('kod', 'asc')->get();
 } elseif ($matchingBinaanLuar) {
-    $arasAll = KodAras::where('binaan_luar_id', $matchingBinaanLuar->id)->orderBy('kod', 'asc')->get();
+    $arasAll = KodAras::where('binaan_luar_id', '=', $matchingBinaanLuar->id, 'and')->orderBy('kod', 'asc')->get();
 } else {
     $premisBlokIds = $bloks->pluck('id');
     $premisBLIds = $binaanLuars->pluck('id');
     $arasAll = KodAras::where(function ($q) use ($premisBlokIds, $premisBLIds) {
         if ($premisBlokIds->isNotEmpty()) {
-            $q->whereIn('blok_id', $premisBlokIds);
+            $q->whereIn('blok_id', $premisBlokIds, 'and', false);
         }
         if ($premisBLIds->isNotEmpty()) {
-            $q->orWhereIn('binaan_luar_id', $premisBLIds);
+            $q->whereIn('binaan_luar_id', $premisBLIds, 'or', false);
         }
-    })->orderBy('kod', 'asc')->get();
+    }, null, null, 'and')->orderBy('kod', 'asc')->get();
 }
         $premisList = Premis::orderBy('nama_premis', 'asc')->get();
 
@@ -404,39 +404,39 @@ if ($matchingBlok) {
         if ($record->nama_premis_id) {
             // 1. First priority: Match exact NAME (nama_blok) against Blok or Binaan Luar
             if ($nama !== '') {
-                $matchingBlok = Blok::where('premis_id', $record->nama_premis_id)
-                    ->where('nama_blok', $nama)
+                $matchingBlok = Blok::where('premis_id', '=', $record->nama_premis_id, 'and')
+                    ->where('nama_blok', '=', $nama, 'and')
                     ->first();
 
                 if (!$matchingBlok) {
-                    $matchingBinaanLuar = BinaanLuar::where('premis_id', $record->nama_premis_id)
-                        ->where('nama_binaan_luar', $nama)
+                    $matchingBinaanLuar = BinaanLuar::where('premis_id', '=', $record->nama_premis_id, 'and')
+                        ->where('nama_binaan_luar', '=', $nama, 'and')
                         ->first();
                 }
             }
 
             // 2. Second priority: Match CONCAT string or full string
             if (!$matchingBlok && !$matchingBinaanLuar && $kod !== '') {
-                $matchingBlok = Blok::where('premis_id', $record->nama_premis_id)
-                    ->whereRaw("TRIM(CONCAT(IFNULL(kod_blok_myspata,''), ' - ', IFNULL(nama_blok,''))) = ?", [$kod])
+                $matchingBlok = Blok::where('premis_id', '=', $record->nama_premis_id, 'and')
+                    ->whereRaw("TRIM(CONCAT(IFNULL(kod_blok_myspata,''), ' - ', IFNULL(nama_blok,''))) = ?", [$kod], 'and')
                     ->first();
 
                 if (!$matchingBlok) {
-                    $matchingBinaanLuar = BinaanLuar::where('premis_id', $record->nama_premis_id)
-                        ->whereRaw("TRIM(CONCAT(IFNULL(kod_binaan_luar_myspata,''), ' - ', IFNULL(nama_binaan_luar,''))) = ?", [$kod])
+                    $matchingBinaanLuar = BinaanLuar::where('premis_id', '=', $record->nama_premis_id, 'and')
+                        ->whereRaw("TRIM(CONCAT(IFNULL(kod_binaan_luar_myspata,''), ' - ', IFNULL(nama_binaan_luar,''))) = ?", [$kod], 'and')
                         ->first();
                 }
             }
 
             // 3. Third priority: Match by kod_blok_myspata ONLY IF nama_blok is empty
             if (!$matchingBlok && !$matchingBinaanLuar && $nama === '' && $kod !== '') {
-                $matchingBlok = Blok::where('premis_id', $record->nama_premis_id)
-                    ->where('kod_blok_myspata', $kod)
+                $matchingBlok = Blok::where('premis_id', '=', $record->nama_premis_id, 'and')
+                    ->where('kod_blok_myspata', '=', $kod, 'and')
                     ->first();
 
                 if (!$matchingBlok) {
-                    $matchingBinaanLuar = BinaanLuar::where('premis_id', $record->nama_premis_id)
-                        ->where('kod_binaan_luar_myspata', $kod)
+                    $matchingBinaanLuar = BinaanLuar::where('premis_id', '=', $record->nama_premis_id, 'and')
+                        ->where('kod_binaan_luar_myspata', '=', $kod, 'and')
                         ->first();
                 }
             }
@@ -447,19 +447,19 @@ if ($matchingBlok) {
         if ($request->filled('aras_blok_id') && $request->aras_blok_id !== 'all') {
             if (str_starts_with($request->aras_blok_id, 'binaan_luar_')) {
                 $blId = (int) str_replace('binaan_luar_', '', $request->aras_blok_id);
-                $arasQuery->where('binaan_luar_id', $blId);
+                $arasQuery->where('binaan_luar_id', '=', $blId, 'and');
             } elseif (str_starts_with($request->aras_blok_id, 'blok_')) {
                 $bId = (int) str_replace('blok_', '', $request->aras_blok_id);
-                $arasQuery->where('blok_id', $bId);
+                $arasQuery->where('blok_id', '=', $bId, 'and');
             } else {
-                $arasQuery->where('blok_id', $request->aras_blok_id);
+                $arasQuery->where('blok_id', '=', $request->aras_blok_id, 'and');
             }
         } elseif ($matchingBlok) {
-            $arasQuery->where('blok_id', $matchingBlok->id);
+            $arasQuery->where('blok_id', '=', $matchingBlok->id, 'and');
         } elseif ($matchingBinaanLuar) {
-            $arasQuery->where('binaan_luar_id', $matchingBinaanLuar->id);
+            $arasQuery->where('binaan_luar_id', '=', $matchingBinaanLuar->id, 'and');
         } else {
-            $arasQuery->whereRaw('1 = 0');
+            $arasQuery->whereRaw('1 = 0', [], 'and');
         }
 
         if ($request->filled('aras_search')) {
@@ -478,17 +478,17 @@ if ($matchingBlok) {
         // ===== RUANG QUERY =====
         $ruangQuery = KodRuang::with(['aras.blok', 'aras.binaanLuar', 'latestKemasan']);
         if ($request->filled('ruang_aras_id') && $request->ruang_aras_id !== 'all') {
-            $ruangQuery->where('aras_id', $request->ruang_aras_id);
+            $ruangQuery->where('aras_id', '=', $request->ruang_aras_id, 'and');
         } elseif ($matchingBlok) {
             $ruangQuery->whereHas('aras', function($q) use ($matchingBlok) {
-                $q->where('blok_id', $matchingBlok->id);
+                $q->where('blok_id', '=', $matchingBlok->id, 'and');
             });
         } elseif ($matchingBinaanLuar) {
             $ruangQuery->whereHas('aras', function($q) use ($matchingBinaanLuar) {
-                $q->where('binaan_luar_id', $matchingBinaanLuar->id);
+                $q->where('binaan_luar_id', '=', $matchingBinaanLuar->id, 'and');
             });
         } else {
-            $ruangQuery->whereRaw('1 = 0');
+            $ruangQuery->whereRaw('1 = 0', [], 'and');
         }
 
         if ($request->filled('ruang_search')) {
@@ -505,24 +505,24 @@ if ($matchingBlok) {
         $ruangsPaginated = $ruangQuery->orderBy('kod')->paginate(10, ['*'], 'ruang_page');
 
         // Shared data for Aras and Ruang
-        $bloks = Blok::where('premis_id', $record->nama_premis_id)->orderBy('kod_blok_myspata', 'asc')->get();
-        $binaanLuars = BinaanLuar::where('premis_id', $record->nama_premis_id)->orderBy('kod_binaan_luar_myspata', 'asc')->get();
+        $bloks = Blok::where('premis_id', '=', $record->nama_premis_id, 'and')->orderBy('kod_blok_myspata', 'asc')->get();
+        $binaanLuars = BinaanLuar::where('premis_id', '=', $record->nama_premis_id, 'and')->orderBy('kod_binaan_luar_myspata', 'asc')->get();
 
         if ($matchingBlok) {
-            $arasAll = KodAras::where('blok_id', $matchingBlok->id)->orderBy('kod', 'asc')->get();
+            $arasAll = KodAras::where('blok_id', '=', $matchingBlok->id, 'and')->orderBy('kod', 'asc')->get();
         } elseif ($matchingBinaanLuar) {
-            $arasAll = KodAras::where('binaan_luar_id', $matchingBinaanLuar->id)->orderBy('kod', 'asc')->get();
+            $arasAll = KodAras::where('binaan_luar_id', '=', $matchingBinaanLuar->id, 'and')->orderBy('kod', 'asc')->get();
         } else {
             $premisBlokIds = $bloks->pluck('id');
             $premisBLIds = $binaanLuars->pluck('id');
             $arasAll = KodAras::where(function ($q) use ($premisBlokIds, $premisBLIds) {
                 if ($premisBlokIds->isNotEmpty()) {
-                    $q->whereIn('blok_id', $premisBlokIds);
+                    $q->whereIn('blok_id', $premisBlokIds, 'and', false);
                 }
                 if ($premisBLIds->isNotEmpty()) {
-                    $q->orWhereIn('binaan_luar_id', $premisBLIds);
+                    $q->whereIn('binaan_luar_id', $premisBLIds, 'or', false);
                 }
-            })->orderBy('kod', 'asc')->get();
+            }, null, null, 'and')->orderBy('kod', 'asc')->get();
         }
         $premisList = Premis::orderBy('nama_premis', 'asc')->get();
 
@@ -662,13 +662,84 @@ if ($matchingBlok) {
             'description'  => 'Pengguna mengeksport PDF Borang D.A.5 ID: ' . $record->id,
         ]);
 
-        // ===== ARAS QUERY (all records, no pagination) =====
-        $arasQuery = KodAras::with('blok');
-        $arasAll = $arasQuery->orderBy('blok_id')->orderBy('kod')->get();
+        // Match the Blok/Binaan Luar for this DA5 record
+        $matchingBlok = null;
+        $matchingBinaanLuar = null;
 
-        // ===== RUANG QUERY (all records, no pagination) =====
-        $ruangQuery = KodRuang::with(['aras.blok']);
-        $ruangsAll = $ruangQuery->orderBy('aras_id')->orderBy('kod')->get();
+        $kod  = trim((string) $record->kod_blok);
+        $nama = trim((string) $record->nama_blok);
+
+        if ($record->nama_premis_id) {
+            // 1. First priority: Match exact NAME (nama_blok) against Blok or Binaan Luar
+            if ($nama !== '') {
+                $matchingBlok = Blok::where('premis_id', '=', $record->nama_premis_id, 'and')
+                    ->where('nama_blok', '=', $nama, 'and')
+                    ->first();
+
+                if (!$matchingBlok) {
+                    $matchingBinaanLuar = BinaanLuar::where('premis_id', '=', $record->nama_premis_id, 'and')
+                        ->where('nama_binaan_luar', '=', $nama, 'and')
+                        ->first();
+                }
+            }
+
+            // 2. Second priority: Match CONCAT string or full string
+            if (!$matchingBlok && !$matchingBinaanLuar && $kod !== '') {
+                $matchingBlok = Blok::where('premis_id', '=', $record->nama_premis_id, 'and')
+                    ->whereRaw("TRIM(CONCAT(IFNULL(kod_blok_myspata,''), ' - ', IFNULL(nama_blok,''))) = ?", [$kod], 'and')
+                    ->first();
+
+                if (!$matchingBlok) {
+                    $matchingBinaanLuar = BinaanLuar::where('premis_id', '=', $record->nama_premis_id, 'and')
+                        ->whereRaw("TRIM(CONCAT(IFNULL(kod_binaan_luar_myspata,''), ' - ', IFNULL(nama_binaan_luar,''))) = ?", [$kod], 'and')
+                        ->first();
+                }
+            }
+
+            // 3. Third priority: Match by kod_blok_myspata ONLY IF nama_blok is empty
+            if (!$matchingBlok && !$matchingBinaanLuar && $nama === '' && $kod !== '') {
+                $matchingBlok = Blok::where('premis_id', '=', $record->nama_premis_id, 'and')
+                    ->where('kod_blok_myspata', '=', $kod, 'and')
+                    ->first();
+
+                if (!$matchingBlok) {
+                    $matchingBinaanLuar = BinaanLuar::where('premis_id', '=', $record->nama_premis_id, 'and')
+                        ->where('kod_binaan_luar_myspata', '=', $kod, 'and')
+                        ->first();
+                }
+            }
+        }
+
+        // ===== ARAS QUERY (filtered by matched block, or premis blocks, or global fallback) =====
+        if ($matchingBlok) {
+            $arasAll = KodAras::with('blok')->where('blok_id', '=', $matchingBlok->id, 'and')->orderBy('kod', 'asc')->get();
+        } elseif ($matchingBinaanLuar) {
+            $arasAll = KodAras::with('binaanLuar')->where('binaan_luar_id', '=', $matchingBinaanLuar->id, 'and')->orderBy('kod', 'asc')->get();
+        } elseif ($record->nama_premis_id) {
+            $bloks = Blok::where('premis_id', '=', $record->nama_premis_id, 'and')->pluck('id');
+            $binaanLuars = BinaanLuar::where('premis_id', '=', $record->nama_premis_id, 'and')->pluck('id');
+            $arasAll = KodAras::with(['blok', 'binaanLuar'])->where(function ($q) use ($bloks, $binaanLuars) {
+                if ($bloks->isNotEmpty()) {
+                    $q->whereIn('blok_id', $bloks, 'and', false);
+                }
+                if ($binaanLuars->isNotEmpty()) {
+                    $q->whereIn('binaan_luar_id', $binaanLuars, 'or', false);
+                }
+            }, null, null, 'and')->orderBy('kod', 'asc')->get();
+        } else {
+            $arasAll = KodAras::with(['blok', 'binaanLuar'])->orderBy('kod', 'asc')->get();
+        }
+
+        // ===== RUANG QUERY =====
+        if ($arasAll->isNotEmpty()) {
+            $arasIds = $arasAll->pluck('id');
+            $ruangsAll = KodRuang::with(['aras.blok', 'aras.binaanLuar', 'latestKemasan'])
+                ->whereIn('aras_id', $arasIds, 'and', false)
+                ->orderBy('kod', 'asc')
+                ->get();
+        } else {
+            $ruangsAll = collect();
+        }
 
         $filterInfo = null;
         $filterArasBlok = null;
