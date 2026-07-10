@@ -297,9 +297,9 @@ $premisList = Premis::orderBy('nama_premis', 'asc')->get();
             });
         }
         if ($request->aras_status === 'active') {
-            $arasQuery->where('is_active', true);
+            $arasQuery->where('is_active', '=', true, 'and');
         } elseif ($request->aras_status === 'inactive') {
-            $arasQuery->where('is_active', false);
+            $arasQuery->where('is_active', '=', false, 'and');
         }
         $arasPaginated = $arasQuery->latest('id')->paginate(10, ['*'], 'aras_page');
 
@@ -339,15 +339,15 @@ $premisList = Premis::orderBy('nama_premis', 'asc')->get();
             });
         }
         if ($request->ruang_status === 'active') {
-            $ruangQuery->where('is_active', true);
+            $ruangQuery->where('is_active', '=', true, 'and');
         } elseif ($request->ruang_status === 'inactive') {
-            $ruangQuery->where('is_active', false);
+            $ruangQuery->where('is_active', '=', false, 'and');
         }
         $ruangsPaginated = $ruangQuery->orderBy('kod')->paginate(10, ['*'], 'ruang_page');
 
         // Shared data for Aras and Ruang
 $bloks = Blok::where('premis_id', '=', $record->nama_premis_id, 'and')->orderBy('kod_blok_myspata', 'asc')->get();
-$binaanLuars = BinaanLuar::where('premis_id', $record->nama_premis_id)->orderBy('kod_binaan_luar_myspata', 'asc')->get();
+$binaanLuars = BinaanLuar::where('premis_id', '=', $record->nama_premis_id, 'and')->orderBy('kod_binaan_luar_myspata', 'asc')->get();
 
 if ($matchingBlok) {
     $arasAll = KodAras::where('blok_id', '=', $matchingBlok->id, 'and')->orderBy('kod', 'asc')->get();
@@ -469,9 +469,9 @@ if ($matchingBlok) {
             });
         }
         if ($request->aras_status === 'active') {
-            $arasQuery->where('is_active', true);
+            $arasQuery->where('is_active', '=', true, 'and');
         } elseif ($request->aras_status === 'inactive') {
-            $arasQuery->where('is_active', false);
+            $arasQuery->where('is_active', '=', false, 'and');
         }
         $arasPaginated = $arasQuery->orderBy('kod')->paginate(10, ['*'], 'aras_page');
 
@@ -498,9 +498,9 @@ if ($matchingBlok) {
             });
         }
         if ($request->ruang_status === 'active') {
-            $ruangQuery->where('is_active', true);
+            $ruangQuery->where('is_active', '=', true, 'and');
         } elseif ($request->ruang_status === 'inactive') {
-            $ruangQuery->where('is_active', false);
+            $ruangQuery->where('is_active', '=', false, 'and');
         }
         $ruangsPaginated = $ruangQuery->orderBy('kod')->paginate(10, ['*'], 'ruang_page');
 
