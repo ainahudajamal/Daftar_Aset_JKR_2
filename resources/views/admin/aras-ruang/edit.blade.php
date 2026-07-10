@@ -521,17 +521,17 @@
         <div class="card-header bg-white border-bottom-0 pt-3 pb-0">
             <ul class="nav nav-tabs card-header-tabs" id="arasRuangTabs" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{ $activeTab === 'ruang' ? '' : 'active' }} fw-semibold px-4 py-2"
+                    <button class="nav-link {{ (session('_redirect_tab') ?? $activeTab) === 'ruang' ? '' : 'active' }} fw-semibold px-4 py-2"
                         id="aras-tab" data-bs-toggle="tab" data-bs-target="#aras-panel" type="button" role="tab"
-                        aria-controls="aras-panel" aria-selected="{{ $activeTab !== 'ruang' ? 'true' : 'false' }}">
+                        aria-controls="aras-panel" aria-selected="{{ (session('_redirect_tab') ?? $activeTab) !== 'ruang' ? 'true' : 'false' }}">
                         <i class="bi bi-layers me-2 text-primary"></i>Aras
                         <span class="badge bg-primary ms-2">{{ $arasPaginated->total() }}</span>
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{ $activeTab === 'ruang' ? 'active' : '' }} fw-semibold px-4 py-2"
+                    <button class="nav-link {{ (session('_redirect_tab') ?? $activeTab) === 'ruang' ? 'active' : '' }} fw-semibold px-4 py-2"
                         id="ruang-tab" data-bs-toggle="tab" data-bs-target="#ruang-panel" type="button" role="tab"
-                        aria-controls="ruang-panel" aria-selected="{{ $activeTab === 'ruang' ? 'true' : 'false' }}">
+                        aria-controls="ruang-panel" aria-selected="{{ (session('_redirect_tab') ?? $activeTab) === 'ruang' ? 'true' : 'false' }}">
                         <i class="bi bi-door-open me-2 text-success"></i>Ruang
                         <span class="badge bg-success ms-2">{{ $ruangsPaginated->total() }}</span>
                     </button>
@@ -544,7 +544,7 @@
             {{-- ============================================================
                  TAB 1: ARAS
             ============================================================ --}}
-            <div class="tab-pane fade {{ $activeTab === 'ruang' ? '' : 'show active' }}"
+            <div class="tab-pane fade {{ (session('_redirect_tab') ?? $activeTab) === 'ruang' ? '' : 'show active' }}"
                 id="aras-panel" role="tabpanel" aria-labelledby="aras-tab">
 
                 <div class="card-body">
@@ -696,7 +696,7 @@
             {{-- ============================================================
                  TAB 2: RUANG
             ============================================================ --}}
-            <div class="tab-pane fade {{ $activeTab === 'ruang' ? 'show active' : '' }}"
+            <div class="tab-pane fade {{ (session('_redirect_tab') ?? $activeTab) === 'ruang' ? 'show active' : '' }}"
                 id="ruang-panel" role="tabpanel" aria-labelledby="ruang-tab">
 
                 <div class="card-body">
@@ -990,6 +990,8 @@
             <form id="formEditAras" method="POST">
                 @csrf @method('PUT')
                 <input type="hidden" name="_redirect_tab" value="aras">
+                <input type="hidden" name="_form_type" value="edit_aras">
+                <input type="hidden" name="_edit_aras_id" id="edit_aras_id_hidden_val" value="">
                 <div class="modal-body p-4">
                     <div class="border rounded-3 overflow-hidden mb-0">
                         <div class="bg-light border-bottom px-4 py-3">
@@ -1045,10 +1047,11 @@
                                         Kod Aras <span class="text-danger">*</span>
                                     </td>
                                     <td>
-                                        <input type="text" name="kod" id="edit_aras_kod" class="form-control form-control-sm"
+                                        <input type="text" name="kod" id="edit_aras_kod" class="form-control form-control-sm @error('kod') is-invalid @enderror"
                                             required placeholder="Contoh: 01"
                                             style="text-transform:uppercase; font-family: monospace; font-size:1rem;">
                                         <small class="text-muted">Format: 01, 02, LG, G, B1</small>
+                                        @error('kod')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </td>
                                 </tr>
                                 <tr>
@@ -1056,8 +1059,9 @@
                                         Nama Aras <span class="text-danger">*</span>
                                     </td>
                                     <td>
-                                        <input type="text" name="nama" id="edit_aras_nama" class="form-control form-control-sm"
+                                        <input type="text" name="nama" id="edit_aras_nama" class="form-control form-control-sm @error('nama') is-invalid @enderror"
                                             required placeholder="Contoh: Aras 1">
+                                        @error('nama')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </td>
                                 </tr>
                                 <tr>
@@ -1342,6 +1346,8 @@
             <form id="formEditRuang" method="POST">
                 @csrf @method('PUT')
                 <input type="hidden" name="_redirect_tab" value="ruang">
+                <input type="hidden" name="_form_type" value="edit_ruang">
+                <input type="hidden" name="_edit_ruang_id" id="edit_ruang_id_hidden_val" value="">
                 <div class="modal-body p-4">
                     <div class="border rounded-3 overflow-hidden mb-0">
                         <div class="bg-light border-bottom px-4 py-3">
@@ -1368,7 +1374,7 @@
                                         Aras <span class="text-danger">*</span>
                                     </td>
                                     <td>
-                                        <select name="aras_id" id="edit_ruang_aras_id" class="form-select form-select-sm" required>
+                                        <select name="aras_id" id="edit_ruang_aras_id" class="form-select form-select-sm @error('aras_id') is-invalid @enderror" required>
                                             <option value="">— Pilih Aras —</option>
                                             @foreach($arasAll as $arasItem)
                                             <option value="{{ $arasItem->id }}"
@@ -1379,6 +1385,7 @@
                                             </option>
                                             @endforeach
                                         </select>
+                                        @error('aras_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </td>
                                 </tr>
                                 {{-- KOD RUANG --}}
@@ -1387,10 +1394,11 @@
                                         Kod Ruang <span class="text-danger">*</span>
                                     </td>
                                     <td>
-                                        <input type="text" name="kod" id="edit_ruang_kod" class="form-control form-control-sm"
+                                        <input type="text" name="kod" id="edit_ruang_kod" class="form-control form-control-sm @error('kod') is-invalid @enderror"
                                             required placeholder="Contoh: R01"
                                             style="text-transform:uppercase; font-family: monospace; font-size:1rem;">
                                         <small class="text-muted">Format: R01, R02, BIL, JK</small>
+                                        @error('kod')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </td>
                                 </tr>
                                 {{-- KOD SUB RUANG --}}
@@ -1408,8 +1416,9 @@
                                         Nama Ruang <span class="text-danger">*</span>
                                     </td>
                                     <td>
-                                        <input type="text" name="nama" id="edit_ruang_nama" class="form-control form-control-sm"
+                                        <input type="text" name="nama" id="edit_ruang_nama" class="form-control form-control-sm @error('nama') is-invalid @enderror"
                                             required placeholder="Contoh: Bilik Mesyuarat">
+                                        @error('nama')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </td>
                                 </tr>
                                 {{-- UKURAN RUANG --}}
@@ -1585,6 +1594,9 @@
     </div>
 </div>
 
+<input type="hidden" id="js_old_kod_blok" value="{{ old('kod_blok', $da5_data['kod_blok'] ?? '') }}">
+<input type="hidden" id="js_old_nama_blok" value="{{ old('nama_blok', $da5_data['nama_blok'] ?? '') }}">
+
 @endsection
 
 @section('scripts')
@@ -1615,7 +1627,7 @@ if (arasTab && ruangTab) {
 }
 
 // Init button state
-const activeTab = "{{ $activeTab }}";
+const activeTab = "{{ session('_redirect_tab') ?? $activeTab }}";
 if (activeTab === 'ruang') {
     if (btnTambahAras) btnTambahAras.classList.add('d-none');
     if (btnTambahRuang) btnTambahRuang.classList.remove('d-none');
@@ -1624,6 +1636,8 @@ if (activeTab === 'ruang') {
 // ===== EDIT ARAS =====
 function editAras(id, blokId, kod, nama, isActive) {
     document.getElementById('formEditAras').action = '/admin/aras/' + id;
+    const idInput = document.getElementById('edit_aras_id_hidden_val');
+    if (idInput) idInput.value = id;
     const editSel = document.getElementById('edit_aras_blok_id');
     if (editSel) {
         editSel.value = blokId;
@@ -1673,6 +1687,8 @@ function editRuangFromBtn(btn) {
 
     // Set form action
     document.getElementById('formEditRuang').action = '/admin/ruang/' + id;
+    const idInput = document.getElementById('edit_ruang_id_hidden_val');
+    if (idInput) idInput.value = id;
 
     // Set basic fields
     document.getElementById('edit_ruang_aras_id').value       = arasId;
@@ -1780,6 +1796,8 @@ function previewPdfFromBtn(btn) {
 const hasErrors = "{{ $errors->any() ? 'true' : 'false' }}" === 'true';
 const redirectTab = "{{ old('_redirect_tab', session('_redirect_tab') ?? '') }}";
 const formType = "{{ old('_form_type', '') }}";
+const editArasId = "{{ old('_edit_aras_id', '') }}";
+const editRuangId = "{{ old('_edit_ruang_id', '') }}";
 
 if (hasErrors) {
     if (redirectTab === 'ruang') {
@@ -1789,7 +1807,53 @@ if (hasErrors) {
             bootstrap.Tab.getOrCreateInstance(ruangTabEl).show();
         }
 
-        if (formType !== 'edit_ruang') {
+        if (formType === 'edit_ruang' && editRuangId) {
+            // Re-open edit ruang modal
+            const oldArasId = "{{ old('aras_id') }}";
+            const oldKod = "{{ old('kod') }}";
+            const oldSubRuang = "{{ old('kod_sub_ruang') }}";
+            const oldNama = "{{ old('nama') }}";
+            const oldLuas = "{{ old('luas') }}";
+            const oldTinggi = "{{ old('tinggi') }}";
+            const oldFungsi = "{{ old('fungsi_ruang') }}";
+            const oldAdaKemasan = "{{ old('ada_kemasan', 'tiada') }}";
+            const oldIsActive = "{{ old('is_active') ? '1' : '0' }}" === '1';
+
+            // Set action
+            document.getElementById('formEditRuang').action = '/admin/ruang/' + editRuangId;
+            document.getElementById('edit_ruang_id_hidden_val').value = editRuangId;
+
+            // Set inputs
+            document.getElementById('edit_ruang_aras_id').value = oldArasId;
+            document.getElementById('edit_ruang_kod').value = oldKod;
+            document.getElementById('edit_ruang_kod_sub_ruang').value = oldSubRuang;
+            document.getElementById('edit_ruang_nama').value = oldNama;
+            document.getElementById('edit_ruang_luas').value = oldLuas;
+            document.getElementById('edit_ruang_tinggi').value = oldTinggi;
+            document.getElementById('edit_ruang_fungsi_ruang').value = oldFungsi;
+            document.getElementById('edit_ruang_is_active').checked = oldIsActive;
+
+            // Kemasan
+            const kemasanSelect = document.getElementById('edit_ada_kemasan');
+            kemasanSelect.value = oldAdaKemasan;
+            toggleEditKemasan(oldAdaKemasan === 'ada');
+
+            if (oldAdaKemasan === 'ada') {
+                document.getElementById('edit_kemasan_blok').value = "{{ old('kemasan_blok') }}";
+                document.getElementById('edit_kemasan_aras').value = "{{ old('kemasan_aras') }}";
+                document.getElementById('edit_kemasan_nama_aras').value = "{{ old('kemasan_nama_aras') }}";
+                document.getElementById('edit_kemasan_kod_ruang').value = "{{ old('kemasan_kod_ruang') }}";
+                document.getElementById('edit_kemasan_lantai').value = "{{ old('kemasan_lantai') }}";
+                document.getElementById('edit_kemasan_luas_lantai').value = "{{ old('kemasan_luas_lantai') }}";
+                document.getElementById('edit_kemasan_dinding').value = "{{ old('kemasan_dinding') }}";
+                document.getElementById('edit_kemasan_luas_dinding').value = "{{ old('kemasan_luas_dinding') }}";
+                document.getElementById('edit_kemasan_siling').value = "{{ old('kemasan_siling') }}";
+                document.getElementById('edit_kemasan_luas_siling').value = "{{ old('kemasan_luas_siling') }}";
+            }
+
+            var modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalEditRuang'));
+            modal.show();
+        } else {
             var modalEl = document.getElementById('modalTambahRuang');
             if (modalEl) {
                 var modal = bootstrap.Modal.getOrCreateInstance(modalEl);
@@ -1797,10 +1861,22 @@ if (hasErrors) {
             }
         }
     } else {
-        var modalEl = document.getElementById('modalTambahAras');
-        if (modalEl) {
-            var modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-            modal.show();
+        if (formType === 'edit_aras' && editArasId) {
+            // Re-open edit aras modal
+            const oldBlokId = "{{ old('blok_id') }}";
+            const oldBinaanLuarId = "{{ old('binaan_luar_id') }}";
+            const oldKod = "{{ old('kod') }}";
+            const oldNama = "{{ old('nama') }}";
+            const oldIsActive = "{{ old('is_active') ? '1' : '0' }}" === '1';
+
+            const formattedBlokId = oldBlokId ? 'blok_' + oldBlokId : (oldBinaanLuarId ? 'binaan_luar_' + oldBinaanLuarId : '');
+            editAras(editArasId, formattedBlokId, oldKod, oldNama, oldIsActive);
+        } else {
+            var modalEl = document.getElementById('modalTambahAras');
+            if (modalEl) {
+                var modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                modal.show();
+            }
         }
     }
 }
@@ -2578,8 +2654,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // On page load, check if a database premise is selected and fetch its blocks
     if (da5_nama_premis && da5_nama_premis.value && da5_nama_premis.value !== "manual" && !isNaN(da5_nama_premis.value)) {
-        const selectedBlockVal = {!! json_encode(old('kod_blok', $da5_data['kod_blok'] ?? '')) !!};
-        const selectedNamaVal  = {!! json_encode(old('nama_blok', $da5_data['nama_blok'] ?? '')) !!};
+        const selectedBlockVal = document.getElementById('js_old_kod_blok') ? document.getElementById('js_old_kod_blok').value : '';
+        const selectedNamaVal  = document.getElementById('js_old_nama_blok') ? document.getElementById('js_old_nama_blok').value : '';
         fetch(`/admin/aras-ruang/premis/${da5_nama_premis.value}`)
             .then(response => response.json())
             .then(data => {

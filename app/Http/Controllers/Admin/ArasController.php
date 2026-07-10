@@ -70,11 +70,11 @@ class ArasController extends Controller
     }
 
     // Semak duplicate kod dalam scope Blok/Binaan Luar yang sama
-    $existingQuery = KodAras::where('kod', strtoupper($request->kod));
+    $existingQuery = KodAras::where('kod', '=', strtoupper($request->kod), 'and');
     if ($request->blok_id) {
-        $existingQuery->where('blok_id', $request->blok_id);
+        $existingQuery->where('blok_id', '=', $request->blok_id, 'and');
     } else {
-        $existingQuery->where('binaan_luar_id', $request->binaan_luar_id);
+        $existingQuery->where('binaan_luar_id', '=', $request->binaan_luar_id, 'and');
     }
     if ($existingQuery->exists()) {
         return redirect()->back()
@@ -100,7 +100,8 @@ class ArasController extends Controller
     ]);
 
     return redirect()->back()
-        ->with('success', 'Aras berjaya ditambah.');
+        ->with('success', 'Aras berjaya ditambah.')
+        ->with('_redirect_tab', $request->input('_redirect_tab', 'aras'));
 }
 
     public function edit(KodAras $aras)
@@ -127,11 +128,11 @@ class ArasController extends Controller
                 ->withErrors(['blok_id' => 'Sila pilih Blok atau Binaan Luar.']);
         }
 
-        $existingQuery = KodAras::where('kod', strtoupper($request->kod))->where('id', '!=', $aras->id);
+        $existingQuery = KodAras::where('kod', '=', strtoupper($request->kod), 'and')->where('id', '!=', $aras->id, 'and');
         if ($request->blok_id) {
-            $existingQuery->where('blok_id', $request->blok_id);
+            $existingQuery->where('blok_id', '=', $request->blok_id, 'and');
         } else {
-            $existingQuery->where('binaan_luar_id', $request->binaan_luar_id);
+            $existingQuery->where('binaan_luar_id', '=', $request->binaan_luar_id, 'and');
         }
         if ($existingQuery->exists()) {
             return redirect()->back()
@@ -156,7 +157,8 @@ class ArasController extends Controller
         ]);
 
         return redirect()->back()
-            ->with('success', 'Aras berjaya dikemaskini.');
+            ->with('success', 'Aras berjaya dikemaskini.')
+            ->with('_redirect_tab', $request->input('_redirect_tab', 'aras'));
     }
 
     public function destroy(KodAras $aras)

@@ -29,24 +29,24 @@ class RuangController extends Controller
         }
 
         if ($request->aras_id) {
-            $query->where('aras_id', $request->aras_id);
+            $query->where('aras_id', '=', $request->aras_id, 'and');
         }
 
         if ($request->status === 'active') {
-            $query->where('is_active', true);
+            $query->where('is_active', '=', true, 'and');
         } elseif ($request->status === 'inactive') {
-            $query->where('is_active', false);
+            $query->where('is_active', '=', false, 'and');
         }
 
         $ruangs = $query->orderBy('kod')->paginate(12);
-        $aras = KodAras::where('is_active', true)->orderBy('kod')->get();
+        $aras = KodAras::where('is_active', '=', true, 'and')->orderBy('kod', 'asc')->get();
 
         return view('admin.ruang.index', compact('ruangs', 'aras'));
     }
 
     public function create()
     {
-        $aras = KodAras::where('is_active', true)->orderBy('kod')->get();
+        $aras = KodAras::where('is_active', '=', true, 'and')->orderBy('kod', 'asc')->get();
         return view('admin.ruang.create', compact('aras'));
     }
     public function store(Request $request)
@@ -106,12 +106,13 @@ class RuangController extends Controller
         ]);
 
         return redirect()->back()
-            ->with('success', 'Ruang berjaya ditambahkan.');
+            ->with('success', 'Ruang berjaya ditambahkan.')
+            ->with('_redirect_tab', $request->input('_redirect_tab', 'ruang'));
     }
 
     public function edit(KodRuang $ruang)
     {
-        $aras = KodAras::where('is_active', true)->orderBy('kod')->get();
+        $aras = KodAras::where('is_active', '=', true, 'and')->orderBy('kod', 'asc')->get();
         return view('admin.ruang.edit', compact('ruang', 'aras'));
     }
 
@@ -133,7 +134,7 @@ class RuangController extends Controller
             'nama.required'    => 'Nama ruang wajib diisi.',
         ]);
 
-        $ruang->update([
+        $ruang->fill([
             'aras_id'      => $request->aras_id,
             'kod'          => strtoupper($request->kod),
             'kod_sub_ruang'=> $request->kod_sub_ruang ? strtoupper($request->kod_sub_ruang) : null,
@@ -144,6 +145,7 @@ class RuangController extends Controller
             'ada_kemasan'  => $request->ada_kemasan ?? 'tiada',
             'is_active'    => $request->has('is_active'),
         ]);
+        $ruang->save();
 
         // Create new Kemasan record (preserves history) if selected
         if ($request->ada_kemasan === 'ada') {
@@ -170,7 +172,8 @@ class RuangController extends Controller
         ]);
 
         return redirect()->back()
-            ->with('success', 'Ruang berjaya dikemaskini.');
+            ->with('success', 'Ruang berjaya dikemaskini.')
+            ->with('_redirect_tab', $request->input('_redirect_tab', 'ruang'));
     }
 
     public function destroy(KodRuang $ruang)
@@ -181,7 +184,7 @@ class RuangController extends Controller
             'title'        => 'Padam Ruang',
             'description'  => 'Ruang dipadam - Kod: ' . $ruang->kod . ', Nama: ' . $ruang->nama,
         ]);
-        $ruang->delete();
+        KodRuang::destroy($ruang->id);
         return redirect()->back()
             ->with('success', 'Ruang berjaya dipadam.');
     }
