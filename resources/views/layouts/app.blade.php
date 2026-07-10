@@ -884,9 +884,9 @@
                     <div class="nav-item">
                         <a href="{{ route('admin.components.index') }}"
                             class="nav-link {{ request()->routeIs('admin.components.*') ? 'active' : '' }}"
-                            data-title="Komponen">
+                            data-title="Borang D.A.6">
                             <i class="bi bi-building"></i>
-                            <span class="nav-link-text">Pendaftaran Komponen</span>
+                            <span class="nav-link-text">Borang D.A.6</span>
                         </a>
                     </div>
 

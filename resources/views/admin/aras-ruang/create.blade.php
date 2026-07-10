@@ -1074,7 +1074,7 @@
                                 <tr class="tambah-kemasan-row" style="display:none;">
                                     <td class="bg-light fw-semibold align-middle">Blok</td>
                                     <td>
-                                        <input type="text" name="kemasan_blok" id="tambah_kemasan_blok" class="form-control form-control-sm" placeholder="Taip / Auto-isi dari Aras">
+                                        <input type="text" name="kemasan_blok" id="tambah_kemasan_blok" class="form-control form-control-sm bg-light" placeholder="Auto-isi dari Aras" readonly>
                                     </td>
                                 </tr>
                                 <tr class="tambah-kemasan-row" style="display:none;">
@@ -1083,11 +1083,11 @@
                                         <div class="row g-2">
                                             <div class="col-6">
                                                 <label class="form-label text-muted small mb-1">Kod Aras</label>
-                                                <input type="text" name="kemasan_aras" id="tambah_kemasan_aras" class="form-control form-control-sm" placeholder="Auto-isi">
+                                                <input type="text" name="kemasan_aras" id="tambah_kemasan_aras" class="form-control form-control-sm bg-light" placeholder="Auto-isi" readonly>
                                             </div>
                                             <div class="col-6">
                                                 <label class="form-label text-muted small mb-1">Nama Aras</label>
-                                                <input type="text" name="kemasan_nama_aras" id="tambah_kemasan_nama_aras" class="form-control form-control-sm" placeholder="Auto-isi">
+                                                <input type="text" name="kemasan_nama_aras" id="tambah_kemasan_nama_aras" class="form-control form-control-sm bg-light" placeholder="Auto-isi" readonly>
                                             </div>
                                         </div>
                                     </td>
@@ -1095,7 +1095,7 @@
                                 <tr class="tambah-kemasan-row" style="display:none;">
                                     <td class="bg-light fw-semibold align-middle">Kod Ruang</td>
                                     <td>
-                                        <input type="text" name="kemasan_kod_ruang" id="tambah_kemasan_kod_ruang" class="form-control form-control-sm" placeholder="Auto-isi dari Kod Ruang">
+                                        <input type="text" name="kemasan_kod_ruang" id="tambah_kemasan_kod_ruang" class="form-control form-control-sm bg-light" placeholder="Auto-isi dari Kod Ruang" readonly>
                                     </td>
                                 </tr>
                                 <tr class="tambah-kemasan-row" style="display:none;">
@@ -1305,7 +1305,7 @@
                                 <tr class="edit-kemasan-row" style="display:none;">
                                     <td class="bg-light fw-semibold align-middle">Blok</td>
                                     <td>
-                                        <input type="text" name="kemasan_blok" id="edit_kemasan_blok" class="form-control form-control-sm" placeholder="Taip / Auto-isi dari Aras">
+                                        <input type="text" name="kemasan_blok" id="edit_kemasan_blok" class="form-control form-control-sm bg-light" placeholder="Auto-isi dari Aras" readonly>
                                     </td>
                                 </tr>
                                 <tr class="edit-kemasan-row" style="display:none;">
@@ -1314,11 +1314,11 @@
                                         <div class="row g-2">
                                             <div class="col-6">
                                                 <label class="form-label text-muted small mb-1">Kod Aras</label>
-                                                <input type="text" name="kemasan_aras" id="edit_kemasan_aras" class="form-control form-control-sm" placeholder="Auto-isi">
+                                                <input type="text" name="kemasan_aras" id="edit_kemasan_aras" class="form-control form-control-sm bg-light" placeholder="Auto-isi" readonly>
                                             </div>
                                             <div class="col-6">
                                                 <label class="form-label text-muted small mb-1">Nama Aras</label>
-                                                <input type="text" name="kemasan_nama_aras" id="edit_kemasan_nama_aras" class="form-control form-control-sm" placeholder="Auto-isi">
+                                                <input type="text" name="kemasan_nama_aras" id="edit_kemasan_nama_aras" class="form-control form-control-sm bg-light" placeholder="Auto-isi" readonly>
                                             </div>
                                         </div>
                                     </td>
@@ -1326,7 +1326,7 @@
                                 <tr class="edit-kemasan-row" style="display:none;">
                                     <td class="bg-light fw-semibold align-middle">Kod Ruang</td>
                                     <td>
-                                        <input type="text" name="kemasan_kod_ruang" id="edit_kemasan_kod_ruang" class="form-control form-control-sm" placeholder="Auto-isi dari Kod Ruang">
+                                        <input type="text" name="kemasan_kod_ruang" id="edit_kemasan_kod_ruang" class="form-control form-control-sm bg-light" placeholder="Auto-isi dari Kod Ruang" readonly>
                                     </td>
                                 </tr>
                                 <tr class="edit-kemasan-row" style="display:none;">
