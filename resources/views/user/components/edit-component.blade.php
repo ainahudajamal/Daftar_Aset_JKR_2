@@ -295,7 +295,7 @@
                                                         <option value="{{ $aras->kod }}" 
                                                                 data-nama="{{ $aras->nama }}"
                                                                 {{ old('kod_aras_binaan', $component->kod_aras_binaan) == $aras->kod ? 'selected' : '' }}>
-                                                            {{ $aras->kod }}
+                                                            {{ $aras->kod }} - {{ $aras->nama }}
                                                         </option>
                                                     @endforeach
                                                 </select>
@@ -501,7 +501,7 @@ $(document).ready(function() {
         $.ajax({
             url: '{{ route("api.check-kod-blok") }}',
             method: 'POST',
-            data: { kod: kod },
+            data: { kod: kod, _token: '{{ csrf_token() }}' },
             success: function(response) {
                 if (response.exists) {
                     $('#kod-blok-status').html('<span class="existing-tag-badge"><i class="bi bi-check-circle"></i> Sedia Ada</span>');
@@ -591,7 +591,11 @@ $(document).ready(function() {
         $.ajax({
             url: '/api/master-data/aras',
             method: 'GET',
-            data: { kod_blok: kodBlok },
+            data: {
+                kod_blok: kodBlok,
+                nama_blok: $('#nama_blok').val(),
+                premis_id: $('#premis').val()
+            },
             success: function(response) {
                 $('#kod_aras').empty().append('<option value="">-- Pilih atau Taip Kod Aras --</option>');
 
@@ -802,7 +806,7 @@ $(document).ready(function() {
         $.ajax({
             url: routes[type],
             method: 'POST',
-            data: { kod: kod, nama: nama },
+            data: { kod: kod, nama: nama, kod_blok: $('#kod_blok').val(), _token: '{{ csrf_token() }}' },
             success: function(response) {
                 if (response.success) {
                     if (response.action === 'created') {

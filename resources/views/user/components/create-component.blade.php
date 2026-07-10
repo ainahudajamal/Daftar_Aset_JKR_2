@@ -307,7 +307,7 @@
                                                             <option value="{{ $aras->kod }}"
                                                                 data-nama="{{ $aras->nama }}"
                                                                 {{ old('kod_aras_binaan') == $aras->kod ? 'selected' : '' }}>
-                                                                {{ $aras->kod }}
+                                                                {{ $aras->kod }} - {{ $aras->nama }}
                                                             </option>
                                                         @endforeach
                                                     </select>
@@ -456,7 +456,8 @@
                     url: '/api/check-kod-blok',
                     method: 'POST',
                     data: {
-                        kod: kod
+                        kod: kod,
+                        _token: '{{ csrf_token() }}'
                     },
                     success: function(response) {
                         if (response.exists) {
@@ -534,7 +535,11 @@
                 $.ajax({
                     url: '/api/master-data/ruang',
                     method: 'GET',
-                    data: { kod_blok: kodBlok },
+                    data: {
+                        kod_blok: kodBlok,
+                        nama_blok: $('#nama_blok').val(),
+                        premis_id: $('#premis').val()
+                    },
                     success: function(response) {
                         $(selectId).empty().append('<option value="">-- Pilih atau Taip Kod Ruang --</option>');
 
@@ -596,7 +601,9 @@
                     url: '/api/master-data/aras',
                     method: 'GET',
                     data: {
-                        kod_blok: kodBlok
+                        kod_blok: kodBlok,
+                        nama_blok: $('#nama_blok').val(),
+                        premis_id: $('#premis').val()
                     },
                     success: function(response) {
                         $('#kod_aras').empty().append(
@@ -710,7 +717,8 @@
                     url: '/api/check-kod-aras',
                     method: 'POST',
                     data: {
-                        kod: kod
+                        kod: kod,
+                        _token: '{{ csrf_token() }}'
                     },
                     success: function(response) {
                         if (response.exists) {
@@ -752,7 +760,9 @@
                     method: 'POST',
                     data: {
                         kod: kod,
-                        nama: nama
+                        nama: nama,
+                        kod_blok: $('#kod_blok').val(),
+                        _token: '{{ csrf_token() }}'
                     },
                     success: function(response) {
                         if (response.success) {

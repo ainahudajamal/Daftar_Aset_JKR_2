@@ -270,9 +270,18 @@ class MasterDataController extends Controller
                 // Try to determine tingkat from kod
                 $tingkat = $this->extractTingkatFromKod($validated['kod']);
 
+                $blokId = null;
+                if ($request->filled('kod_blok')) {
+                    $blokRecord = DB::table('blok')->where('kod_blok_myspata', $request->input('kod_blok'))->first();
+                    if ($blokRecord) {
+                        $blokId = $blokRecord->id;
+                    }
+                }
+
                 DB::table('kod_aras')->insert([
                     'kod' => $validated['kod'],
                     'nama' => $validated['nama'],
+                    'blok_id' => $blokId,
                     'tingkat' => $tingkat,
                     'status' => 'aktif', // Default status
                     'created_at' => now(),
@@ -509,68 +518,94 @@ class MasterDataController extends Controller
                     break;
 
                 case 'aras':
-                    $kodBlok = request()->input('kod_blok');
+                    $ids = $this->resolveBlokOrBinaanId();
+                    $blokId = $ids['blok_id'];
+                    $blId = $ids['binaan_luar_id'];
 
-                    $query = DB::table('kod_aras')
-                        ->where('is_active', 1);
-
-                    if ($kodBlok) {
-                        // Look up in the real 'blok' table by kod_blok_myspata
-                        $blokRecord = DB::table('blok')->where('kod_blok_myspata', $kodBlok)->first();
-                        if ($blokRecord) {
-                            $query->where('blok_id', $blokRecord->id);
+                    if ($blokId || $blId) {
+                        $query = DB::table('kod_aras')->where('is_active', 1);
+                        if ($blokId) {
+                            $query->where('blok_id', $blokId);
                         } else {
-                            // Blok not found — return empty, do not fall back to all aras
-                            $query->whereRaw('1 = 0');
+                            $query->where('binaan_luar_id', $blId);
                         }
+                        $specific = $query->orderBy('id', 'desc')->get(['kod', 'nama']);
+
+                        if ($specific->isNotEmpty()) {
+                            $data = $specific;
+                        } else {
+                            $data = DB::table('kod_aras')
+                                ->where('is_active', 1)
+                                ->whereNull('blok_id')
+                                ->whereNull('binaan_luar_id')
+                                ->orderBy('id', 'desc')
+                                ->get(['kod', 'nama']);
+                        }
+                    } else {
+                        $data = DB::table('kod_aras')
+                            ->where('is_active', 1)
+                            ->whereNull('blok_id')
+                            ->whereNull('binaan_luar_id')
+                            ->orderBy('id', 'desc')
+                            ->get(['kod', 'nama']);
                     }
 
-                    $data = $query->orderBy('tingkat')
-                        ->get(['kod', 'nama'])
-                        ->map(function ($item) {
-                            return [
-                                'id' => $item->kod,
-                                'text' => "{$item->kod} - {$item->nama}",
-                                'nama' => $item->nama
-                            ];
-                        });
+                    $data = $data->unique('kod')->values()->map(function ($item) {
+                        return [
+                            'id' => $item->kod,
+                            'text' => "{$item->kod} - {$item->nama}",
+                            'nama' => $item->nama
+                        ];
+                    });
                     break;
 
                 case 'ruang':
-                    $kodBlok = request()->input('kod_blok');
+                    $ids = $this->resolveBlokOrBinaanId();
+                    $blokId = $ids['blok_id'];
+                    $blId = $ids['binaan_luar_id'];
 
-                    $ruangQuery = DB::table('kod_ruangs')
-                        ->where('is_active', 1);
-
-                    if ($kodBlok) {
-                        // Find the Blok record by kod_blok_myspata
-                        $blokRecord = DB::table('blok')->where('kod_blok_myspata', $kodBlok)->first();
-                        if ($blokRecord) {
-                            // Get all aras IDs linked to this blok
-                            $arasIds = DB::table('kod_aras')
-                                ->where('blok_id', $blokRecord->id)
-                                ->pluck('id');
-                            if ($arasIds->isNotEmpty()) {
-                                $ruangQuery->whereIn('aras_id', $arasIds);
-                            } else {
-                                // No aras for this blok — return empty
-                                $ruangQuery->whereRaw('1 = 0');
-                            }
+                    if ($blokId || $blId) {
+                        $arasQuery = DB::table('kod_aras');
+                        if ($blokId) {
+                            $arasQuery->where('blok_id', $blokId);
                         } else {
-                            // Blok not found — return empty
-                            $ruangQuery->whereRaw('1 = 0');
+                            $arasQuery->where('binaan_luar_id', $blId);
                         }
+                        $arasIds = $arasQuery->pluck('id');
+
+                        $specific = collect();
+                        if ($arasIds->isNotEmpty()) {
+                            $specific = DB::table('kod_ruangs')
+                                ->where('is_active', 1)
+                                ->whereIn('aras_id', $arasIds)
+                                ->orderBy('id', 'desc')
+                                ->get(['kod', 'nama']);
+                        }
+
+                        if ($specific->isNotEmpty()) {
+                            $data = $specific;
+                        } else {
+                            $data = DB::table('kod_ruangs')
+                                ->where('is_active', 1)
+                                ->whereNull('aras_id')
+                                ->orderBy('id', 'desc')
+                                ->get(['kod', 'nama']);
+                        }
+                    } else {
+                        $data = DB::table('kod_ruangs')
+                            ->where('is_active', 1)
+                            ->whereNull('aras_id')
+                            ->orderBy('id', 'desc')
+                            ->get(['kod', 'nama']);
                     }
 
-                    $data = $ruangQuery->orderBy('kod')
-                        ->get(['kod', 'nama'])
-                        ->map(function ($item) {
-                            return [
-                                'id' => $item->kod,
-                                'text' => "{$item->kod} - {$item->nama}",
-                                'nama' => $item->nama
-                            ];
-                        });
+                    $data = $data->unique('kod')->values()->map(function ($item) {
+                        return [
+                            'id' => $item->kod,
+                            'text' => "{$item->kod} - {$item->nama}",
+                            'nama' => $item->nama
+                        ];
+                    });
                     break;
 
                 default:
@@ -654,6 +689,92 @@ class MasterDataController extends Controller
     }
 
     /**
+     * Resolve Blok or Binaan Luar ID strictly by premis_id + kod_blok + nama_blok
+     */
+    private function resolveBlokOrBinaanId()
+    {
+        $kod = trim((string) request()->input('kod_blok'));
+        $nama = trim((string) request()->input('nama_blok'));
+        $premisId = request()->input('premis_id');
+
+        if ($kod === '' && $nama === '') {
+            return ['blok_id' => null, 'binaan_luar_id' => null];
+        }
+
+        // 1. Cuba cari dalam jadual BLOK (padanan ketat premis + kod + nama)
+        $queryBlok = DB::table('blok');
+        if (!empty($premisId) && is_numeric($premisId)) {
+            $queryBlok->where('premis_id', $premisId);
+        }
+        if ($kod !== '' && $nama !== '') {
+            $queryBlok->where(function ($q) use ($kod, $nama) {
+                $q->where(function ($sub) use ($kod, $nama) {
+                    $sub->where('kod_blok_myspata', $kod)->where('nama_blok', $nama);
+                })->orWhere(function ($sub) use ($kod, $nama) {
+                    $sub->where('kod_blok_myspata', $nama)->where('nama_blok', $kod);
+                });
+            });
+        } elseif ($kod !== '') {
+            $queryBlok->where(function ($q) use ($kod) {
+                $q->where('kod_blok_myspata', $kod)->orWhere('nama_blok', $kod)->orWhere('id', $kod);
+            });
+        }
+        $blok = $queryBlok->first();
+
+        // 2. Jika tidak dijumpai dengan padanan ketat kod+nama, cari dengan kod sahaja (dalam premis yang sama jika ada)
+        if (!$blok && $kod !== '') {
+            $qFallback = DB::table('blok');
+            if (!empty($premisId) && is_numeric($premisId)) {
+                $qFallback->where('premis_id', $premisId);
+            }
+            $qFallback->where(function ($q) use ($kod) {
+                $q->where('kod_blok_myspata', $kod)->orWhere('nama_blok', $kod)->orWhere('id', $kod);
+            });
+            $blok = $qFallback->first();
+        }
+
+        if ($blok) {
+            return ['blok_id' => $blok->id, 'binaan_luar_id' => null];
+        }
+
+        // 3. Jika bukan blok, cuba cari dalam BINAAN LUAR (padanan ketat premis + kod + nama)
+        $queryBL = DB::table('binaan_luar');
+        if (!empty($premisId) && is_numeric($premisId)) {
+            $queryBL->where('premis_id', $premisId);
+        }
+        if ($kod !== '' && $nama !== '') {
+            $queryBL->where(function ($q) use ($kod, $nama) {
+                $q->where(function ($sub) use ($kod, $nama) {
+                    $sub->where('kod_binaan_luar_myspata', $kod)->where('nama_binaan_luar', $nama);
+                })->orWhere(function ($sub) use ($kod, $nama) {
+                    $sub->where('kod_binaan_luar_myspata', $nama)->where('nama_binaan_luar', $kod);
+                });
+            });
+        } elseif ($kod !== '') {
+            $queryBL->where(function ($q) use ($kod) {
+                $q->where('kod_binaan_luar_myspata', $kod)->orWhere('nama_binaan_luar', $kod)->orWhere('id', $kod);
+            });
+        }
+        $bl = $queryBL->first();
+        if (!$bl && $kod !== '') {
+            $qFallBL = DB::table('binaan_luar');
+            if (!empty($premisId) && is_numeric($premisId)) {
+                $qFallBL->where('premis_id', $premisId);
+            }
+            $qFallBL->where(function ($q) use ($kod) {
+                $q->where('kod_binaan_luar_myspata', $kod)->orWhere('nama_binaan_luar', $kod)->orWhere('id', $kod);
+            });
+            $bl = $qFallBL->first();
+        }
+
+        if ($bl) {
+            return ['blok_id' => null, 'binaan_luar_id' => $bl->id];
+        }
+
+        return ['blok_id' => null, 'binaan_luar_id' => null];
+    }
+
+    /**
      * Generate smart name suggestion based on kod pattern
      */
     private function generateBlokNamaSuggestion($kod)
@@ -708,6 +829,10 @@ class MasterDataController extends Controller
         if (stripos($kod, 'WING') !== false) {
             $wing = str_replace(['WING', '-', '_'], '', $kod);
             return "Sayap " . ucfirst(strtolower($wing));
+        }
+
+        if (stripos($kod, 'BLOK') === 0) {
+            return ucwords(strtolower(str_replace(['-', '_'], ' ', $kod)));
         }
 
         return "Blok " . ucwords(strtolower(str_replace(['-', '_'], ' ', $kod)));

@@ -3,6 +3,7 @@
 namespace App\Exports\Sheets;
 
 use App\Models\KemasanRuang;
+use App\Models\KodRuang;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithTitle;
@@ -35,12 +36,26 @@ class KemasanSheet implements
      */
     public function collection()
     {
-        return KemasanRuang::whereHas('ruang', function ($query) {
-            $query->where('is_active', true);
-        })
-        ->with('ruang')
-        ->orderBy('kod_ruang')
-        ->get();
+        $rooms = KodRuang::where('is_active', true)
+            ->with(['aras.blok', 'kemasan'])
+            ->orderBy('aras_id')
+            ->orderBy('kod')
+            ->get();
+
+        $rows = collect();
+
+        foreach ($rooms as $room) {
+            if ($room->kemasan && $room->kemasan->isNotEmpty()) {
+                foreach ($room->kemasan as $kemasan) {
+                    $kemasan->setRelation('ruang', $room);
+                    $rows->push($kemasan);
+                }
+            } else {
+                $rows->push($room);
+            }
+        }
+
+        return $rows;
     }
 
     /**
@@ -65,14 +80,25 @@ class KemasanSheet implements
      */
     public function map($row): array
     {
-        $kodRuang = $row->kod_ruang ?? ($row->ruang->kod ?? '');
-        $kemasanLantai = $row->kemasan_lantai ?? '';
-        $luasLantai = $row->luas_lantai ?? '';
-        $kemasanDinding = $row->kemasan_dinding ?? '';
-        $luasDinding = $row->luas_dinding ?? '';
-        $kemasanSiling = $row->kemasan_siling ?? '';
-        $luasSiling = $row->luas_siling ?? '';
-        $namaRuang = $row->ruang->nama ?? '';
+        if ($row instanceof KodRuang) {
+            $kodRuang       = $row->kod ?? '';
+            $namaRuang      = $row->nama ?? '';
+            $kemasanLantai  = '';
+            $luasLantai     = '';
+            $kemasanDinding = '';
+            $luasDinding    = '';
+            $kemasanSiling  = '';
+            $luasSiling     = '';
+        } else {
+            $kodRuang       = $row->kod_ruang ?? ($row->ruang->kod ?? '');
+            $namaRuang      = $row->ruang->nama ?? '';
+            $kemasanLantai  = $row->kemasan_lantai ?? '';
+            $luasLantai     = $row->luas_lantai ?? '';
+            $kemasanDinding = $row->kemasan_dinding ?? '';
+            $luasDinding    = $row->luas_dinding ?? '';
+            $kemasanSiling  = $row->kemasan_siling ?? '';
+            $luasSiling     = $row->luas_siling ?? '';
+        }
 
         return [
             $kodRuang,
